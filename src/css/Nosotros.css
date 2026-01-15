@@ -1,0 +1,170 @@
+.nosotros-container {
+    padding: 160px 300px 80px 300px;
+    display: flex;
+    flex-direction: column;
+    background: #f7f7f9;
+}
+
+.nosotros-container-2 {
+    padding: 10px 300px 80px 300px;
+    display: flex;
+    flex-direction: column;
+    background: #f7f7f9;
+}
+
+.nosotros-header {
+    margin-top: 50px;
+}
+
+.nosotros-content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 50px;
+    gap: 50px;
+}
+
+.nosotros-content-2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    background-color: #000000;
+
+}
+
+.nosotros-content h1 {
+    font-size: 2.4rem;
+    margin-bottom: 8px;
+    color: #0f172a;
+}
+
+.nosotros-image {
+    width: 50%;
+    display: flex;
+    align-items: center;
+}
+
+.image-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.image-reveal {
+    position: absolute;
+    inset: 0;
+    background-color: #0f172a;
+    border-radius: 10px;
+    transform-origin: left;
+    z-index: 2;
+}
+
+.img-bulonera {
+    width: 100%;
+    display: block;
+    position: relative;
+    z-index: 1;
+    border-radius: 10px;
+
+}
+
+
+.nosotros-text {
+    width: 50%;
+    padding: 60px;
+}
+
+.nosotros-text-2 {
+    width: 40%;
+    padding: 100px;
+}
+
+.bulonera-titulo {
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #153174;
+}
+
+.bulonera-subtitulo {
+    font-size: 2.3rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #000000;
+}
+
+.bulonera-contenido {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #000000;
+}
+
+.bulonera-contenido-2 {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #ffffff;
+    background-color: #0f172a;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
+}
+
+.nosotros-stats {
+    width: 100%;
+    background-color: #0f172a;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    padding: 50px 80px 50px 80px;
+}
+
+.nosotros-stats-2 {
+    width: 100%;
+    background-color: #0f172a;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    gap: 150px;
+    padding: 50px 80px 50px 80px;
+}
+
+.stats-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.stats-group-2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.stats-numero {
+    font-size: 3rem;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .nosotros-container {
+        padding-top: 120px;
+        padding-bottom: 60px;
+    }
+
+    .nosotros-content {
+        padding: 32px 20px;
+    }
+
+    .nosotros-content h1 {
+        font-size: 2rem;
+    }
+
+    .nosotros-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .nosotros-content p {
+        font-size: 0.98rem;
+    }
+}

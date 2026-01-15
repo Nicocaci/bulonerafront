@@ -1,0 +1,90 @@
+.contacto-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding:200px 300px 100px 300px;
+    background-color: #f5f5f5;
+}
+.titulo-contacto{
+    font-size: 2.5rem;
+    color: #1e1e1e;
+    margin-bottom: 50px;
+    font-weight: 700;
+}
+.subtitulo-contacto{
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+.container-mapa{
+    width: 100%;
+    height: 50dvh;
+    margin-bottom: 50px;
+}
+.grid-contacto{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    width: 100%;
+
+}
+.atencion-cliente-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    
+}
+.atencion-cliente-titulo {
+
+}
+.atencion-cliente-descripcion {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 30px 0 30px 0;
+    border-bottom: 2px solid #e6e6e6;
+    margin-bottom: 10px;
+    background-color: #111827;
+    border-radius: 10px;
+}
+.formulario-contacto {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.atencion-grid-1{
+    display: flex;
+    align-items: center;
+    width: 50%;
+    padding: 10px;
+}
+
+.atencion-grid-2 {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+.btn-form{
+    background-color: #1e1e1e;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+}
+.titulo-bulonera{
+    font-size: 2rem;
+    color: #1e1e1e;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+.horario-atencion{
+    font-size: 1.1rem;
+    color: #ffffff;
+    margin-top: 5px;
+}

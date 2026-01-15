@@ -1,0 +1,31 @@
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    padding: 50px 200px 50px 200px;
+    background-color: #4b4848;
+    justify-items: center;
+}
+.titulo-footer{
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+.li-footer {
+    list-style: none;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+.container-iconos {
+    display: flex;
+    gap: 50px;
+    justify-content: center;
+    cursor: pointer;
+}
+.logo-footer{
+    width: 300px;
+    border-radius: 10px;
+}

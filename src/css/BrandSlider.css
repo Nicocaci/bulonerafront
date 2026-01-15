@@ -1,0 +1,43 @@
+.slider {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    margin: auto;
+    padding: 20px 0;
+}
+
+.slide-track {
+    display: flex;
+    width: calc(250px * 12);
+    animation: scroll 30s linear infinite;
+}
+
+.slide {
+    width: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 15px;
+    flex-shrink: 0;
+}
+
+.slide img {
+    width: 150px;
+    height: auto;
+    object-fit: contain;
+    transition: filter 0.3s ease;
+}
+
+.slide img:hover {
+    filter: grayscale(0%);
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(calc(-250px * 6));
+    }
+}

@@ -1,0 +1,71 @@
+.parent {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    /* estilo Ronix */
+    padding: 50px;
+}
+
+/* estilo general tipo card ronix */
+.card {
+    background: #111;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.25s ease;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* recorte tipo Ronix */
+    transition: transform .4s ease;
+}
+
+/* zoom en hover */
+.card:hover img {
+    transform: scale(1.15);
+}
+
+/* POSICIONES DEL GRID (idénticas a las tuyas) */
+.div2 {
+    grid-column: span 2 / span 2;
+    grid-row: span 3 / span 3;
+}
+
+.div3 {
+    grid-column: span 2 / span 2;
+    grid-row: span 2 / span 2;
+    grid-column-start: 3;
+}
+
+.div4 {
+    grid-column: span 2 / span 2;
+    grid-row: span 2 / span 2;
+    grid-column-start: 1;
+    grid-row-start: 4;
+}
+
+.div5 {
+    grid-column: span 2 / span 2;
+    grid-row: span 3 / span 3;
+    grid-column-start: 3;
+    grid-row-start: 3;
+}
+
+.div6 {
+    grid-row: span 5 / span 5;
+    grid-column-start: 5;
+    grid-row-start: 1;
+}

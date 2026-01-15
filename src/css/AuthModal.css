@@ -1,0 +1,96 @@
+.auth-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.auth-modal {
+  width: min(90%, 420px);
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 24px 28px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.auth-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border: none;
+  background: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.auth-modal__title {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.auth-modal__subtitle {
+  margin: 4px 0 20px;
+  color: #555;
+}
+
+.auth-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-modal__form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  gap: 4px;
+  color: #333;
+}
+
+.auth-modal__form input {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.auth-modal__error {
+  color: #d14343;
+  font-size: 0.85rem;
+}
+
+.auth-modal__submit {
+  margin-top: 8px;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #1e1e1e;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.auth-modal__submit:hover {
+  background-color: #333;
+}
+
+.auth-modal__toggle {
+  margin-top: 8px;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #1e1e1e;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.auth-modal__toggle:hover {
+  background-color: #333;
+}

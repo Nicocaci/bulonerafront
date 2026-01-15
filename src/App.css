@@ -1,0 +1,30 @@
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.link-none{
+  text-decoration: none;
+  color: #000000;
+  list-style: none;
+}
+.a-none {
+  text-decoration:none;
+  color:#ffffff
+}
+
+/* Footer Style */
+html, body, #root {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1; /* Empuja el footer al fondo */
+}

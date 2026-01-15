@@ -1,0 +1,126 @@
+.item-page{
+    background-color: #f5f5f5;
+    padding-top: 200px;
+    padding-bottom: 100px;
+}
+.item-detail-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    width: 50%;
+    margin: auto;
+}
+.item-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    height: 100%;
+}
+
+.img-item-detail {
+    width: 100%;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.thumbnails-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.thumbnail {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+}
+
+.thumbnail:hover {
+    opacity: 1;
+    transform: scale(1.05);
+    border-color: #438796;
+}
+
+.thumbnail-active {
+    opacity: 1;
+    border-color: #438796;
+    border-width: 3px;
+}
+.item-grid-2{
+    height: 100%;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+}
+.item-grid-2-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+}
+.item-grid-2-content-sku {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    background-color: #ffffff;
+    border-radius: 10px;
+}
+.item-grid-2-content-sku-value {
+    border-radius: 10px;
+    background-color: #d1d5db;
+    color: #000000;
+    padding: .25rem .5rem .25rem .5rem;
+}
+.item-grid-2-content-subcategoria {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+.item-grid-2-content-description {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;    
+}
+
+
+.precio-item {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.btn-item-container {
+    display: flex;
+}
+.btn-item {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #438796;
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    margin-top: 10px;
+}
