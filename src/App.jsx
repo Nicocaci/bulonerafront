@@ -39,19 +39,13 @@ function App() {
               <Route exact path="/nosotros" element={<Nosotros/>}/>
               <Route exact path="/producto/:prodId" element={<ItemDetail/>}/>
               <Route exact path="/carrito/:cartId" element={<CartDetail/>}/>  
-              <Route 
-                exact 
-                path="/checkout/:cartId" 
-                element={
+              <Route exact path="/checkout/:cartId" element={
                   <ProtectedRoute>
                     <Checkout/>
                   </ProtectedRoute>
                 }
               />
-              <Route 
-                exact 
-                path="/perfil" 
-                element={
+              <Route exact path="/perfil" element={
                   <ProtectedRoute>
                     <Perfil/>
                   </ProtectedRoute>
