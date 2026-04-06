@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import AuthModal from "../components/AuthModal";
 import ProductsDropdown from "./Navbar/ProductsDropdown.jsx";
-import NavbarActions from "./Navbar/NavBarActions.jsx";
+import NavbarActions from "./Navbar/NavbarActions.jsx";
 
 const NavBar = () => {
   const { isAuthenticated, logOut } = useContext(AuthContext);
