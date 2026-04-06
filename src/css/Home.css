@@ -142,17 +142,16 @@
 }
 
 .descripcion-herramientas {
-    border: 2px solid #03009e;
-    background: #191644d8;
+    background: #191644;
     color: #ffffff;
-    width: auto;
+    width: 100%;
     font-size: 0.8rem;
     font-weight:300; 
-    border-radius: 10px;
     position: absolute;
     left: 0;
-    top: 0;
+    bottom:0;
     padding: 8px 16px;
+    text-align: center;
 }
 
 
@@ -252,4 +251,43 @@
     right: 0;
     bottom: 100px;
     margin: auto;
+}
+@media (max-width:768px) {
+    .titulo-herramientas {
+        font-size: 15px;
+    }
+    .grid-herramientas {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+    }
+    .container-herramientas {
+        height: max-content;
+    }
+    .grid{
+        height: max-content;
+    }
+    .img-herramientas{
+        width: 200px;
+        height: 300px;
+    }
+    .descripcion-herramientas{
+        border: none;
+    }
+    .container-caja-herramientas{
+        height: max-content;
+        gap: 50px;
+        margin-top: 50px;
+    }
+    .caja-herramientas{
+        width: max-content;
+    }
+    .card-caja-herramientas{
+        width: 200px;
+    }
+    .step-caja-herramientas{
+        font-size: 15px;
+    }
+    .descripcion-caja-herramientas{
+        font-size: 15px;
+    }
 }

@@ -29,3 +29,16 @@
     width: 300px;
     border-radius: 10px;
 }
+@media(max-width:768px) {
+    .footer-container {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+    }
+    .container-iconos {
+        justify-content: start;
+    }
+    .logo-footer{
+        width: 200px;
+    }
+}

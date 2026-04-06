@@ -1,160 +1,161 @@
+/* CONTENEDOR GENERAL */
 .navbar-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    padding: 20px 50px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    background: transparent;
-    z-index: 1000;
+  width: 100%;
+  background: #111;
+  color: white;
+  position: relative;
+  z-index: 1000;
 }
 
-
-.li-navbar{
-    display: flex;
-    list-style: none;
-    gap: 50px;
-    text-transform: capitalize;
-    background-color: #000000;
-    padding: 10px 100px 10px 100px;
-    border-radius: 20px;
-}
-.li-navbar2{
-    display: flex;
-    list-style: none;
-    gap: 50px;
-    text-transform: capitalize;
-    background-color: #000000;
-    padding: 10px 50px 10px 50px;
-    align-items: center;
-    border-radius: 20px;
-}
-.logout{
-    display: flex;
-    align-items: center;
-}
-.navbar-icon-button {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    padding: 0;
-    display: flex;
-    align-items: center;
+/* TOP (logo + hamburguesa) */
+.navbar-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
 }
 
-.navbar-icon-button svg {
-    pointer-events: none;
-}
-.logo-navbar{
-    width: 200px;
-    border-radius: 10px;
-}
-.link-navbar{
-    text-decoration: none;
-    color: #ffffff;
+.logo-navbar {
+  height: 45px;
 }
 
-/* Dropdown for Productos */
-.navbar-item-with-dropdown{
-    position: relative;
+/* BOTON HAMBURGUESA */
+.hamburger-btn {
+  font-size: 28px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: none;
 }
 
-.products-dropdown{
-    position: absolute;
-    top: 100%;
-    left: 0; /* keep it attached to the parent so pointer doesn't escape */ 
-    transform: translateY(8px); /* visual offset without creating a pointer gap */
-    background: #ffffff;
-    border-radius: 8px;
-    padding: 12px;
-    width: 50dvw;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    border: 1px solid rgba(0,0,0,0.06);
-    z-index: 1500;
-    margin-top: 3%;
-
+/* MENU */
+.navbar-menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
 }
 
-.products-dropdown-title{
-    font-weight: 600;
-    margin-bottom: 8px;
+/* LINKS */
+.li-navbar {
+  display: flex;
+  gap: 25px;
+  list-style: none;
 }
 
-.products-dropdown-body{
-    gap: 8px;
+.li-navbar li {
+  position: relative;
 }
 
-.filter-group{
-    font-size: 14px;
-    display: flex;
-    gap: 50px;
-
+.li-navbar a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.2s;
 }
 
-.filter-label{
-    font-weight: 600;
-    margin-bottom: 6px;
+.li-navbar a:hover {
+  color: #ccc;
 }
 
-.products-dropdown-actions{
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
+/* DROPDOWN */
+.products-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #222;
+  padding: 15px;
+  min-width: 200px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.btn-apply-filters, .btn-clear-filters{
-    padding: 6px 10px;
-    border-radius: 4px;
-    border: 1px solid rgba(0,0,0,0.06);
-    background: #f4f4f4;
-    cursor: pointer;
+.products-dropdown a {
+  display: block;
+  font-size: 14px;
 }
 
-.btn-apply-filters{
-    background: #22252a;
-    color: #fff;
-    border: none;
+/* ACTIONS (carrito, user, logout) */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-.btn-clear-filters{
-    background: transparent;
+.navbar-actions button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
 }
 
-.products-dropdown a, .products-dropdown label{
+.navbar-cart-wrapper {
+  position: relative;
+}
+
+.navbar-cart-wrapper span {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  background: red;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 50%;
+}
+
+/* ========================= */
+/* 📱 MOBILE */
+/* ========================= */
+
+@media (max-width: 768px) {
+  
+  .hamburger-btn {
     display: block;
-    line-height: 1.6;
-    padding: 4px 0;
-}
+  }
 
-.loading-small { font-size: 13px; color: #666; }
+  .navbar-menu {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: #111;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    
+    /* oculto por defecto */
+    display: none;
+  }
 
-.products-dropdown label input[type="radio"], .products-dropdown label input[type="checkbox"]{
-    margin-right: 8px;
-}
+  .navbar-menu.open {
+    display: flex;
+  }
 
-/* Styles for subcategories under each category */
-.category-item { 
-    margin-bottom: 8px;
-} 
-.category-link { 
-    font-weight: 600; 
-    color: #222; 
-    text-decoration: none; 
-}
-.subcategory-list { 
-    list-style: none; 
-    margin: 6px 0 0 8px; 
-    padding: 0; 
-}
-.subcategory-item { font-size: 13px }
-.subcategory-link { color: #444; text-decoration: none; }
-.subcategory-link:hover { text-decoration: underline; }
+  .li-navbar {
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+  }
 
-/* Responsive adjustments */
-@media (max-width: 768px){
-  .products-dropdown{ min-width: 200px; }
-}
+  .li-navbar li {
+    width: 100%;
+  }
 
+  .navbar-actions {
+    width: 100%;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+
+  /* dropdown en mobile */
+  .products-dropdown {
+    position: static;
+    background: #1a1a1a;
+    width: 100%;
+    margin-top: 10px;
+  }
+}
