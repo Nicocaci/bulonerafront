@@ -329,6 +329,9 @@
 }
 
 @media (max-width: 768px) {
+    .container-productos {
+        padding-top: 50px ;
+    }
     .productos-layout {
         flex-direction: column;
         gap: 20px;
@@ -370,5 +373,11 @@
         height: 35px;
         padding: 6px 10px;
         font-size: 0.9rem;
+    }
+    .grid-logo-marcas {
+        width: 100%;
+    }
+    .logo-marca {
+        max-width: 80px;
     }
 }

@@ -252,7 +252,11 @@
     bottom: 100px;
     margin: auto;
 }
+
 @media (max-width:768px) {
+    .home-banner {
+        height: 60dvh;
+    }
     .titulo-herramientas {
         font-size: 15px;
     }
@@ -272,6 +276,7 @@
     }
     .descripcion-herramientas{
         border: none;
+        font-size: 10px;
     }
     .container-caja-herramientas{
         height: max-content;
@@ -289,5 +294,11 @@
     }
     .descripcion-caja-herramientas{
         font-size: 15px;
+    }
+}
+@media (max-width:468px){
+    .img-herramientas {
+        width: 150px;
+        height: 250px;
     }
 }
