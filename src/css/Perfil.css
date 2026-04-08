@@ -328,4 +328,14 @@
     .form-actions {
         flex-direction: column;
     }
+    .form-group {
+        margin-bottom: 10px;
+        gap: 3px;
+    }
+    .form-group label {
+        font-size: 10px;
+    }
+    .form-group input {
+        font-size: 15px;
+    }
 }
