@@ -26,7 +26,7 @@ const Nosotros = () => {
                 <div className='nosotros-header'>
                     <h1>Institucional</h1>
                 </div>
-                <div className='nosotros-content'>
+                <div className='nosotros-content-inicio'>
                     <motion.div
                         ref={imageRef}
                         className="image-wrapper"
@@ -71,7 +71,7 @@ const Nosotros = () => {
                             scrollSpyDelay={200}
                         />} +
                     </p>
-                    <p>Años de trayectoria</p>
+                    <p className='stats-text'>Años de trayectoria</p>
                 </div>
                 <div className='stats-group'>
                     <p className='stats-numero'>
@@ -82,7 +82,7 @@ const Nosotros = () => {
                             scrollSpyDelay={200}
                         />} +
                     </p>
-                    <p>Marcas</p>
+                    <p className='stats-text'>Marcas</p>
                 </div>
                 <div className='stats-group'>
                     <p className='stats-numero'>
@@ -93,7 +93,7 @@ const Nosotros = () => {
                             scrollSpyDelay={200}
                         />} +
                     </p>
-                    <p>Clientes</p>
+                    <p className='stats-text'>Clientes</p>
                 </div>
             </div>
 
