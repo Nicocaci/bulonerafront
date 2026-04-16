@@ -29,10 +29,8 @@ const OfertasDestacadas = () => {
   }
   return (
     <div>
+      <h2 className="titulo-ofertas">OFERTAS DESTACADAS</h2>
       <div className="ofertas-container">
-        <h2 className="center">
-            OFERTAS DESTACADAS
-        </h2>
         <Carousel interval={3000}>
           {ofertas.map((oferta) => (
             <Link

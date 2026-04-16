@@ -74,9 +74,9 @@ const Home = () => {
             <OfertasDestacadas/>
         </div>
         
-        <div className="pd-container">
+        {/* <div className="pd-container">
           <ProductosDestacados />
-        </div>
+        </div> */}
 
       </div>
     </div>

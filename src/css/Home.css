@@ -161,7 +161,9 @@
 
 .container-caja-herramientas {
   width: 100%;
-  padding: 20px 40px;
+  height: 80dvh;
+  background-color: #ffffffc0;
+  padding: 80px 40px;
   box-sizing: border-box;
 }
 
