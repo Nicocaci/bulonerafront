@@ -11,6 +11,7 @@ import Checkout from "./pages/Checkout.jsx";
 import Gracias from "./pages/Gracias.jsx";
 import Nosotros from "./pages/Nosotros.jsx";
 import CajaHerramientas from "./pages/CajaHerramientas.jsx";
+import WpButton from "./components/WpButton.jsx";
 
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
@@ -57,6 +58,7 @@ function App() {
                 </ProtectedRoute>
               }/>
             </Routes>
+            <WpButton/>
             </main>
             <Footer />
             </div>

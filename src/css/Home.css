@@ -1,5 +1,5 @@
 .home-banner {
-    height: 80dvh;
+    height: 90dvh;
     position: relative;
     overflow: hidden;
     display: block;
@@ -160,12 +160,15 @@
 }
 
 .container-caja-herramientas {
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 100px;
+  width: 100%;
+  padding: 20px 40px;
+  box-sizing: border-box;
+}
+
+.container-caja-herramientas h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
 }
 
 .caja-herramientas {

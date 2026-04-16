@@ -10,12 +10,12 @@ import "../css/ImageCarousel.css"; // CSS más abajo
  */
 export default function ImageCarousel({
     images = [
-        {src:"banner/fondo1.png", alt:"fondo1"},
-        {src:"banner/fondo2.png", alt:"fondo2"},
-        {src:"banner/fondo3.png", alt:"fondo3"},
-        {src:"banner/fondo4.png", alt:"fondo4"},
+        {src:"/img-fondo-1.png", alt:"fondo1"},
+        {src:"/img-fondo-2.png", alt:"fondo2"},
+        {src:"/img-fondo-3.png", alt:"fondo2"},
+
     ],
-    interval = 4000,
+    interval = 2000,
     showArrows = true,
     showIndicators = true,
     className = "",

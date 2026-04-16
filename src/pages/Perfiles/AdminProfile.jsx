@@ -1,17 +1,12 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import Swal from "sweetalert2";
-import axiosInstance from "../../utils/axiosConfig.js";
-import Cookies from "js-cookie";
-import { getImageUrl } from "../../utils/imageUtils.js";
 import UserList from "./Admin/UserList.jsx";
 import NewProduct from "./Admin/NewProduct.jsx";
 import OrderList from "./Admin/OrderList.jsx";
 
-
-
 const AdminProfile = ({ user }) => {
-    const { getUsers, getProfile, user: authUser } = useContext(AuthContext);
+    const { getUsers, getProfile } = useContext(AuthContext);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [adminData, setAdminData] = useState(null);
@@ -36,11 +31,13 @@ const AdminProfile = ({ user }) => {
                     text: error.message || "No se pudieron cargar los datos",
                     confirmButtonColor: "#d33",
                 });
+            } finally {
+                setLoading(false);
             }
         };
+
         loadUsersAndProfile();
-        setLoading(false);
-    }, [getUsers, getProfile]);
+    }, [getUsers, getProfile, user?.id]);
 
     if (loading) {
         return (
