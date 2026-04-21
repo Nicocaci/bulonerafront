@@ -103,9 +103,7 @@
 
 /* responsive */
 @media (max-width: 768px) {
-    .home-banner.carousel {
-        height: 260px;
-    }
+
 
     .carousel-caption {
         left: 12px;

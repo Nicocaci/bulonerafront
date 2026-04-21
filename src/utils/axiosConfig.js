@@ -2,16 +2,16 @@ import axios from 'axios';
 
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
-// Configurar axios para enviar y recibir cookies
 const axiosInstance = axios.create({
   baseURL: apiUrl,
-  withCredentials: true, // Esto permite enviar y recibir cookies
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  withCredentials: true,
 });
+
+// 👇 CLAVE: dejar que axios maneje headers automáticamente
 axiosInstance.interceptors.request.use((config) => {
-  if (!(config.data instanceof FormData)) {
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+  } else {
     config.headers['Content-Type'] = 'application/json';
   }
   return config;
@@ -19,4 +19,3 @@ axiosInstance.interceptors.request.use((config) => {
 
 export default axiosInstance;
 export { apiUrl };
-

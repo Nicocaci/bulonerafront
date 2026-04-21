@@ -3,7 +3,7 @@
   padding: 40px 40px;
   box-sizing: border-box;
   margin: auto;
-  background-color: rgba(255, 255, 255, 0.726);
+  background-color: #66666621;
   border: 1px solid #ddd;
   border-radius: 10px;
 }
@@ -61,4 +61,26 @@
 
 .ver-todas-link:hover {
   text-decoration: underline;
+}
+.ofertas-slider {
+  display: flex;
+  overflow-x: auto;
+  gap: 16px;
+  scroll-snap-type: x mandatory;
+  padding: 10px;
+}
+
+.oferta-card {
+  min-width: 220px;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+@media (max-width: 768px) {
+  .ofertas-container {
+    width: 100%;
+
+  }
+  .titulo-ofertas {
+    width: 100%;
+  }
 }

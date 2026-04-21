@@ -162,7 +162,7 @@
 .container-caja-herramientas {
   width: 100%;
   height: 80dvh;
-  background-color: #ffffffc0;
+  background-color: #ffffff;
   padding: 80px 40px;
   box-sizing: border-box;
 }
@@ -287,6 +287,9 @@
         height: max-content;
         gap: 50px;
         margin-top: 50px;
+    }
+    .container-caja-herramientas h2 {
+        font-size: 15px;
     }
     .caja-herramientas{
         width: max-content;

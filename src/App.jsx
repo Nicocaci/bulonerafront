@@ -16,6 +16,9 @@ import WpButton from "./components/WpButton.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 import './App.css'
 
@@ -26,11 +29,12 @@ import './App.css'
 function App() {
   return (
     <>
-      <AuthProvider>
-        <CartProvider>
-          <BrowserRouter>
-            <div id="root">
-            <NavBar />
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <CartProvider>
+            <BrowserRouter>
+              <div id="root">
+              <NavBar />
             <main>
             <Routes>
               <Route exact path="/" element={<Home/>}/>
@@ -65,6 +69,7 @@ function App() {
           </BrowserRouter>
         </CartProvider>
       </AuthProvider>
+      </QueryClientProvider>
     </>
   )
 }
