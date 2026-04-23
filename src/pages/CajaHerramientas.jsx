@@ -127,7 +127,7 @@ const CajaHerramientas = () => {
     try {
       let lastCart = cart
       for (const prod of productosAAgregar) {
-        lastCart = await addProductToCart(prod._id || prod.id, 1)
+        lastCart = await addProductToCart(prod._id || prod.id, 1, prod)
       }
       if (lastCart?._id || lastCart?.id) {
         navigate(`/carrito/${lastCart._id || lastCart.id}`)

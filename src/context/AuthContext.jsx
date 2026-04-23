@@ -56,6 +56,45 @@ export const AuthProvider = ({ children }) => {
     const token = user?.token || Cookies.get(TOKEN_KEY);
     return token ? { Authorization: `Bearer ${token}` } : {};
   };
+
+  const register = async (userData) => {
+    try {
+      // 1️⃣ Crear usuario
+      const { data } = await axiosInstance.post("/api/user/registro", userData);
+
+      const token = data?.token;
+      if (!token) throw new Error("No token recibido");
+
+      // 2️⃣ Logear automáticamente
+      await login(data);
+
+      // 3️⃣ 🔥 Traer carrito guest
+      const guestCart = JSON.parse(localStorage.getItem("guest_cart"));
+
+      if (guestCart?.products?.length) {
+        // 4️⃣ 🔥 Enviarlo al backend
+        const { data: updatedCart } = await axiosInstance.post(
+          "/api/cart/me/assign-guest",
+          {
+            products: guestCart.products,
+          },
+        );
+
+        localStorage.removeItem("guest_cart");
+
+        // 🔥 ACTUALIZAR STATE
+        setUser((prev) => ({
+          ...prev,
+          cart: updatedCart.products,
+        }));
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Register error:", error);
+      throw error;
+    }
+  };
   // 🔹 LOGIN (limpia sesión anterior sí o sí)
   const login = async (userData) => {
     const token = userData?.token;
@@ -139,7 +178,6 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
-
   const refreshUser = async () => {
     if (!user?.id) return;
 
@@ -174,6 +212,7 @@ export const AuthProvider = ({ children }) => {
         user,
         isAuthenticated: Boolean(user),
         login,
+        register,
         loading,
         logOut,
         getProfile,

@@ -1,9 +1,9 @@
 /* CONTENEDOR GENERAL */
 .navbar-container {
   width: 100%;
+  padding: 20px 300px 0px 300px;
   background: #111;
   color: white;
-  position: relative;
   z-index: 1000;
   position: fixed;
 }
@@ -60,7 +60,7 @@
   color: #ccc;
 }
 .input-search-container {
-  width: 30%;
+  width: 50%;
 }
 .input-search {
   padding: 10px;
@@ -76,15 +76,15 @@
 /* DROPDOWN */
 .products-dropdown {
   position: absolute;
-  top: 100%;
+  top: 30px;
   left: 0;
   background: #222;
   padding: 15px;
-  min-width: 200px;
+  width: 50dvw;
   border-radius: 8px;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-direction: row;
+  gap: 40px;
 }
 
 .products-dropdown a {

@@ -23,6 +23,7 @@ const NavBar = () => {
   const [results, setResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
+  console.log("CART", cart);
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
@@ -175,9 +176,15 @@ const NavBar = () => {
                     className="probando-drop"
                   >
                     <div className="dropdown-navbar-container">
-                     <img className="img-navbar-dropwdown" src={getImageUrl(product.imagen?.[0])} alt={product.item} />
-                     <span className="nombre-prod-navbar">{product.item}</span>
-                     <span className="precio-prod-navbar">$ {product.precio}</span>
+                      <img
+                        className="img-navbar-dropwdown"
+                        src={getImageUrl(product.imagen?.[0])}
+                        alt={product.item}
+                      />
+                      <span className="nombre-prod-navbar">{product.item}</span>
+                      <span className="precio-prod-navbar">
+                        $ {product.precio}
+                      </span>
                     </div>
                   </li>
                 ))}

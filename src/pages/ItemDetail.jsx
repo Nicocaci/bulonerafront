@@ -54,7 +54,7 @@ const ItemDetail = () => {
 
   const handleAddToCart = (productId) => {
     const quantity = 1;
-    addProductToCart(productId, quantity);
+    addProductToCart(productId, quantity, producto);
     Swal.fire({
       icon: 'success',
       title: 'Producto agregado al carrito',

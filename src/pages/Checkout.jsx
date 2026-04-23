@@ -208,7 +208,7 @@ const Checkout = () => {
 
             // Vaciar el carrito después de una compra exitosa
             try {
-                await clearCart(cartId);
+                await clearCart();
             } catch (clearError) {
                 console.error('Error al vaciar el carrito:', clearError);
                 // No bloqueamos el flujo si falla el clearCart, solo lo registramos

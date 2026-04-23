@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect,useRef, useState } from "react";
 import axiosInstance from "../../utils/axiosConfig.js";
 import { Link } from "react-router-dom";
 
@@ -6,6 +6,7 @@ const ProductsDropdown = ({ closeMenu }) => {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState({});
   const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,14 +41,27 @@ const ProductsDropdown = ({ closeMenu }) => {
 
     fetchData();
   }, []);
+  useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setOpen(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
 
   return (
     <li
       className="navbar-item-with-dropdown"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onClick={() => setOpen(true)}
+      ref={dropdownRef}
     >
-      <Link to="/productos">Productos</Link>
+      <Link>Categorias</Link>
 
       {open && (
         <div className="products-dropdown">

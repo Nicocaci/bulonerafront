@@ -12,21 +12,18 @@ const NavbarActions = ({
 
   return (
     <div className="navbar-actions">
-
       <button onClick={onUserClick}>👤</button>
 
       <div>
-        <button onClick={() => setShowCart(prev => !prev)}>
+        <button onClick={() => setShowCart((prev) => !prev)}>
           <FaShoppingCart />
           {cartItemsCount > 0 && <span>{cartItemsCount}</span>}
         </button>
 
-        {showCart && <CartDropdown onClose={() => setShowCart(false)} />}
+        <CartDropdown isOpen={showCart} onClose={() => setShowCart(false)} />
       </div>
 
-      {isAuthenticated && (
-        <button onClick={logOut}>🚪</button>
-      )}
+      {isAuthenticated && <button onClick={logOut}>🚪</button>}
     </div>
   );
 };

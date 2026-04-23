@@ -3,6 +3,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { AuthContext } from "./AuthContext.jsx";
@@ -22,60 +23,37 @@ export const useCart = () => {
 
 export const CartProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
-  const [cart, setCart] = useState(null);
-  const [loading, setLoading] = useState(false);
+
+  // 🔥 nunca null → evita bugs visuales
+  const [cart, setCart] = useState({ products: [] });
   const [error, setError] = useState(null);
 
   // =============================
   // 🟡 LOCAL CART
   // =============================
 
-  const getLocalCart = () => {
+  const getLocalCart = useCallback(() => {
     const stored = localStorage.getItem(LOCAL_CART_KEY);
     return stored ? JSON.parse(stored) : { products: [] };
-  };
+  }, []);
 
-  const saveLocalCart = (cartData) => {
+  const saveLocalCart = useCallback((cartData) => {
     localStorage.setItem(LOCAL_CART_KEY, JSON.stringify(cartData));
     setCart(cartData);
-  };
+  }, []);
 
-  const removeFromLocalCart = (productId) => {
-    const guestCart = getLocalCart();
-    guestCart.products = guestCart.products.filter((p) => p._id !== productId);
-    saveLocalCart(guestCart);
-    return guestCart;
-  };
-
-  const updateLocalQuantity = (productId, quantity) => {
-    const guestCart = getLocalCart();
-
-    if (quantity === 0) {
-      return removeFromLocalCart(productId);
-    }
-
-    guestCart.products = guestCart.products.map((p) =>
-      p._id === productId ? { ...p, quantity } : p,
-    );
-
-    saveLocalCart(guestCart);
-    return guestCart;
-  };
-
-  const clearLocalCart = () => {
+  const clearLocalCart = useCallback(() => {
     const empty = { products: [] };
     localStorage.setItem(LOCAL_CART_KEY, JSON.stringify(empty));
     setCart(empty);
     return empty;
-  };
+  }, []);
 
   // =============================
   // 🟢 REQUEST HELPER
   // =============================
 
   const request = useCallback(async (method, url, body) => {
-    setLoading(true);
-    setError(null);
     try {
       const res = await axiosInstance({
         method,
@@ -88,8 +66,6 @@ export const CartProvider = ({ children }) => {
         err.response?.data?.message || err.message || "Error en carrito";
       setError(message);
       throw new Error(message);
-    } finally {
-      setLoading(false);
     }
   }, []);
 
@@ -98,16 +74,36 @@ export const CartProvider = ({ children }) => {
   // =============================
 
   const getCart = useCallback(async () => {
-    if (!user?.token) {
-      const guest = getLocalCart();
-      setCart(guest);
-      return guest;
-    }
+    try {
+      // 👤 Invitado
+      if (!user?.token) {
+        const guest = getLocalCart();
+        setCart(guest);
+        return guest;
+      }
 
-    const data = await request("GET", "/api/carts/me");
-    setCart(data);
-    return data;
-  }, [user, request]);
+      // 🟢 Logeado
+      const data = await request("GET", "/api/cart/me");
+      setCart(data);
+      return data;
+    } catch (err) {
+      console.error("getCart error:", err);
+    }
+  }, [user?.token, getLocalCart, request]);
+
+  // =============================
+  // 🟢 GET CART BY ID
+  // =============================
+
+  const getCartById = useCallback(async (cartId) => {
+    try {
+      const data = await request("GET", `/api/cart/${cartId}`);
+      return data;
+    } catch (err) {
+      console.error("getCartById error:", err);
+      throw err;
+    }
+  }, [request]);
 
   // =============================
   // 🟢 ADD PRODUCT
@@ -115,7 +111,7 @@ export const CartProvider = ({ children }) => {
 
   const addProductToCart = useCallback(
     async (productId, quantity = 1, productData = null) => {
-      if (!productId) throw new Error("productId es requerido");
+      if (!productId) throw new Error("productId requerido");
 
       // 👤 Invitado
       if (!user?.token) {
@@ -124,6 +120,9 @@ export const CartProvider = ({ children }) => {
 
         if (existing) {
           existing.quantity += quantity;
+          if (!existing.product && productData) {
+            existing.product = productData;
+          }
         } else {
           guestCart.products.push({
             _id: productId,
@@ -139,14 +138,14 @@ export const CartProvider = ({ children }) => {
       // 🟢 Logeado
       const updated = await request(
         "POST",
-        `/api/carts/me/products/${productId}`,
-        { quantity },
+        `/api/cart/me/products/${productId}`,
+        { quantity }
       );
 
       setCart(updated);
       return updated;
     },
-    [user, request],
+    [user?.token, getLocalCart, saveLocalCart, request]
   );
 
   // =============================
@@ -154,22 +153,29 @@ export const CartProvider = ({ children }) => {
   // =============================
 
   const removeProductFromCart = useCallback(
-    async (cartId, productId) => {
-      if (!productId) throw new Error("productId es requerido");
+    async (productId) => {
+      if (!productId) return;
 
+      // 👤 Invitado
       if (!user?.token) {
-        return removeFromLocalCart(productId);
+        const guestCart = getLocalCart();
+        guestCart.products = guestCart.products.filter(
+          (p) => p._id !== productId
+        );
+        saveLocalCart(guestCart);
+        return guestCart;
       }
 
+      // 🟢 Logeado
       const updated = await request(
         "DELETE",
-        `/api/carts/me/products/${productId}`,
+        `/api/cart/me/products/${productId}`
       );
 
       setCart(updated);
       return updated;
     },
-    [user, request],
+    [user?.token, getLocalCart, saveLocalCart, request]
   );
 
   // =============================
@@ -178,56 +184,77 @@ export const CartProvider = ({ children }) => {
 
   const updateProductQuantity = useCallback(
     async (productId, quantity) => {
-      if (!productId) throw new Error("productId es requerido");
+      if (!productId) return;
 
+      // 👤 Invitado
       if (!user?.token) {
-        return updateLocalQuantity(productId, quantity);
+        const guestCart = getLocalCart();
+
+        if (quantity <= 0) {
+          return removeProductFromCart(productId);
+        }
+
+        const updated = guestCart.products.map((p) =>
+          p._id === productId ? { ...p, quantity } : p
+        );
+
+        const newCart = { ...guestCart, products: updated };
+        saveLocalCart(newCart);
+        return newCart;
       }
 
-      if (quantity === 0) {
-        return removeProductFromCart(null, productId);
+      // 🟢 Logeado
+
+      if (quantity <= 0) {
+        return removeProductFromCart(productId);
       }
 
-      // 1️⃣ Actualización optimista (fluido inmediato)
+      const prevCart = cart;
+
+      // ⚡ Optimistic UI
       setCart((prev) => ({
         ...prev,
         products: prev.products.map((item) => {
           const id =
-            typeof item.product === "string" ? item.product : item.product?._id;
+            typeof item.product === "string"
+              ? item.product
+              : item.product?._id;
 
-          if (id === productId) {
-            return { ...item, quantity };
-          }
-
-          return item;
+          return id === productId
+            ? { ...item, quantity }
+            : item;
         }),
       }));
 
-      // 2️⃣ Sync con backend
-      await request("PUT", `/api/carts/me/products/${productId}`, { quantity });
+      try {
+        await request(
+          "PUT",
+          `/api/cart/me/products/${productId}`,
+          { quantity }
+        );
+      } catch (err) {
+        setCart(prevCart); // rollback
+      }
     },
-    [user, request, removeProductFromCart, updateLocalQuantity],
+    [user?.token, cart, getLocalCart, saveLocalCart, removeProductFromCart, request]
   );
 
   // =============================
   // 🟢 CLEAR CART
   // =============================
 
-  const clearCart = useCallback(
-    async (cartId) => {
-      if (!user?.token) {
-        return clearLocalCart();
-      }
+  const clearCart = useCallback(async () => {
+    if (!user?.token) {
+      return clearLocalCart();
+    }
 
-      const updated = await request("DELETE", "/api/carts/me");
-      setCart(updated);
-      return updated;
-    },
-    [user, request],
-  );
+    const updated = await request("DELETE", "/api/cart/me");
+    setCart(updated);
+    return updated;
+  }, [user?.token, clearLocalCart, request]);
 
   // =============================
-  // 🔥 MERGE GUEST → BACKEND
+  // 🔥 SYNC GUEST → BACKEND
   // =============================
 
   const syncGuestCartWithBackend = useCallback(async () => {
@@ -236,53 +263,75 @@ export const CartProvider = ({ children }) => {
     const guestCart = getLocalCart();
     if (!guestCart.products.length) return;
 
-    for (const product of guestCart.products) {
-      await request("POST", `/api/carts/me/products/${product._id}`, {
-        quantity: product.quantity,
-      });
+    try {
+      await Promise.all(
+        guestCart.products.map((p) =>
+          request("POST", `/api/cart/me/products/${p._id}`, {
+            quantity: p.quantity,
+          })
+        )
+      );
+
+      localStorage.removeItem(LOCAL_CART_KEY);
+    } catch (err) {
+      console.error("sync error:", err);
     }
-
-    localStorage.removeItem(LOCAL_CART_KEY);
-  }, [user, request]);
+  }, [user?.token, getLocalCart, request]);
 
   // =============================
-  // 🚀 INIT
+  // 🚀 INIT CORRECTO
   // =============================
 
+  // 🔹 SIEMPRE cargar carrito
   useEffect(() => {
-    const initialize = async () => {
-      try {
-        if (user?.token) {
-          await syncGuestCartWithBackend();
-        }
-        await getCart();
-      } catch (err) {
-        console.error("Error inicializando carrito:", err);
-      }
-    };
+    getCart();
+  }, []);
 
-    initialize();
-  }, [user?.token]);
+  // 🔹 Recargar carrito cuando cambia el estado de autenticación
+  useEffect(() => {
+    if (localStorage.getItem('justRegistered')) {
+      syncGuestCartWithBackend().then(() => {
+        localStorage.removeItem('justRegistered');
+        getCart();
+      });
+    } else {
+      getCart();
+    }
+  }, [user?.token, getCart, syncGuestCartWithBackend]);
 
-  return (
-    <CartContext.Provider
-      value={{
-        cart,
-        loading,
-        error,
-        createCart: null,
-        getCart,
-        getCartById: null,
-        addProductToCart,
-        removeProductFromCart,
-        updateProductQuantity,
-        updateCart: null,
-        deleteCart: null,
-        clearCart,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
+  // // 🔹 Cuando aparece user → sync + reload
+  // useEffect(() => {
+  //   if (user?.token) {
+  //     syncGuestCartWithBackend().then(getCart);
+  //   }
+  // }, [user?.token, syncGuestCartWithBackend, getCart]);
+
+  // =============================
+  // 🧠 MEMO
+  // =============================
+
+  const value = useMemo(
+    () => ({
+      cart,
+      error,
+      getCart,
+      getCartById,
+      addProductToCart,
+      removeProductFromCart,
+      updateProductQuantity,
+      clearCart,
+    }),
+    [
+      cart,
+      error,
+      getCart,
+      getCartById,
+      addProductToCart,
+      removeProductFromCart,
+      updateProductQuantity,
+      clearCart,
+    ]
   );
-};
 
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+};
