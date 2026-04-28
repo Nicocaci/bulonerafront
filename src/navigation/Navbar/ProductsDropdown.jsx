@@ -61,7 +61,7 @@ const ProductsDropdown = ({ closeMenu }) => {
       onClick={() => setOpen(true)}
       ref={dropdownRef}
     >
-      <Link>Categorias</Link>
+      <Link>Productos</Link>
 
       {open && (
         <div className="products-dropdown">

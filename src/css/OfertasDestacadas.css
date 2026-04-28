@@ -51,6 +51,8 @@
 .ofertas-footer {
   margin-top: 15px;
   text-align: right;
+  width: 80%;
+  margin: auto;
 }
 
 .ver-todas-link {

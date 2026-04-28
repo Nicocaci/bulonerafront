@@ -95,9 +95,9 @@ export const CartProvider = ({ children }) => {
   // 🟢 GET CART BY ID
   // =============================
 
-  const getCartById = useCallback(async (cartId) => {
+  const getCartById = useCallback(async () => {
     try {
-      const data = await request("GET", `/api/cart/${cartId}`);
+      const data = await request("GET", `/api/cart/me`);
       return data;
     } catch (err) {
       console.error("getCartById error:", err);

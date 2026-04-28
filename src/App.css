@@ -1,3 +1,4 @@
+
 .center {
   display: flex;
   justify-content: center;
@@ -27,4 +28,9 @@ html, body, #root {
 
 main {
   flex: 1; /* Empuja el footer al fondo */
+}
+@media (max-width: 768px) {
+  body {
+    padding-top: 180px;
+  }
 }

@@ -145,3 +145,17 @@
     font-weight: bold;
     color: #000000;
 }
+.back-cart {
+    font-size: 26px;
+    color: #000000;
+    cursor: pointer;
+}
+.back-cart:hover {
+    color: #555555;
+    transform: translateX(-5px);
+}
+@media (max-width: 768px) {
+    .cart-dropdown {
+        width: 80%;
+    }
+}

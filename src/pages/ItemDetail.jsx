@@ -121,7 +121,7 @@ const ItemDetail = () => {
           </div>
           <div className='item-grid-2'>
             <div className='item-grid-2-content'>
-              <h1>{producto.item}</h1>
+              <h1 className='titulo-detail'>{producto.item}</h1>
               <div className='item-grid-2-content-sku'>
               <strong>Modelo:</strong><p className='item-grid-2-content-sku-value'>{producto.sku}</p>
               </div>

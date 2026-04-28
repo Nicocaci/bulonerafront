@@ -23,8 +23,8 @@ const NavBar = () => {
   const [results, setResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
-  console.log("CART", cart);
-
+  const [hasSearched, setHasSearched] = useState(false);
+  const menuRef = useRef(null);
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
   const handleUserClick = () => {
@@ -39,6 +39,7 @@ const NavBar = () => {
     if (!searchInput.trim()) {
       setResults([]);
       setShowDropdown(false);
+      setHasSearched(false);
       return;
     }
 
@@ -48,6 +49,7 @@ const NavBar = () => {
       try {
         setLoading(true);
         setShowDropdown(true);
+        setHasSearched(true);
 
         const response = await axiosInstance.get("/api/products", {
           signal: controller.signal,
@@ -76,18 +78,22 @@ const NavBar = () => {
     };
   }, [searchInput]);
 
-  // CERRAR AL CLICKEAR FUERA
+  // CERRAR AL CLICKEAR FUERA DEL MENÚ
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowDropdown(false);
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
 
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -105,18 +111,98 @@ const NavBar = () => {
     <div className="navbar-container">
       {/* TOP */}
       <div className="navbar-top">
-        <Link to="/">
-          <img className="logo-navbar" src="/logo-completo.png" alt="logo" />
-        </Link>
+        <div className="div-navbar-1">
+          <Link to="/">
+            <img
+              className="logo-navbar"
+              src="/logo_bulonera_completo.jpg"
+              alt="logo"
+            />
+          </Link>
+        </div>
+        <div className="div-navbar">
+          <form
+            ref={searchRef}
+            className="input-search-container"
+            onSubmit={handleSearchSubmit}
+          >
+            <input
+              placeholder="🔎 Buscar productos..."
+              type="search"
+              className="input-search"
+              value={searchInput}
+              onChange={(e) => {
+                setSearchInput(e.target.value);
+                if (e.target.value.trim()) {
+                  setShowDropdown(true);
+                }
+              }}
+              onFocus={() => {
+                if (searchInput.trim()) {
+                  setShowDropdown(true);
+                }
+              }}
+            />
 
-        <button className="hamburger-btn" onClick={toggleMenu}>
-          {"\u2630"}
-        </button>
+            {showDropdown && searchInput.trim() && (
+              <ul className="search-dropdown">
+                {loading && <li style={{ color: "#000000" }}>Cargando...</li>}
+
+                {!loading && hasSearched && results.length === 0 && (
+                  <li style={{ color: "#000000" }}>
+                    No se encontraron productos
+                  </li>
+                )}
+
+                {!loading &&
+                  results.map((product) => (
+                    <li
+                      key={product._id}
+                      onClick={(e) => {
+                        e.stopPropagation(); // evita que se cierre antes
+                        setSearchInput(product.item || "");
+                        setShowDropdown(false);
+                        navigate(`/producto/${product._id}`);
+                      }}
+                      className="probando-drop"
+                    >
+                      <div className="dropdown-navbar-container">
+                        <img
+                          className="img-navbar-dropwdown"
+                          src={getImageUrl(product.imagen?.[0])}
+                          alt={product.item}
+                        />
+                        <p className="nombre-prod-navbar">{product.item}</p>
+                        <span className="precio-prod-navbar">
+                          $ {product.precio}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+              </ul>
+            )}
+          </form>
+        </div>
+        <div className="div-navbar-2">
+          <NavbarActions
+            isAuthenticated={isAuthenticated}
+            logOut={logOut}
+            onUserClick={handleUserClick}
+            cartItemsCount={cartItemsCount}
+          />
+          {showAuthModal && (
+            <AuthModal onClose={() => setShowAuthModal(false)} />
+          )}
+          <button className="hamburger-btn" onClick={toggleMenu}>
+            {isMenuOpen ? "\u2715" : "\u2630"}
+          </button>
+        </div>
       </div>
 
       {/* MENU */}
-      <div className={`navbar-menu ${isMenuOpen ? "open" : ""}`}>
+      <div className={`navbar-menu ${isMenuOpen ? "open" : ""}`} ref={menuRef}>
         <ul className="li-navbar">
+          
           <ProductsDropdown closeMenu={() => setIsMenuOpen(false)} />
 
           <li>
@@ -130,77 +216,13 @@ const NavBar = () => {
               Nosotros
             </Link>
           </li>
+          <li>
+            <Link to="/ofertas-destacadas" onClick={() => setIsMenuOpen(false)}>
+              Ofertas
+            </Link>
+          </li>
         </ul>
-
-        <form
-          ref={searchRef}
-          className="input-search-container"
-          onSubmit={handleSearchSubmit}
-        >
-          <input
-            placeholder="🔎 Buscar productos..."
-            type="search"
-            className="input-search"
-            value={searchInput}
-            onChange={(e) => {
-              setSearchInput(e.target.value);
-              if (e.target.value.trim()) {
-                setShowDropdown(true);
-              }
-            }}
-            onFocus={() => {
-              if (searchInput.trim()) {
-                setShowDropdown(true);
-              }
-            }}
-          />
-
-          {showDropdown && searchInput.trim() && (
-            <ul className="search-dropdown">
-              {loading && <li>Cargando...</li>}
-
-              {!loading && results.length === 0 && (
-                <li>No se encontraron productos</li>
-              )}
-
-              {!loading &&
-                results.map((product) => (
-                  <li
-                    key={product._id}
-                    onClick={(e) => {
-                      e.stopPropagation(); // evita que se cierre antes
-                      setSearchInput(product.item || "");
-                      setShowDropdown(false);
-                      navigate(`/producto/${product._id}`);
-                    }}
-                    className="probando-drop"
-                  >
-                    <div className="dropdown-navbar-container">
-                      <img
-                        className="img-navbar-dropwdown"
-                        src={getImageUrl(product.imagen?.[0])}
-                        alt={product.item}
-                      />
-                      <span className="nombre-prod-navbar">{product.item}</span>
-                      <span className="precio-prod-navbar">
-                        $ {product.precio}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-            </ul>
-          )}
-        </form>
-
-        <NavbarActions
-          isAuthenticated={isAuthenticated}
-          logOut={logOut}
-          onUserClick={handleUserClick}
-          cartItemsCount={cartItemsCount}
-        />
       </div>
-
-      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </div>
   );
 };

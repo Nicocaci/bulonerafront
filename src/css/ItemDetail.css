@@ -92,7 +92,6 @@
 .item-grid-2-content-description {
     display: flex;
     flex-direction: column;
-    gap: 10px;
     background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;    
@@ -123,4 +122,36 @@
     transition: all 0.3s ease;
     border: none;
     margin-top: 10px;
+}
+
+/* 📱 MOBILE */
+@media (max-width: 768px) {
+    .item-detail-container {
+        width: 90%;
+        padding: 10px;
+    }
+
+    .item-detail-grid {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .item-grid-1 {
+        order: 2;
+        width: 80%;
+        margin: auto;
+    }
+    .img-item-detail {
+        width: 100%;
+    }
+
+    .item-grid-2 {
+        order: 1;
+    }
+    .item-page {
+        padding-top: 80px;
+    }
+    .titulo-detail {
+        font-size: 20px;
+    }
 }

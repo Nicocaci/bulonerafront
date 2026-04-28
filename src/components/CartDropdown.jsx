@@ -40,11 +40,11 @@ const CartDropdown = ({ onClose, isOpen }) => {
 
   return (
     <div className={`cart-dropdown ${isOpen ? "open" : ""}`} ref={dropdownRef}>
+      <div>
+        <p className="back-cart" onClick={onClose}>➡</p>
+      </div>
       <div className="cart-dropdown-header">
         <p>Mi carrito</p>
-        <button className="cart-dropdown-close" onClick={onClose}>
-          ×
-        </button>
       </div>
 
       {products.length === 0 ? (
