@@ -45,7 +45,7 @@ const Home = () => {
               </div>
             </Link>
 
-            <Link className="link-home" to="/productos?categoria=herramientas">
+            <Link className="link-home" to="/productos?categoria=Herramientas">
               <div className="grid">
                 <img
                   className="img-herramientas"

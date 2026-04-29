@@ -44,12 +44,14 @@ const ProductsPage = () => {
         }}
       />
 
+      <div className="users-table-container">
       <ProductTable
         productos={data?.products || []}
         isLoading={isLoading}
         onEdit={setEditingProduct}
         refetch={refetch}
       />
+      </div>
 
       <Pagination
         currentPage={currentPage}

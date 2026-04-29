@@ -14,7 +14,11 @@ const initialState = {
   iva: 0,
   stock: 0,
   estado: "activo",
-  oferta: false,
+  oferta: {
+    activa: false,
+    descuento: 0,
+    vence: "",
+  },
 };
 
 const ProductForm = ({ editingProduct, setEditingProduct, refetch }) => {
@@ -27,6 +31,14 @@ const ProductForm = ({ editingProduct, setEditingProduct, refetch }) => {
         ...initialState,
         ...editingProduct,
         imagen: [],
+        oferta: {
+          activa: editingProduct.oferta?.activa ?? false,
+          descuento: editingProduct.oferta?.descuento ?? 0,
+          // Convertir fecha ISO a formato YYYY-MM-DD para el input date
+          vence: editingProduct.oferta?.vence
+            ? new Date(editingProduct.oferta.vence).toISOString().split("T")[0]
+            : "",
+        },
       });
     }
   }, [editingProduct]);
@@ -49,6 +61,26 @@ const ProductForm = ({ editingProduct, setEditingProduct, refetch }) => {
     }));
   };
 
+  // Handler específico para los campos anidados de oferta
+  const handleOfertaChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
+    setForm((prev) => ({
+      ...prev,
+      oferta: {
+        ...prev.oferta,
+        [name]:
+          type === "checkbox"
+            ? checked
+            : name === "descuento"
+              ? value === ""
+                ? 0
+                : parseFloat(value)
+              : value,
+      },
+    }));
+  };
+
   const handleImage = (e) => {
     setForm((prev) => ({
       ...prev,
@@ -64,7 +96,11 @@ const ProductForm = ({ editingProduct, setEditingProduct, refetch }) => {
       const formData = new FormData();
 
       Object.entries(form).forEach(([key, value]) => {
-        if (key !== "imagen") {
+        if (key === "imagen") return;
+        // Serializar el objeto oferta como JSON string
+        if (key === "oferta") {
+          formData.append(key, JSON.stringify(value));
+        } else {
           formData.append(key, value ?? "");
         }
       });
@@ -72,11 +108,6 @@ const ProductForm = ({ editingProduct, setEditingProduct, refetch }) => {
       form.imagen.forEach((file) => {
         formData.append("imagen", file);
       });
-
-      // DEBUG
-      for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
 
       if (editingProduct?._id) {
         await axiosInstance.put(
@@ -124,6 +155,7 @@ const ProductForm = ({ editingProduct, setEditingProduct, refetch }) => {
           />
         </div>
       </div>
+
       <label htmlFor="imagen">Imágenes:</label>
       <input
         id="imagen"
@@ -132,12 +164,8 @@ const ProductForm = ({ editingProduct, setEditingProduct, refetch }) => {
         multiple
         onChange={handleImage}
       />
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gap: "14px",
-        }}
+
+      <div className="form-grid"
       >
         <input
           name="marca"
@@ -158,12 +186,14 @@ const ProductForm = ({ editingProduct, setEditingProduct, refetch }) => {
           placeholder="Subcategoría"
         />
       </div>
+
       <label htmlFor="descripcion">Descripción:</label>
       <textarea
         name="descripcion"
         value={form.descripcion}
         onChange={handleChange}
       />
+
       <div className="flex-form">
         <div className="column-form">
           <label htmlFor="precio">Precio:</label>
@@ -188,15 +218,51 @@ const ProductForm = ({ editingProduct, setEditingProduct, refetch }) => {
           />
         </div>
       </div>
-      <label>
-        Oferta Destacada
-        <input
-          type="checkbox"
-          name="oferta"
-          checked={form.oferta}
-          onChange={handleChange}
-        />
-      </label>
+
+      {/* ── Sección Oferta ── */}
+      <fieldset style={{ marginTop: "12px", padding: "12px", borderRadius: "6px" }}>
+        <legend>Oferta</legend>
+
+        <label>
+          <input
+            type="checkbox"
+            name="activa"
+            checked={form.oferta.activa}
+            onChange={handleOfertaChange}
+          />
+          {" "}Activar oferta
+        </label>
+
+        {/* Solo mostrar descuento y fecha si la oferta está activa */}
+        {form.oferta.activa && (
+          <div className="flex-form" style={{ marginTop: "10px" }}>
+            <div className="column-form">
+              <label htmlFor="descuento">Descuento (%):</label>
+              <input
+                id="descuento"
+                name="descuento"
+                type="number"
+                min="0"
+                max="100"
+                value={form.oferta.descuento}
+                onChange={handleOfertaChange}
+                placeholder="0"
+              />
+            </div>
+            <div className="column-form">
+              <label htmlFor="vence">Vence:</label>
+              <input
+                id="vence"
+                name="vence"
+                type="date"
+                value={form.oferta.vence}
+                onChange={handleOfertaChange}
+              />
+            </div>
+          </div>
+        )}
+      </fieldset>
+
       <button disabled={submitting}>
         {editingProduct ? "Actualizar" : "Crear"}
       </button>
