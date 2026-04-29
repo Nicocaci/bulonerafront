@@ -8,7 +8,6 @@ import { FcSettings, FcShipped } from "react-icons/fc";
 import ImageCarousel from "../utils/ImageCarousel.jsx";
 import OfertasDestacadas from "../components/OfertasDestacadas.jsx";
 
-
 const Home = () => {
   return (
     <div>
@@ -24,60 +23,89 @@ const Home = () => {
         <div className="container-herramientas">
           <p className="titulo-herramientas">CATEGORÍA DE HERRAMIENTAS</p>
           <div className="grid-herramientas">
-            <Link className="link-home" to="/productos?categoria=manuales">
+            <Link className="link-home" to="/productos?categoria=buloneria">
               <div className="grid">
                 <img
                   className="img-herramientas"
-                  src="/manuales.png"
-                  alt="herramientas"
+                  src="/fondo-buloneria.png"
+                  alt="Bulonería"
                 />
-                <p className="descripcion-herramientas">MANUALES</p>
+                <p className="descripcion-herramientas">BULONERÍA</p>
               </div>
             </Link>
 
-            <Link className="link-home" to="/productos?categoria=motorizadas">
+            <Link className="link-home" to="/productos?categoria=fijaciones">
               <div className="grid">
                 <img
                   className="img-herramientas"
-                  src="/motorizadas.png"
-                  alt="herramientas motorizadas"
+                  src="/fondo-fijaciones.png"
+                  alt="Fijaciones"
                 />
-                <p className="descripcion-herramientas">MOTORIZADAS</p>
+                <p className="descripcion-herramientas">FIJACIONES</p>
               </div>
             </Link>
 
-            <Link className="link-home" to="/productos?categoria=insumos">
+            <Link className="link-home" to="/productos?categoria=herramientas">
               <div className="grid">
                 <img
                   className="img-herramientas"
-                  src="/insumos.png"
-                  alt="herramientas motorizadas"
+                  src="/fondo-herrameintas.png"
+                  alt="Herramientas"
                 />
-                <p className="descripcion-herramientas">INSUMOS</p>
+                <p className="descripcion-herramientas">HERRAMIENTAS</p>
               </div>
             </Link>
 
-            <Link className="link-home" to="/productos?categoria=motorizadas">
+            <Link className="link-home" to="/productos?categoria=seguridad-industrial">
               <div className="grid">
                 <img
                   className="img-herramientas"
-                  src="/seguridad.png"
-                  alt="herramientas motorizadas"
+                  src="/fondo-seguridad.png"
+                  alt="Seguridad Industrial"
                 />
                 <p className="descripcion-herramientas">SEGURIDAD INDUSTRIAL</p>
+              </div>
+            </Link>
+
+            <Link className="link-home" to="/productos?categoria=construccion">
+              <div className="grid">
+                <img
+                  className="img-herramientas"
+                  src="/fondo-construccion.png"
+                  alt="Construcción"
+                />
+                <p className="descripcion-herramientas">CONSTRUCCIÓN</p>
+              </div>
+            </Link>
+
+            <Link className="link-home" to="/productos?categoria=automotor">
+              <div className="grid">
+                <img
+                  className="img-herramientas"
+                  src="/fondo-automotor.png"
+                  alt="Automotor"
+                />
+                <p className="descripcion-herramientas">AUTOMOTOR</p>
+              </div>
+            </Link>
+
+            <Link className="link-home" to="/productos?categoria=kits">
+              <div className="grid">
+                <img
+                  className="img-herramientas"
+                  src="/fondo-kits.png"
+                  alt="Kits"
+
+                />
+                <p className="descripcion-herramientas">KITS</p>
               </div>
             </Link>
           </div>
         </div>
 
         <div className="container-caja-herramientas">
-            <OfertasDestacadas/>
+          <OfertasDestacadas />
         </div>
-        
-        {/* <div className="pd-container">
-          <ProductosDestacados />
-        </div> */}
-
       </div>
     </div>
   );
