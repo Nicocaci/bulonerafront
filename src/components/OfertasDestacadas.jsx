@@ -4,13 +4,14 @@ import "../css/OfertasDestacadas.css";
 import { Link } from "react-router-dom";
 import { getImageUrl } from "../utils/imageUtils.js";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const OfertasDestacadas = () => {
-
+  const navigation = useNavigate();
   const {
     data: ofertas = [],
     isLoading,
-    isError
+    isError,
   } = useQuery({
     queryKey: ["ofertas"],
     queryFn: async () => {
@@ -19,6 +20,13 @@ const OfertasDestacadas = () => {
     },
     staleTime: 1000 * 60 * 5,
   });
+
+
+  const ahorro = (precioConIva, precioFinal) => {
+    const ahorro = precioConIva - precioFinal;
+    console.log(ahorro);
+    return ahorro.toLocaleString();
+  }
 
   if (isLoading) {
     return <div className="ofertas-loading">Cargando ofertas...</div>;
@@ -35,22 +43,42 @@ const OfertasDestacadas = () => {
       <div className="ofertas-container">
         <div className="ofertas-slider">
           {ofertas.map((oferta) => (
-            <Link
-              key={oferta._id}
-              to={`/productos/${oferta._id}`}
-              className="oferta-card"
-            >
+            <div key={oferta._id} className="oferta-card">
               <img
                 className="oferta-image"
                 src={getImageUrl(oferta.imagen?.[0])}
                 alt={oferta.item}
                 loading="lazy"
               />
-              <h3 className="oferta-title">{oferta.item}</h3>
-              <p className="oferta-price">
-                ${oferta.precio.toLocaleString()}
-              </p>
-            </Link>
+              <div className="titulo-oferta-container">
+                <p className="descuento">-{oferta.oferta.descuento}%</p>
+                <div className="titulo-oferta-container">
+                  <p className="oferta-title">{oferta.item}</p>
+                  <p className="oferta-description">
+                    {oferta.descripcion.split("\n")[0]}
+                  </p>
+                </div>
+                <p className="oferta-price-base">
+                  ${oferta.precioConIva.toLocaleString()}
+                </p>
+                <p className="oferta-price">
+                  ${oferta.precioFinal.toLocaleString()}
+                </p>
+                <p className="ahorro">
+                  Ahorrás ${ahorro(oferta.precioConIva, oferta.precioFinal)}
+                </p>
+              </div>
+              <div className="btn-container">
+                <button
+                  className="btn-ver-producto"
+                  onClick={() => {
+                    navigation(`/producto/${oferta._id}`);
+                  }}
+                >
+                  Ver producto
+                </button>
+              </div>
+            </div>
           ))}
         </div>
       </div>

@@ -1,6 +1,5 @@
 import React from "react";
 import "../css/Home.css";
-import ProductosDestacados from "../components/ProductosDestacados.jsx";
 import BrandSlider from "../utils/BrandSlider.jsx";
 import { Link } from "react-router-dom";
 import { FaToolbox, FaTools } from "react-icons/fa";

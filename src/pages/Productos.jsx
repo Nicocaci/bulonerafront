@@ -224,7 +224,7 @@ const Productos = () => {
                         <h3 className="producto-nombre">{p.item}</h3>
 
                         <div className="producto-precio-container">
-                          <span className="producto-precio">${p.precio}</span>
+                          <span className="producto-precio">${p.precioConIva}</span>
                           <span className="producto-iva">IVA incl.</span>
                         </div>
                       </div>

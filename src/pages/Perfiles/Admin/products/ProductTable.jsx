@@ -24,7 +24,6 @@ const ProductTable = ({ productos, isLoading, onEdit, refetch }) => {
   if (isLoading) return <p>Cargando...</p>;
 
   return (
-    
     <table>
       <thead>
         <tr>
@@ -46,8 +45,12 @@ const ProductTable = ({ productos, isLoading, onEdit, refetch }) => {
             <td>{p.item}</td>
             <td>{p.categoria}</td>
             <td>{p.subcategoria}</td>
-            <td>${p.precio}</td>
-            <td>{p.oferta ? "Sí" : "No"}</td>
+            <td>${p.precioConIva.toLocaleString()}</td>
+            <td>
+              {p.oferta?.activa
+                ? `${p.oferta.descuento}% ${p.oferta.vence ? `(vence: ${new Date(p.oferta.vence).toLocaleDateString("es-AR")})` : "(sin vencimiento)"}`
+                : "No"}
+            </td>
             <td>
               <button onClick={() => onEdit(p)}>Editar</button>
               <button onClick={() => handleDelete(p._id)}>Eliminar</button>

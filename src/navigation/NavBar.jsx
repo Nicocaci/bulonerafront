@@ -109,16 +109,33 @@ const NavBar = () => {
 
   return (
     <div className="navbar-container">
+      <div className="hamburger-container">
+        <div className="div-navbar-2 navbar-actions-mobile">
+          <NavbarActions
+            isAuthenticated={isAuthenticated}
+            logOut={logOut}
+            onUserClick={handleUserClick}
+            cartItemsCount={cartItemsCount}
+          />
+          {showAuthModal && (
+            <AuthModal onClose={() => setShowAuthModal(false)} />
+          )}
+        </div>
+        <button className="hamburger-btn" onClick={toggleMenu}>
+          {isMenuOpen ? "\u2715" : "\u2630"}
+        </button>
+      </div>
       {/* TOP */}
       <div className="navbar-top">
         <div className="div-navbar-1">
-          <Link to="/">
-            <img
-              className="logo-navbar"
-              src="/logo_bulonera_completo.jpg"
-              alt="logo"
-            />
-          </Link>
+          <img
+            className="logo-navbar"
+            src="/logo_bulonera_completo.jpg"
+            alt="logo"
+            onClick={() => {
+              window.location.href = "/";
+            }}
+          />
         </div>
         <div className="div-navbar">
           <form
@@ -183,7 +200,7 @@ const NavBar = () => {
             )}
           </form>
         </div>
-        <div className="div-navbar-2">
+        <div className="div-navbar-2 navbar-actions-desktop">
           <NavbarActions
             isAuthenticated={isAuthenticated}
             logOut={logOut}
@@ -193,16 +210,15 @@ const NavBar = () => {
           {showAuthModal && (
             <AuthModal onClose={() => setShowAuthModal(false)} />
           )}
-          <button className="hamburger-btn" onClick={toggleMenu}>
-            {isMenuOpen ? "\u2715" : "\u2630"}
-          </button>
         </div>
       </div>
 
       {/* MENU */}
       <div className={`navbar-menu ${isMenuOpen ? "open" : ""}`} ref={menuRef}>
+        <button className="close-btn" onClick={toggleMenu}>
+          X
+        </button>
         <ul className="li-navbar">
-          
           <ProductsDropdown closeMenu={() => setIsMenuOpen(false)} />
 
           <li>

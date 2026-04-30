@@ -135,7 +135,7 @@ const ItemDetail = () => {
             {descripcionFormateada.split('\n').map((linea, i) => (
               <p key={i}>{linea.trim()}</p>
             ))}
-            <p className='precio-item'>Precio: ${producto.precio}</p>
+            <p className='precio-item'>Precio: ${producto.precioConIva.toLocaleString()}</p>
             <div className='btn-item-container'>
               <button className='btn-item' onClick={() => handleAddToCart(producto._id)}>Agregar al carrito</button>
             </div>

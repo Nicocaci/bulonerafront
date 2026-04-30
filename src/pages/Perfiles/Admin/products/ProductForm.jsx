@@ -11,7 +11,7 @@ const initialState = {
   categoria: "",
   subcategoria: "",
   precio: "",
-  iva: 0,
+  iva: 21,
   stock: 0,
   estado: "activo",
   oferta: {

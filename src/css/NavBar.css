@@ -146,6 +146,9 @@
 }
 
 /* ACTIONS (carrito, user, logout) */
+
+.navbar-actions-mobile  { display: none; }
+.navbar-actions-desktop { display: flex; }
 .navbar-actions {
   display: flex;
   align-items: center;
@@ -205,6 +208,9 @@
 .search-dropdown li:hover {
   background-color: #acacac36;
 }
+.close-btn {
+  display: none;
+}
 
 /* ========================= */
 /* 📱 MOBILE */
@@ -234,12 +240,19 @@
   .logo-navbar {
     display: flex;
   }
-  .hamburger-btn {
+  .hamburger-container{
     display: flex;
     width: 100%;
     justify-content: flex-end;
   }
-
+  .hamburger-btn {
+    display: flex;
+  }
+  .hamburger-btn:focus {
+    outline: none;
+  }
+  .navbar-actions-mobile  { display: flex; }
+  .navbar-actions-desktop { display: none; }
   .navbar-menu {
     position: absolute;
     top: 0;
@@ -256,6 +269,15 @@
 
   .navbar-menu.open {
     display: flex;
+  }
+  .close-btn {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 30px;
   }
 
   .li-navbar {
