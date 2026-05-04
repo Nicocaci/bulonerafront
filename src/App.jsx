@@ -10,7 +10,6 @@ import CartDetail from "./pages/CartDetail.jsx";
 import Checkout from "./pages/Checkout.jsx";  
 import Gracias from "./pages/Gracias.jsx";
 import Nosotros from "./pages/Nosotros.jsx";
-import OfertasPage from "./pages/OfertasPage.jsx";
 import CajaHerramientas from "./pages/CajaHerramientas.jsx";
 import WpButton from "./components/WpButton.jsx";
 
@@ -40,7 +39,6 @@ function App() {
             <Routes>
               <Route exact path="/" element={<Home/>}/>
               <Route exact path="/productos" element={<Productos/>}/>
-              <Route exact path="/ofertas-destacadas" element={<OfertasPage/>}/>
               <Route exact path="/caja-herramientas" element={<CajaHerramientas/>}/>
               <Route exact path="/contacto" element={<Contacto/>}/>
               <Route exact path="/nosotros" element={<Nosotros/>}/>

@@ -22,7 +22,7 @@ const Home = () => {
         <div className="container-herramientas">
           <p className="titulo-herramientas">CATEGORÍA DE HERRAMIENTAS</p>
           <div className="grid-herramientas">
-            <Link className="link-home" to="/productos?categoria=buloneria">
+            <Link className="link-home" to="/productos?categoria=Buloneria">
               <div className="grid">
                 <img
                   className="img-herramientas"
@@ -33,7 +33,7 @@ const Home = () => {
               </div>
             </Link>
 
-            <Link className="link-home" to="/productos?categoria=fijaciones">
+            <Link className="link-home" to="/productos?categoria=Fijaciones">
               <div className="grid">
                 <img
                   className="img-herramientas"
@@ -55,7 +55,7 @@ const Home = () => {
               </div>
             </Link>
 
-            <Link className="link-home" to="/productos?categoria=seguridad-industrial">
+            <Link className="link-home" to="/productos?categoria=Seguridad-industrial">
               <div className="grid">
                 <img
                   className="img-herramientas"
@@ -66,7 +66,7 @@ const Home = () => {
               </div>
             </Link>
 
-            <Link className="link-home" to="/productos?categoria=construccion">
+            <Link className="link-home" to="/productos?categoria=Construccion">
               <div className="grid">
                 <img
                   className="img-herramientas"
@@ -77,7 +77,7 @@ const Home = () => {
               </div>
             </Link>
 
-            <Link className="link-home" to="/productos?categoria=automotor">
+            <Link className="link-home" to="/productos?categoria=Automotor">
               <div className="grid">
                 <img
                   className="img-herramientas"

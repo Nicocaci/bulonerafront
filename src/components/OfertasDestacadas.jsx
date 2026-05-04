@@ -84,7 +84,7 @@ const OfertasDestacadas = () => {
       </div>
 
       <div className="ofertas-footer">
-        <Link to="/productos?categoria=ofertas" className="ver-todas-link">
+        <Link to="/productos?ofertas=true" className="ver-todas-link">
           Ver todas las ofertas
         </Link>
       </div>

@@ -1,4 +1,4 @@
-import React, { useEffect,useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axiosInstance from "../../utils/axiosConfig.js";
 import { Link } from "react-router-dom";
 
@@ -17,23 +17,24 @@ const ProductsDropdown = ({ closeMenu }) => {
 
         const products = res.data?.products || [];
 
-        const cats = [...new Set(products.map(p => p.categoria).filter(Boolean))];
+        const cats = [
+          ...new Set(products.map((p) => p.categoria).filter(Boolean)),
+        ];
 
         const grouped = {};
-        products.forEach(p => {
+        products.forEach((p) => {
           if (!p.categoria) return;
           if (!grouped[p.categoria]) grouped[p.categoria] = new Set();
           if (p.subcategoria) grouped[p.categoria].add(p.subcategoria);
         });
 
         const formatted = {};
-        Object.keys(grouped).forEach(cat => {
+        Object.keys(grouped).forEach((cat) => {
           formatted[cat] = Array.from(grouped[cat]);
         });
 
         setCategories(cats);
         setSubcategories(formatted);
-
       } catch (err) {
         console.error(err);
       }
@@ -42,49 +43,60 @@ const ProductsDropdown = ({ closeMenu }) => {
     fetchData();
   }, []);
   useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setOpen(false);
-    }
-  };
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
 
-  document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
 
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleLinkClick = (e) => {
+    e.stopPropagation(); // evita que el click llegue al <li>
+    setOpen(false);
+    closeMenu?.(); // el ?. protege si closeMenu no se pasa como prop
   };
-}, []);
 
   return (
     <li
       className="navbar-item-with-dropdown"
-      onClick={() => setOpen(true)}
+      onClick={() => setOpen((prev) => !prev)} // toggle
       ref={dropdownRef}
     >
-      <Link>Productos</Link>
+      <Link>Categorías</Link>
 
       {open && (
         <div className="products-dropdown">
-          {categories.map(cat => (
-            <div key={cat}>
+          {categories.map((cat) => (
+            <div className="li-products-dropdown" key={cat}>
               <Link
                 to={`/productos?categoria=${cat}`}
-                onClick={closeMenu}
+                onClick={handleLinkClick}
               >
                 {cat}
               </Link>
 
-              {subcategories[cat]?.map(sub => (
+              {subcategories[cat]?.map((sub) => (
                 <Link
                   key={sub}
                   to={`/productos?categoria=${cat}&subcategoria=${sub}`}
-                  onClick={closeMenu}
+                  onClick={handleLinkClick}
                 >
                   - {sub}
                 </Link>
               ))}
             </div>
           ))}
+          <div className="li-products-dropdown">
+            <Link to="/productos?todos=true" onClick={handleLinkClick}>
+              Ver todos los productos
+            </Link>
+          </div>
         </div>
       )}
     </li>

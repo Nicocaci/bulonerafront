@@ -121,6 +121,14 @@ const NavBar = () => {
             <AuthModal onClose={() => setShowAuthModal(false)} />
           )}
         </div>
+        <img
+          className="logo-navbar logo-navbar-mobile"
+          src="/logo_bulonera_completo.jpg"
+          alt="logo"
+          onClick={() => {
+            window.location.href = "/";
+          }}
+        />
         <button className="hamburger-btn" onClick={toggleMenu}>
           {isMenuOpen ? "\u2715" : "\u2630"}
         </button>
@@ -185,7 +193,7 @@ const NavBar = () => {
                     >
                       <div className="dropdown-navbar-container">
                         <img
-                          className="img-navbar-dropwdown"
+                          className="img-navbar-dropwdown  "
                           src={getImageUrl(product.imagen?.[0])}
                           alt={product.item}
                         />
@@ -233,7 +241,10 @@ const NavBar = () => {
             </Link>
           </li>
           <li>
-            <Link to="/ofertas-destacadas" onClick={() => setIsMenuOpen(false)}>
+            <Link
+              to="/productos?ofertas=true"
+              onClick={() => setIsMenuOpen(false)}
+            >
               Ofertas
             </Link>
           </li>

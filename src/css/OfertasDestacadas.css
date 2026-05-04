@@ -56,13 +56,14 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 150px;
 }
 .oferta-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
 }
 .oferta-description {
-  font-size: 14px;
+  font-size: 12px;
   color: #555;
 }
 .oferta-price {
@@ -127,6 +128,7 @@
 @media (max-width: 768px) {
   .ofertas-container {
     width: 100%;
+    padding: 10px 0px;
 
   }
   .titulo-ofertas {

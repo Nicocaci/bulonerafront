@@ -35,12 +35,14 @@ const Productos = () => {
     searchParams.get("marca") ||
     searchParams.get("categoria") ||
     searchParams.get("subcategoria") ||
-    searchParams.get("search");
-
+    searchParams.get("search") ||
+    searchParams.get("todos") ||
+    searchParams.get("ofertas");
   const search = searchParams.get("search");
   const categoria = searchParams.get("categoria");
   const subcategoria = searchParams.get("subcategoria");
   const marca = searchParams.get("marca");
+  const ofertas = searchParams.get("ofertas");
 
   // 🔥 Sync input con URL (al entrar directo con ?search=...)
   useEffect(() => {
@@ -61,6 +63,7 @@ const Productos = () => {
             ...(categoria && { category: categoria }),
             ...(subcategoria && { subcategory: subcategoria }),
             ...(marca && { marca: marca }),
+            ...(ofertas && { soloOfertas: true }),
           },
         });
 
@@ -78,7 +81,7 @@ const Productos = () => {
     };
 
     fetchProductos();
-  }, [paginaActual, search, categoria, subcategoria, marca]);
+  }, [paginaActual, search, categoria, subcategoria, marca, ofertas]);
 
   // 🔥 DEBOUNCE BUSCADOR
   useEffect(() => {
@@ -97,12 +100,20 @@ const Productos = () => {
     }, 500);
 
     return () => clearTimeout(delay);
-  }, [searchInput, search, categoria, subcategoria, marca, searchParams, setSearchParams]);
+  }, [
+    searchInput,
+    search,
+    categoria,
+    subcategoria,
+    marca,
+    searchParams,
+    setSearchParams,
+  ]);
 
   const limpiarFiltros = () => {
     setSearchInput("");
     setPaginaActual(1);
-    setSearchParams({});
+    setSearchParams({todos: "true"});
   };
 
   const cambiarPagina = (nuevaPagina) => {
@@ -130,6 +141,10 @@ const Productos = () => {
     nextParams.set("marca", marca);
     setSearchParams(nextParams);
   };
+  const handleVerTodos = () => {
+    setPaginaActual(1);
+    setSearchParams({ todos: "true" });
+  };
 
   if (loading) return <p>Cargando...</p>;
   if (error) return <p>{error}</p>;
@@ -142,8 +157,15 @@ const Productos = () => {
           <p>Seleccione una marca para ver sus productos.</p>
 
           <div className="grid-logo-marcas">
+            <div
+              className="marca-container todos-card"
+              onClick={handleVerTodos}
+            >
+              <span className="todos-icon">🛍️</span>
+              <p className="todos-label">Todos los productos</p>
+            </div>
             {logos.map((logo, i) => (
-              <div key={i} className="marca-container">
+              <div key={i} className="marca-container todos-card">
                 <img
                   src={`marcas/${logo}`}
                   alt={logo}
@@ -156,9 +178,11 @@ const Productos = () => {
         </div>
       ) : (
         <>
-          <button className="btn-limpiar" onClick={limpiarFiltros}>
-            Volver
-          </button>
+          <div className="btn-container-productos">
+            <button className="btn-limpiar" onClick={limpiarFiltros}>
+              ⬅ Volver
+            </button>
+          </div>
 
           <div className="productos-layout">
             {/* 🔹 FILTROS */}
@@ -178,15 +202,19 @@ const Productos = () => {
                 <label>Categoría</label>
                 <select
                   className="filtro-select"
-                  value={categoria || ""}
+                  value={ofertas ? "oferta" : (categoria || "")}
                   onChange={(e) => {
                     const nextParams = new URLSearchParams(searchParams);
                     const nextCategory = e.target.value;
 
-                    if (nextCategory) {
+                    // Limpiar siempre ambos para evitar conflictos
+                    nextParams.delete("categoria");
+                    nextParams.delete("ofertas");
+
+                    if (nextCategory === "oferta") {
+                      nextParams.set("ofertas", "true"); // 👈 caso especial
+                    } else if (nextCategory) {
                       nextParams.set("categoria", nextCategory);
-                    } else {
-                      nextParams.delete("categoria");
                     }
 
                     setPaginaActual(1);
@@ -194,12 +222,17 @@ const Productos = () => {
                   }}
                 >
                   <option value="">Todas</option>
-                  <option value="Herramientas Manuales">Herramientas manuales</option>
-                  <option value="Herramientas Electricas">Herramientas Eléctricas</option>
+                  <option value="Buloneria">Bulonería</option>
+                  <option value="Herramientas">Herramientas</option>
+                  <option value="Construccion">Construcción</option>
+                  <option value="Automotor">Automotor</option>
+                  <option value="Seguridad">Seguridad Industrial</option>
+                  <option value="Kits">Kits</option>
+                  <option value="oferta">Ofertas</option>
                 </select>
               </div>
 
-              <button className="btn-limpiar" onClick={limpiarFiltros}>
+              <button className="btn-limpiar-filtros" onClick={limpiarFiltros}>
                 Limpiar filtros
               </button>
             </div>
@@ -210,7 +243,11 @@ const Productos = () => {
                 <p className="sin-productos">No hay productos</p>
               ) : (
                 productos.map((p) => (
-                  <Link className="link-none" to={`/producto/${p._id}`} key={p._id}>
+                  <Link
+                    className="link-none"
+                    to={`/producto/${p._id}`}
+                    key={p._id}
+                  >
                     <div className="producto-card">
                       <div className="producto-imagen-container">
                         <img
@@ -224,7 +261,9 @@ const Productos = () => {
                         <h3 className="producto-nombre">{p.item}</h3>
 
                         <div className="producto-precio-container">
-                          <span className="producto-precio">${p.precioConIva}</span>
+                          <span className="producto-precio">
+                            ${p.precioConIva}
+                          </span>
                           <span className="producto-iva">IVA incl.</span>
                         </div>
                       </div>
