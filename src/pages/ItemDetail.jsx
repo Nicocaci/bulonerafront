@@ -133,9 +133,12 @@ const ItemDetail = () => {
             </div>
             <strong>Descripción:</strong>
             {descripcionFormateada.split('\n').map((linea, i) => (
-              <p key={i}>{linea.trim()}</p>
+              <p className='descripcion-prod' key={i}>{linea.trim()}</p>
             ))}
-            <p className='precio-item'>Precio: ${producto.precioConIva.toLocaleString()}</p>
+            <div className='item-grid-2-content-subcategoria'>
+              <strong>Precio:</strong>
+              <p className='precio-item'>${producto.precio.toLocaleString()}</p>
+            </div>
             <div className='btn-item-container'>
               <button className='btn-item' onClick={() => handleAddToCart(producto._id)}>Agregar al carrito</button>
             </div>

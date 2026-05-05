@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import "../css/ProductosPage.css";
 import { useSearchParams, Link } from "react-router-dom";
 import axiosInstance from "../utils/axiosConfig";
@@ -17,6 +17,11 @@ const Productos = () => {
 
   const [searchInput, setSearchInput] = useState("");
 
+  // 🔥 Estado del drawer mobile
+  const [drawerAbierto, setDrawerAbierto] = useState(false);
+
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
   const productosPorPagina = 12;
 
   const logos = [
@@ -30,7 +35,6 @@ const Productos = () => {
     "logo-venturo.jpg",
   ];
 
-  // 🔥 Detectar si hay filtros (SIN STATE)
   const tieneFiltros =
     searchParams.get("marca") ||
     searchParams.get("categoria") ||
@@ -38,18 +42,54 @@ const Productos = () => {
     searchParams.get("search") ||
     searchParams.get("todos") ||
     searchParams.get("ofertas");
+
   const search = searchParams.get("search");
   const categoria = searchParams.get("categoria");
   const subcategoria = searchParams.get("subcategoria");
   const marca = searchParams.get("marca");
   const ofertas = searchParams.get("ofertas");
 
-  // 🔥 Sync input con URL (al entrar directo con ?search=...)
+  // 🔥 Cuenta filtros activos para el badge
+  const filtrosActivos = [categoria, marca, ofertas].filter(Boolean).length;
+
   useEffect(() => {
-    setSearchInput(search || "");
+    const timeout = setTimeout(() => {
+      const trimmed = searchInput.trim();
+
+      if (trimmed === (search || "")) return; // 🔥 evita loops
+
+      setDebouncedSearch(trimmed);
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [searchInput, search]);
+
+  useEffect(() => {
+    if (debouncedSearch === (search || "")) return; // 🔥 ESTA es la clave
+
+    updateParams("search", debouncedSearch);
+  }, [debouncedSearch, search]);
+
+  // 🔥 Bloquear scroll del body cuando el drawer está abierto
+  useEffect(() => {
+    if (drawerAbierto) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [drawerAbierto]);
+
+  const prevSearch = useRef(search);
+  useEffect(() => {
+    if (search !== prevSearch.current) {
+      prevSearch.current = search;
+      setSearchInput(search || "");
+    }
   }, [search]);
 
-  // 🔥 FETCH (SIEMPRE se ejecuta cuando cambian params)
   useEffect(() => {
     const fetchProductos = async () => {
       try {
@@ -83,37 +123,28 @@ const Productos = () => {
     fetchProductos();
   }, [paginaActual, search, categoria, subcategoria, marca, ofertas]);
 
-  // 🔥 DEBOUNCE BUSCADOR
-  useEffect(() => {
-    const delay = setTimeout(() => {
-      setPaginaActual(1);
-      const nextParams = new URLSearchParams(searchParams.toString());
-      const trimmedSearch = searchInput.trim();
+  const updateParams = (key, value, resetPage = true) => {
+    setSearchParams((prev) => {
+      const p = new URLSearchParams(prev);
 
-      if (trimmedSearch) {
-        nextParams.set("search", trimmedSearch);
-      } else {
-        nextParams.delete("search");
+      if (value) p.set(key, value);
+      else p.delete(key);
+
+      if (resetPage) {
+        p.set("page", 1);
+      } else if (!p.get("page")) {
+        p.set("page", 1);
       }
 
-      setSearchParams(nextParams);
-    }, 500);
-
-    return () => clearTimeout(delay);
-  }, [
-    searchInput,
-    search,
-    categoria,
-    subcategoria,
-    marca,
-    searchParams,
-    setSearchParams,
-  ]);
+      return p;
+    });
+  };
 
   const limpiarFiltros = () => {
     setSearchInput("");
     setPaginaActual(1);
-    setSearchParams({todos: "true"});
+    setSearchParams({ todos: "true" });
+    setDrawerAbierto(false);
   };
 
   const cambiarPagina = (nuevaPagina) => {
@@ -136,15 +167,64 @@ const Productos = () => {
   const handleSeleccionarMarca = (logoName) => {
     const marca = getBrandDisplayNameFromFilename(logoName);
     const nextParams = new URLSearchParams(searchParams);
-
     setPaginaActual(1);
     nextParams.set("marca", marca);
     setSearchParams(nextParams);
   };
+
   const handleVerTodos = () => {
     setPaginaActual(1);
     setSearchParams({ todos: "true" });
   };
+
+  // 🔥 Contenido de filtros reutilizable (lo usan tanto el sidebar desktop como el drawer mobile)
+  const FiltrosContenido = () => (
+    <>
+      <div className="filtro-group">
+        <label>Buscar</label>
+        <input
+          type="text"
+          placeholder="Buscar productos..."
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="filtro-input"
+        />
+      </div>
+
+      <div className="filtro-group">
+        <label>Categoría</label>
+        <select
+          className="filtro-select"
+          value={ofertas ? "oferta" : categoria || ""}
+          onChange={(e) => {
+            const nextParams = new URLSearchParams(searchParams);
+            const nextCategory = e.target.value;
+
+            nextParams.delete("categoria");
+            nextParams.delete("ofertas");
+
+            if (nextCategory === "oferta") {
+              nextParams.set("ofertas", "true");
+            } else if (nextCategory) {
+              nextParams.set("categoria", nextCategory);
+            }
+
+            setPaginaActual(1);
+            setSearchParams(nextParams);
+          }}
+        >
+          <option value="">Todas</option>
+          <option value="Buloneria">Bulonería</option>
+          <option value="Herramientas">Herramientas</option>
+          <option value="Construccion">Construcción</option>
+          <option value="Automotor">Automotor</option>
+          <option value="Seguridad">Seguridad Industrial</option>
+          <option value="Kits">Kits</option>
+          <option value="oferta">Ofertas</option>
+        </select>
+      </div>
+    </>
+  );
 
   if (loading) return <p>Cargando...</p>;
   if (error) return <p>{error}</p>;
@@ -178,60 +258,38 @@ const Productos = () => {
         </div>
       ) : (
         <>
+          {/* 🔹 TOPBAR con botón volver + botón filtros (mobile) */}
           <div className="btn-container-productos">
             <button className="btn-limpiar" onClick={limpiarFiltros}>
               ⬅ Volver
             </button>
+
+            {/* Solo visible en mobile */}
+            <button
+              className="btn-filtros-mobile"
+              onClick={() => setDrawerAbierto(true)}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path d="M2 4h12M4 8h8M6 12h4" />
+              </svg>
+              Filtros
+              {filtrosActivos > 0 && (
+                <span className="filtros-badge">{filtrosActivos}</span>
+              )}
+            </button>
           </div>
 
           <div className="productos-layout">
-            {/* 🔹 FILTROS */}
+            {/* 🔹 SIDEBAR FILTROS — solo visible en desktop */}
             <div className="filtros-container">
-              <div className="filtro-group">
-                <label>Buscar</label>
-                <input
-                  type="text"
-                  placeholder="Buscar productos..."
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  className="filtro-input"
-                />
-              </div>
-
-              <div className="filtro-group">
-                <label>Categoría</label>
-                <select
-                  className="filtro-select"
-                  value={ofertas ? "oferta" : (categoria || "")}
-                  onChange={(e) => {
-                    const nextParams = new URLSearchParams(searchParams);
-                    const nextCategory = e.target.value;
-
-                    // Limpiar siempre ambos para evitar conflictos
-                    nextParams.delete("categoria");
-                    nextParams.delete("ofertas");
-
-                    if (nextCategory === "oferta") {
-                      nextParams.set("ofertas", "true"); // 👈 caso especial
-                    } else if (nextCategory) {
-                      nextParams.set("categoria", nextCategory);
-                    }
-
-                    setPaginaActual(1);
-                    setSearchParams(nextParams);
-                  }}
-                >
-                  <option value="">Todas</option>
-                  <option value="Buloneria">Bulonería</option>
-                  <option value="Herramientas">Herramientas</option>
-                  <option value="Construccion">Construcción</option>
-                  <option value="Automotor">Automotor</option>
-                  <option value="Seguridad">Seguridad Industrial</option>
-                  <option value="Kits">Kits</option>
-                  <option value="oferta">Ofertas</option>
-                </select>
-              </div>
-
+              <FiltrosContenido />
               <button className="btn-limpiar-filtros" onClick={limpiarFiltros}>
                 Limpiar filtros
               </button>
@@ -256,10 +314,8 @@ const Productos = () => {
                           className="producto-imagen"
                         />
                       </div>
-
                       <div className="producto-info">
                         <h3 className="producto-nombre">{p.item}</h3>
-
                         <div className="producto-precio-container">
                           <span className="producto-precio">
                             ${p.precioConIva}
@@ -284,9 +340,7 @@ const Productos = () => {
               >
                 Anterior
               </button>
-
               <span>{paginaActual}</span>
-
               <button
                 className="btn-paginacion"
                 onClick={() => cambiarPagina(paginaActual + 1)}
@@ -295,13 +349,58 @@ const Productos = () => {
                 Siguiente
               </button>
             </div>
-
             <div className="paginacion-info">
               <p>
                 Mostrando {productos.length} de {totalProductos}
               </p>
             </div>
           </div>
+
+          {/* =============================================
+              🔥 DRAWER MOBILE
+          ============================================= */}
+
+          {/* Overlay oscuro */}
+          <div
+            className={`drawer-overlay ${drawerAbierto ? "drawer-overlay--visible" : ""}`}
+            onClick={() => setDrawerAbierto(false)}
+          />
+
+          {/* Drawer */}
+          <aside
+            className={`filtros-drawer ${drawerAbierto ? "filtros-drawer--open" : ""}`}
+          >
+            {/* Handle visual */}
+            <div className="drawer-handle" />
+
+            <div className="drawer-header">
+              <span>Filtros</span>
+              <button
+                className="drawer-close"
+                onClick={() => setDrawerAbierto(false)}
+                aria-label="Cerrar filtros"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="drawer-body">
+              <FiltrosContenido />
+            </div>
+
+            <div className="drawer-footer">
+              <button className="btn-drawer-limpiar" onClick={limpiarFiltros}>
+                Limpiar
+              </button>
+              <button
+                className="btn-drawer-aplicar"
+                onClick={() => setDrawerAbierto(false)}
+              >
+                Ver resultados
+                {totalProductos > 0 && <span> ({totalProductos})</span>}
+              </button>
+            </div>
+          </aside>
         </>
       )}
     </div>

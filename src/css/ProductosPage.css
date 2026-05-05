@@ -376,6 +376,179 @@
   font-weight: 600;
   font-size: 0.95rem;
 }
+/* =============================================
+   AGREGAR ESTO AL FINAL DE ProductosPage.css
+   ============================================= */
+
+/* 🔹 Botón "Filtros" — solo en mobile */
+.btn-filtros-mobile {
+  display: none; /* oculto en desktop */
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.filtros-badge {
+  background: #333;
+  color: #fff;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 7px;
+  line-height: 1.4;
+}
+
+/* 🔹 Overlay oscuro detrás del drawer */
+.drawer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  z-index: 200;
+  transition: background 0.28s ease;
+}
+
+.drawer-overlay--visible {
+  display: block;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* 🔹 Drawer */
+.filtros-drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  background: #fff;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.filtros-drawer--open {
+  transform: translateY(0);
+}
+
+.drawer-handle {
+  width: 40px;
+  height: 4px;
+  background: #ddd;
+  border-radius: 99px;
+  margin: 12px auto 0;
+  flex-shrink: 0;
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  flex-shrink: 0;
+}
+
+.drawer-header span {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111;
+}
+
+.drawer-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #888;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+}
+
+.drawer-body {
+  padding: 16px 20px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.drawer-footer {
+  display: flex;
+  gap: 10px;
+  padding: 12px 20px 28px; /* 28px para dejar margen del home indicator en iOS */
+  border-top: 1px solid #f0f0f0;
+  flex-shrink: 0;
+}
+
+.btn-drawer-limpiar {
+  flex: 1;
+  padding: 12px;
+  font-size: 14px;
+  color: #555;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-drawer-aplicar {
+  flex: 2;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: #222;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn-drawer-aplicar:active,
+.btn-drawer-limpiar:active {
+  opacity: 0.85;
+  transform: scale(0.98);
+}
+
+/* =============================================
+   MEDIA QUERIES
+   ============================================= */
+
+@media (max-width: 768px) {
+  /* Mostrar el botón de filtros */
+  .btn-filtros-mobile {
+    display: flex;
+  }
+
+  /* Ocultar el sidebar de filtros lateral */
+  .filtros-container {
+    display: none;
+  }
+
+  /* El layout pasa a una sola columna */
+  .productos-layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* El contenedor del botón volver queda entre volver y filtros */
+  .btn-container-productos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
 
 @media (max-width: 768px) {
   .container-productos {
