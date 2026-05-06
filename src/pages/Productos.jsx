@@ -3,6 +3,7 @@ import "../css/ProductosPage.css";
 import { useSearchParams, Link } from "react-router-dom";
 import axiosInstance from "../utils/axiosConfig";
 import { getImageUrl } from "../utils/imageUtils";
+import { MarcasLogos } from "../components/MarcasLogos.jsx";
 
 const Productos = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,17 +24,6 @@ const Productos = () => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
   const productosPorPagina = 12;
-
-  const logos = [
-    "ronixlogo.png",
-    "logo-crossmaster.png",
-    "logo-bahco.svg",
-    "logo-bremen.svg",
-    "logo-bosch.svg",
-    "logo-skil.png",
-    "logo-fischer.webp",
-    "logo-venturo.jpg",
-  ];
 
   const tieneFiltros =
     searchParams.get("marca") ||
@@ -151,32 +141,6 @@ const Productos = () => {
     setPaginaActual(nuevaPagina);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  const getBrandDisplayNameFromFilename = (filename) => {
-    return filename
-      .replace(/\.[^/.]+$/, "")
-      .replace(/^logo[-_]?/i, "")
-      .replace(/[-_]/g, " ")
-      .replace(/logo$/i, "")
-      .trim()
-      .split(" ")
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(" ");
-  };
-
-  const handleSeleccionarMarca = (logoName) => {
-    const marca = getBrandDisplayNameFromFilename(logoName);
-    const nextParams = new URLSearchParams(searchParams);
-    setPaginaActual(1);
-    nextParams.set("marca", marca);
-    setSearchParams(nextParams);
-  };
-
-  const handleVerTodos = () => {
-    setPaginaActual(1);
-    setSearchParams({ todos: "true" });
-  };
-
   // 🔥 Contenido de filtros reutilizable (lo usan tanto el sidebar desktop como el drawer mobile)
   const FiltrosContenido = () => (
     <>
@@ -233,28 +197,7 @@ const Productos = () => {
     <div className="container-productos">
       {!tieneFiltros ? (
         <div className="marcas-inicial">
-          <h2>Buscar por marca</h2>
-          <p>Seleccione una marca para ver sus productos.</p>
-
-          <div className="grid-logo-marcas">
-            <div
-              className="marca-container todos-card"
-              onClick={handleVerTodos}
-            >
-              <span className="todos-icon">🛍️</span>
-              <p className="todos-label">Todos los productos</p>
-            </div>
-            {logos.map((logo, i) => (
-              <div key={i} className="marca-container todos-card">
-                <img
-                  src={`marcas/${logo}`}
-                  alt={logo}
-                  className="logo-marca"
-                  onClick={() => handleSeleccionarMarca(logo)}
-                />
-              </div>
-            ))}
-          </div>
+          <MarcasLogos />
         </div>
       ) : (
         <>

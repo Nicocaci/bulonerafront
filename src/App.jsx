@@ -1,5 +1,5 @@
 import Home from "./pages/Home.jsx";
-import Productos from "./pages/Productos.jsx";
+import ProductosPage from "./pages/ProductosPage.jsx";
 import Contacto from "./pages/Contacto.jsx";
 import Perfil from "./pages/Perfiles/Perfil.jsx";
 import NavBar from "./navigation/NavBar.jsx";
@@ -38,7 +38,7 @@ function App() {
             <main>
             <Routes>
               <Route exact path="/" element={<Home/>}/>
-              <Route exact path="/productos" element={<Productos/>}/>
+              <Route exact path="/productos" element={<ProductosPage/>}/>
               <Route exact path="/caja-herramientas" element={<CajaHerramientas/>}/>
               <Route exact path="/contacto" element={<Contacto/>}/>
               <Route exact path="/nosotros" element={<Nosotros/>}/>
