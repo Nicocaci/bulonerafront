@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <div className="footer-container">
       <div>
-        <img className="logo-footer" src="/logo_bulonera.jpg" alt="logo" />
+        <img className="logo-footer" src="/favicon.ico" alt="logo" />
       </div>
       <div>
         <p className="titulo-footer">BULONERA EL TRIANGULO </p>

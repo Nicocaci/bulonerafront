@@ -85,20 +85,32 @@
 }
 
 .product-card-description {
-  font-size: 18px;
+  font-size: 15px;
   background-color: rgb(235, 232, 232);
   height: 120px;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 10px;
+}
+.product-marca-container {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
+  gap: 5px;
+}
+.product-marca {
+  font-size: 10px;
+  color: #555;
 }
 
 .product-card-text {
-  font-size: 15px;
-  background-color: rgb(235, 232, 232);
-  text-align: center;
+  font-size: 13px;
+}
+.product-price {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
 }
 
 /* PAGINACIÓN */
@@ -134,6 +146,94 @@
   height: 100vh;
   background: rgba(0, 0, 0, 0.45);
   z-index: 999;
+}
+.verified-icon {
+  color: #4caf50;
+  width: 10px;
+}
+.product-iva {
+  font-size: 10px;
+  color: #777;
+}
+.marcas-inicial {
+  max-width: 860px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.marcas-header {
+  margin-bottom: 1.5rem;
+}
+
+.marcas-header h2 {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0 0 4px;
+}
+
+.marcas-header p {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.grid-logo-marcas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.marca-container {
+  background: #fff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  min-height: 100px;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+
+.marca-container:hover {
+  border-color: #9ca3af;
+  background: #f9fafb;
+}
+
+.marca-container:active {
+  transform: scale(0.97);
+}
+
+.todos-card {
+  border-style: dashed;
+  border-color: #d1d5db;
+}
+
+.todos-card:hover {
+  border-style: solid;
+}
+
+.todos-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.todos-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  margin: 0;
+}
+
+.logo-marca {
+  max-width: 100px;
+  max-height: 44px;
+  object-fit: contain;
+  display: block;
 }
 
 /* Solo visible en mobile */

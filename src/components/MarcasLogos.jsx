@@ -6,7 +6,6 @@ export const MarcasLogos = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [paginaActual, setPaginaActual] = useState(1);
 
-
   const logos = [
     "ronixlogo.png",
     "logo-crossmaster.png",
@@ -44,8 +43,10 @@ export const MarcasLogos = () => {
   };
   return (
     <div>
-      <h2>Buscar por marca</h2>
-      <p>Seleccione una marca para ver sus productos.</p>
+      <div className="marcas-header">
+        <h2>Buscar por marca</h2>
+        <p>Seleccione una marca para ver sus productos.</p>
+      </div>
 
       <div className="grid-logo-marcas">
         <div className="marca-container todos-card" onClick={handleVerTodos}>
