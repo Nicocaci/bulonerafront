@@ -12,13 +12,14 @@
   padding: 20px;
   background-color: #f5f5f5;
   padding-top: 200px;
+  height: 100%;
 }
 
 .products-layout {
   display: flex;
   gap: 20px;
   align-items: flex-start;
-  width: 65%;
+  width: 75%;
   margin: 0 auto;
   padding: 20px;
 }
