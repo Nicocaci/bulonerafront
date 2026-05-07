@@ -64,7 +64,7 @@
 .item-grid-2-content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   background-color: #ffffff;
   padding: 20px;
   border-radius: 10px;

@@ -90,7 +90,7 @@ const ProductosPage = () => {
 
   return (
     <div className="product-section">
-      {!tieneFiltros? (
+      {!tieneFiltros ? (
         <div className="marcas-inicial">
           <MarcasLogos />
         </div>
@@ -238,8 +238,40 @@ const ProductosPage = () => {
                             gap: 4,
                           }}
                         >
-                          <p className="product-price">${p.precioConIva}</p>
-                          <p className="product-iva">IVA inc.</p>
+                          {p.oferta?.activa ? (
+                            <>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                <p className="product-price-tachado">
+                                  ${p.precioConIva}
+                                </p>
+                                <p className="product-price">
+                                  ${p.precioFinal}
+                                </p>
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "flex-end",
+                                }}
+                              >
+                                <span className="product-oferta-badge">
+                                  -{p.oferta.descuento}%
+                                </span>
+                                <p className="product-iva">IVA inc.</p>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <p className="product-price">${p.precioConIva}</p>
+                              <p className="product-iva">IVA inc.</p>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>

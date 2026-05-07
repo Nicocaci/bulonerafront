@@ -93,8 +93,8 @@ const ProductsDropdown = ({ closeMenu }) => {
             </div>
           ))}
           <div className="li-products-dropdown">
-            <Link to="/productos?todos=true" onClick={handleLinkClick}>
-              Ver todos los productos
+            <Link to="/productos" onClick={handleLinkClick}>
+              Ver todas las Marcas
             </Link>
           </div>
         </div>
