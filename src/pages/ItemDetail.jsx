@@ -158,7 +158,7 @@ const ItemDetail = () => {
               <div className="item-grid-2-content-subcategoria">
                 <strong>Precio:</strong>
                 <p className="precio-item">
-                  ${producto.precio.toLocaleString()}
+                  ${producto.precioConIva.toLocaleString()}
                 </p>
               </div>
               <div className="btn-item-container">

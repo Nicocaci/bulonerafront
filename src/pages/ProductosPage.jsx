@@ -247,10 +247,10 @@ const ProductosPage = () => {
                                 }}
                               >
                                 <p className="product-price-tachado">
-                                  ${p.precioConIva}
+                                  ${p.precioConIva.toLocaleString()}
                                 </p>
                                 <p className="product-price">
-                                  ${p.precioFinal}
+                                  ${p.precioFinal.toLocaleString()}
                                 </p>
                               </div>
                               <div
@@ -268,7 +268,7 @@ const ProductosPage = () => {
                             </>
                           ) : (
                             <>
-                              <p className="product-price">${p.precioConIva}</p>
+                              <p className="product-price">${p.precioConIva.toLocaleString()}</p>
                               <p className="product-iva">IVA inc.</p>
                             </>
                           )}
