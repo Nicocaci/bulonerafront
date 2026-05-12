@@ -137,7 +137,7 @@ const ProductosPage = () => {
 
             <label className="filter-label">Categoría</label>
             <select
-              value={filters.categoria}
+              value={filters.category}
               onChange={(e) => {
                 setSearchParams((prev) => {
                   const p = new URLSearchParams(prev);
@@ -166,7 +166,7 @@ const ProductosPage = () => {
               Subcategoría
             </label>
             <select
-              value={filters.subcategoria}
+              value={filters.subcategory}
               onChange={(e) => updateParams("subcategoria", e.target.value)}
               className="product-search-input"
             >
