@@ -2,8 +2,9 @@ import React from "react";
 import axiosInstance from "../../../../utils/axiosConfig.js";
 import { getImageUrl } from "../../../../utils/imageUtils.js";
 import Swal from "sweetalert2";
+import { memo } from "react";
 
-const ProductTable = ({ productos, isLoading, onEdit, refetch }) => {
+const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
   const handleDelete = async (id) => {
     Swal.fire({
       title: "¿Estás seguro?",
@@ -45,7 +46,7 @@ const ProductTable = ({ productos, isLoading, onEdit, refetch }) => {
             <td>{p.item}</td>
             <td>{p.categoria}</td>
             <td>{p.subcategoria}</td>
-            <td>${p.precioConIva.toLocaleString()}</td>
+            <td>${p.precio.toLocaleString()}</td>
             <td>
               {p.oferta?.activa
                 ? `${p.oferta.descuento}% ${p.oferta.vence ? `(vence: ${new Date(p.oferta.vence).toLocaleDateString("es-AR")})` : "(sin vencimiento)"}`
@@ -60,6 +61,6 @@ const ProductTable = ({ productos, isLoading, onEdit, refetch }) => {
       </tbody>
     </table>
   );
-};
+});
 
 export default ProductTable;

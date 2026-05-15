@@ -99,6 +99,18 @@
   background: #c0392b;
 }
 
+/* ===== INPUT SEARCH TABLE ===== */
+.search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+
 /* ===== TABLA ===== */
 table {
   width: 100%;

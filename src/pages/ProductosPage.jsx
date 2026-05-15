@@ -7,6 +7,7 @@ import axiosInstance from "../utils/axiosConfig.js";
 import { IoFilter } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { MdVerified } from "react-icons/md";
+import Pagination from "../components/Pagination.jsx";
 
 const ProductosPage = () => {
   const [productos, setProductos] = useState([]);
@@ -268,7 +269,9 @@ const ProductosPage = () => {
                             </>
                           ) : (
                             <>
-                              <p className="product-price">${p.precioConIva.toLocaleString()}</p>
+                              <p className="product-price">
+                                ${p.precioConIva.toLocaleString()}
+                              </p>
                               <p className="product-iva">IVA inc.</p>
                             </>
                           )}
@@ -281,19 +284,11 @@ const ProductosPage = () => {
             )}
 
             {pagination?.totalPages > 1 && (
-              <div className="pagination">
-                {Array.from({ length: pagination.totalPages }, (_, i) => (
-                  <button
-                    key={i}
-                    className={`page-btn ${
-                      pagination.page === i + 1 ? "active-page" : ""
-                    }`}
-                    onClick={() => updateParams("page", i + 1, false)}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
-              </div>
+              <Pagination
+                currentPage={pagination.page}
+                totalPages={pagination.totalPages}
+                onPageChange={(page) => updateParams("page", page, false)}
+              />
             )}
           </main>
         </div>

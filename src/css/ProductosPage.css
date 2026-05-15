@@ -71,10 +71,9 @@
 .product-card {
   width: 250px;
   overflow: hidden;
-  border-radius: 8px; 
- box-shadow: 0 0 10px #0003;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #0003;
 }
-
 
 .card-img-productos {
   width: 100%;
@@ -119,22 +118,21 @@
 
 /* PAGINACIÓN */
 .pagination {
-  margin-top: 30px;
   display: flex;
-  gap: 8px;
-  justify-content: center;
+  align-items: center;
+  gap: 6px;
 }
 
-.page-btn {
-  padding: 8px 12px;
-  border: 1px solid #000;
-  background: white;
-  cursor: pointer;
-}
-
-.active-page {
-  background: black;
+.pagination-button.active {
+  background-color: #1a9a7a; /* el teal de tu sitio */
   color: white;
+  border-color: #1a9a7a;
+}
+
+.pagination-dots {
+  padding: 0 4px;
+  color: #888;
+  letter-spacing: 2px;
 }
 
 /* BOTÓN CERRAR FILTROS */
@@ -255,17 +253,13 @@
   border-radius: 4px;
 }
 
-/* Solo visible en mobile */
-@media (min-width: 769px) {
-  .filter-overlay {
-    display: none;
-  }
-}
-
 /* =========================
    MOBILE
 ========================= */
 @media (max-width: 768px) {
+  .filter-overlay {
+    display: none;
+  }
   .products-layout {
     flex-direction: column;
     padding: 0 12px;
@@ -335,5 +329,13 @@
   .btn-container-mobile {
     display: flex;
     width: 100%;
+  }
+  .pagination button {
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+  .pagination-dots,
+  .pagination-button:not(.nav-btn) {
+    display: none;
   }
 }

@@ -82,7 +82,7 @@ const UserList = ({ user }) => {
         <div className="admin-section">
             <p className='titulo-admin-section'>Gestión de Usuarios</p>
             <div className="users-table-container">
-                <table className="users-table">
+                <table >
                     <thead>
                         <tr>
                             <th>Nombre</th>

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useProducts } from "../../../hooks/useProducts.js";
 import ProductForm from "./products/ProductForm.jsx";
 import ProductTable from "./products/ProductTable.jsx";
 import Pagination from "../../../components/Pagination.jsx";
-import "../../../css/productAdmin.css"
+import "../../../css/productAdmin.css";
 
 const ProductsPage = () => {
   const [editingProduct, setEditingProduct] = useState(null);
@@ -14,7 +14,10 @@ const ProductsPage = () => {
   const productsPerPage = 7;
 
   useEffect(() => {
-    const t = setTimeout(() => setDebouncedSearch(searchNombre), 300);
+    const t = setTimeout(() => {
+      setDebouncedSearch(searchNombre);
+      setCurrentPage(1); // resetear página acá, no en el onChange
+    }, 300);
     return () => clearTimeout(t);
   }, [searchNombre]);
 
@@ -24,9 +27,17 @@ const ProductsPage = () => {
     search: debouncedSearch,
   });
 
+  const handleEdit = useCallback((product) => {
+    setEditingProduct(product);
+  }, []);
+
+  const handleRefetch = useCallback(() => {
+    refetch();
+  }, [refetch]);
+
   return (
     <div className="admin-section">
-      <h2>Productos</h2>
+      <p className="titulo-admin-section">Productos</p>
 
       <ProductForm
         editingProduct={editingProduct}
@@ -34,23 +45,21 @@ const ProductsPage = () => {
         refetch={refetch}
       />
 
-      <h2>Buscar Productos</h2>
+      <p className="titulo-admin-section">Lista de Productos</p>
       <input
+        className="search-input"
         placeholder="Buscar..."
         value={searchNombre}
-        onChange={(e) => {
-          setSearchNombre(e.target.value);
-          setCurrentPage(1);
-        }}
+        onChange={(e) => setSearchNombre(e.target.value)}
       />
 
       <div className="users-table-container">
-      <ProductTable
-        productos={data?.products || []}
-        isLoading={isLoading}
-        onEdit={setEditingProduct}
-        refetch={refetch}
-      />
+        <ProductTable
+          productos={data?.products || []}
+          isLoading={isLoading}
+          onEdit={handleEdit}
+          refetch={handleRefetch}
+        />
       </div>
 
       <Pagination
