@@ -231,13 +231,13 @@ const NavBar = () => {
 
           <li>
             <Link to="/contacto" onClick={() => setIsMenuOpen(false)}>
-              Contacto
+              CONTACTO
             </Link>
           </li>
 
           <li>
             <Link to="/nosotros" onClick={() => setIsMenuOpen(false)}>
-              Nosotros
+              NOSOTROS
             </Link>
           </li>
           <li>
@@ -245,7 +245,7 @@ const NavBar = () => {
               to="/productos?ofertas=true"
               onClick={() => setIsMenuOpen(false)}
             >
-              Ofertas
+              OFERTAS
             </Link>
           </li>
         </ul>

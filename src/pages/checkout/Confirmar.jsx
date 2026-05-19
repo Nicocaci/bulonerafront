@@ -96,7 +96,7 @@ const Confirmar = ({
                     <h3>Productos</h3>
                     <div className="checkout-products-list">
                         {cart.products.map((item) => {
-                            const price = item.product?.precio || item.product?.price || item.precio || item.price || 0;
+                            const price = item.product?.precioConIva || item.product?.price || item.precio || item.price || 0;
                             const quantity = item.quantity || item.cantidad || 1;
 
                             return (

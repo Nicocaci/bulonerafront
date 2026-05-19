@@ -8,6 +8,8 @@ import {
 } from "react";
 import { AuthContext } from "./AuthContext.jsx";
 import axiosInstance from "../utils/axiosConfig.js";
+import swal from "sweetalert2";
+
 
 const LOCAL_CART_KEY = "guest_cart";
 
@@ -139,13 +141,13 @@ export const CartProvider = ({ children }) => {
       const updated = await request(
         "POST",
         `/api/cart/me/products/${productId}`,
-        { quantity }
+        { quantity },
       );
 
       setCart(updated);
       return updated;
     },
-    [user?.token, getLocalCart, saveLocalCart, request]
+    [user?.token, getLocalCart, saveLocalCart, request],
   );
 
   // =============================
@@ -160,7 +162,7 @@ export const CartProvider = ({ children }) => {
       if (!user?.token) {
         const guestCart = getLocalCart();
         guestCart.products = guestCart.products.filter(
-          (p) => p._id !== productId
+          (p) => p._id !== productId,
         );
         saveLocalCart(guestCart);
         return guestCart;
@@ -169,13 +171,13 @@ export const CartProvider = ({ children }) => {
       // 🟢 Logeado
       const updated = await request(
         "DELETE",
-        `/api/cart/me/products/${productId}`
+        `/api/cart/me/products/${productId}`,
       );
 
       setCart(updated);
       return updated;
     },
-    [user?.token, getLocalCart, saveLocalCart, request]
+    [user?.token, getLocalCart, saveLocalCart, request],
   );
 
   // =============================
@@ -195,7 +197,7 @@ export const CartProvider = ({ children }) => {
         }
 
         const updated = guestCart.products.map((p) =>
-          p._id === productId ? { ...p, quantity } : p
+          p._id === productId ? { ...p, quantity } : p,
         );
 
         const newCart = { ...guestCart, products: updated };
@@ -216,27 +218,28 @@ export const CartProvider = ({ children }) => {
         ...prev,
         products: prev.products.map((item) => {
           const id =
-            typeof item.product === "string"
-              ? item.product
-              : item.product?._id;
+            typeof item.product === "string" ? item.product : item.product?._id;
 
-          return id === productId
-            ? { ...item, quantity }
-            : item;
+          return id === productId ? { ...item, quantity } : item;
         }),
       }));
 
       try {
-        await request(
-          "PUT",
-          `/api/cart/me/products/${productId}`,
-          { quantity }
-        );
+        await request("PUT", `/api/cart/me/products/${productId}`, {
+          quantity,
+        });
       } catch (err) {
         setCart(prevCart); // rollback
       }
     },
-    [user?.token, cart, getLocalCart, saveLocalCart, removeProductFromCart, request]
+    [
+      user?.token,
+      cart,
+      getLocalCart,
+      saveLocalCart,
+      removeProductFromCart,
+      request,
+    ],
   );
 
   // =============================
@@ -244,13 +247,30 @@ export const CartProvider = ({ children }) => {
   // =============================
 
   const clearCart = useCallback(async () => {
-    if (!user?.token) {
-      return clearLocalCart();
-    }
-
-    const updated = await request("DELETE", "/api/cart/me");
-    setCart(updated);
-    return updated;
+    swal.fire({
+        title: "¿Vaciar carrito?",
+        text: "Esta acción no se puede deshacer",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, vaciar",
+        cancelButtonText: "No, cancelar",
+      })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            if (!user?.token) {
+              return clearLocalCart();
+            } else {
+              const updated = await request("DELETE", "/api/cart/me");
+              setCart(updated);
+              return updated;
+            }
+          } catch (err) {
+            console.error("clearCart error:", err);
+            throw err;
+          }
+        }
+      });
   }, [user?.token, clearLocalCart, request]);
 
   // =============================
@@ -268,8 +288,8 @@ export const CartProvider = ({ children }) => {
         guestCart.products.map((p) =>
           request("POST", `/api/cart/me/products/${p._id}`, {
             quantity: p.quantity,
-          })
-        )
+          }),
+        ),
       );
 
       localStorage.removeItem(LOCAL_CART_KEY);
@@ -289,9 +309,9 @@ export const CartProvider = ({ children }) => {
 
   // 🔹 Recargar carrito cuando cambia el estado de autenticación
   useEffect(() => {
-    if (localStorage.getItem('justRegistered')) {
+    if (localStorage.getItem("justRegistered")) {
       syncGuestCartWithBackend().then(() => {
-        localStorage.removeItem('justRegistered');
+        localStorage.removeItem("justRegistered");
         getCart();
       });
     } else {
@@ -330,7 +350,7 @@ export const CartProvider = ({ children }) => {
       removeProductFromCart,
       updateProductQuantity,
       clearCart,
-    ]
+    ],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

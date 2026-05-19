@@ -154,7 +154,7 @@ const Checkout = () => {
     const calculateTotal = () => {
         if (!cart || !cart.products) return 0;
         return cart.products.reduce((acc, item) => {
-            const price = item.product?.precio || item.product?.price || item.precio || item.price || 0;
+            const price = item.product?.precioConIva || item.product?.price || item.precioConIva || item.price || 0;
             const quantity = item.quantity || item.cantidad || 1;
             return acc + price * quantity;
         }, 0);

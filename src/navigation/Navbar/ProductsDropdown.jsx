@@ -17,20 +17,33 @@ const ProductsDropdown = ({ closeMenu }) => {
 
         const products = res.data?.products || [];
 
-        const cats = [
-          ...new Set(products.map((p) => p.categoria).filter(Boolean)),
-        ];
+        // Normalizá antes de agrupar
+        const normalize = (str) => str?.trim().toLowerCase();
 
         const grouped = {};
+        const catLabels = {}; // para guardar el label original (con formato)
+
         products.forEach((p) => {
           if (!p.categoria) return;
-          if (!grouped[p.categoria]) grouped[p.categoria] = new Set();
-          if (p.subcategoria) grouped[p.categoria].add(p.subcategoria);
+
+          const catKey = normalize(p.categoria);
+          if (!catKey) return;
+
+          if (!grouped[catKey]) {
+            grouped[catKey] = new Set();
+            catLabels[catKey] = p.categoria.trim(); // guardás el primer label que aparece
+          }
+
+          if (p.subcategoria) {
+            grouped[catKey].add(p.subcategoria.trim());
+          }
         });
 
+        const cats = Object.keys(grouped).map((key) => catLabels[key]);
+
         const formatted = {};
-        Object.keys(grouped).forEach((cat) => {
-          formatted[cat] = Array.from(grouped[cat]);
+        Object.keys(grouped).forEach((key) => {
+          formatted[catLabels[key]] = Array.from(grouped[key]);
         });
 
         setCategories(cats);
@@ -68,7 +81,7 @@ const ProductsDropdown = ({ closeMenu }) => {
       onClick={() => setOpen((prev) => !prev)} // toggle
       ref={dropdownRef}
     >
-      <Link>Categorías</Link>
+      <Link>CATEGORÍAS</Link>
 
       {open && (
         <div className="products-dropdown">

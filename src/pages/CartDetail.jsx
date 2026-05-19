@@ -42,8 +42,8 @@ const CartDetail = () => {
     return <div>No se encontró el carrito</div>;
   }
 
-  const total = cart.products.reduce((acc, item) => {
-    const price = item.product?.precio || 0;
+  const   total = cart.products.reduce((acc, item) => {
+    const price = item.product?.precioConIva || 0;
     const quantity = item.quantity || 1;
     return acc + price * quantity;
   }, 0);
@@ -97,7 +97,7 @@ const CartDetail = () => {
               </h3>
 
               <p className="cart-detail-price">
-                Precio: ${item.product?.precio}
+                Precio: ${item.product?.precioConIva.toLocaleString("es-AR")}
               </p>
 
               <div className="cart-detail-quantity">
@@ -129,7 +129,7 @@ const CartDetail = () => {
         </button>
 
         <span className="cart-detail-total-text">
-          Total: ${total.toFixed(2)}
+          Total: ${total.toLocaleString("es-AR")}
         </span>
       </div>
     </div>
