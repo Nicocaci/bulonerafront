@@ -1,16 +1,15 @@
 .home-banner {
-    height: 90dvh;
     position: relative;
     overflow: hidden;
     display: block;
+    padding-top: 80px;
+    height: 90dvh;
 }
 
 .banner-video {
     width: 100%;
     height: 100%;
-    display: block;
-    object-fit: cover;
-}
+    display: block;}
 
 /* Centered overlay container */
 .banner-overlay {
@@ -261,7 +260,9 @@
 
 @media (max-width:768px) {
     .home-banner {
-        height: 60dvh;
+        height: 40dvh;
+        padding-top: 0;
+        overflow: visible;
     }
     .titulo-herramientas {
         font-size: 15px;

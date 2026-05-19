@@ -1,6 +1,7 @@
 // ImageCarousel.jsx
 import React, { useEffect, useRef, useState } from "react";
 import "../css/ImageCarousel.css"; // CSS más abajo
+import { Link } from "react-router-dom";
 
 /**
  * props:
@@ -10,10 +11,8 @@ import "../css/ImageCarousel.css"; // CSS más abajo
  */
 export default function ImageCarousel({
     images = [
-        {src:"/img-fondo-1.png", alt:"fondo1"},
-        {src:"/img-fondo-2.png", alt:"fondo2"},
-        {src:"/img-fondo-3.png", alt:"fondo2"},
-
+        {src:"/KIT_CARPINTERO.jpg", alt:"fondo1"},
+        {src:"/KIT_OBRERO.jpg", alt:"fondo2"}
     ],
     interval = 2000,
     showArrows = true,

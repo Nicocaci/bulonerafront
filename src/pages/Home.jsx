@@ -11,10 +11,9 @@ const Home = () => {
   return (
     <div>
       {/* BANNER HOME */}
-      <div className="home-banner">
-        <ImageCarousel />
-      </div>
-
+        <div className="home-banner">
+          <ImageCarousel />
+        </div>
       <BrandSlider />
 
       <div className="container-destacado">
@@ -55,7 +54,10 @@ const Home = () => {
               </div>
             </Link>
 
-            <Link className="link-home" to="/productos?categoria=Seguridad-industrial">
+            <Link
+              className="link-home"
+              to="/productos?categoria=Seguridad-industrial"
+            >
               <div className="grid">
                 <img
                   className="img-herramientas"
@@ -94,7 +96,6 @@ const Home = () => {
                   className="img-herramientas"
                   src="/fondo-kits.png"
                   alt="Kits"
-
                 />
                 <p className="descripcion-herramientas">KITS</p>
               </div>
