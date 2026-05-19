@@ -46,7 +46,7 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
             <td>{p.item}</td>
             <td>{p.categoria}</td>
             <td>{p.subcategoria}</td>
-            <td>${p.precio.toLocaleString()}</td>
+            <td>${p.precio.toLocaleString('es-AR')}</td>
             <td>
               {p.oferta?.activa
                 ? `${p.oferta.descuento}% ${p.oferta.vence ? `(vence: ${new Date(p.oferta.vence).toLocaleDateString("es-AR")})` : "(sin vencimiento)"}`

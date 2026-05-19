@@ -25,7 +25,7 @@ const OfertasDestacadas = () => {
   const ahorro = (precioConIva, precioFinal) => {
     const ahorro = precioConIva - precioFinal;
     console.log(ahorro);
-    return ahorro.toLocaleString();
+    return ahorro.toLocaleString('es-AR');
   }
 
   if (isLoading) {
@@ -59,10 +59,10 @@ const OfertasDestacadas = () => {
                   </p>
                 </div>
                 <p className="oferta-price-base">
-                  ${oferta.precioConIva.toLocaleString()}
+                  ${oferta.precioConIva.toLocaleString('es-AR')}
                 </p>
                 <p className="oferta-price">
-                  ${oferta.precioFinal.toLocaleString()}
+                  ${oferta.precioFinal.toLocaleString('es-AR')}
                 </p>
                 <p className="ahorro">
                   Ahorrás ${ahorro(oferta.precioConIva, oferta.precioFinal)}

@@ -24,7 +24,6 @@
 .container-iconos {
     display: flex;
     gap: 50px;
-    justify-content: center;
     cursor: pointer;
 }
 .logo-footer{
