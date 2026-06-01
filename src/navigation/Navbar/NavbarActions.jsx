@@ -16,10 +16,10 @@ const NavbarActions = ({
         <FaUser />
       </button>
 
-      <div>
+      <div className="cart-btn-container">
         <button onClick={() => setShowCart((prev) => !prev)}>
           <FaShoppingCart />
-          {cartItemsCount > 0 && <span>{cartItemsCount}</span>}
+          {cartItemsCount > 0 && <span style={{fontSize: "15px"}}>{cartItemsCount}</span>}
         </button>
 
         <CartDropdown isOpen={showCart} onClose={() => setShowCart(false)} />

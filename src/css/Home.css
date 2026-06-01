@@ -2,7 +2,6 @@
     position: relative;
     overflow: hidden;
     display: block;
-    padding-top: 80px;
     height: 90dvh;
 }
 
@@ -261,7 +260,6 @@
 @media (max-width:768px) {
     .home-banner {
         height: 40dvh;
-        padding-top: 0;
         overflow: visible;
     }
     .titulo-herramientas {

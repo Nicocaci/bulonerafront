@@ -7,7 +7,28 @@
   z-index: 1000;
   position: fixed;
   top: 0;
+  z-index: 1000;
+  transition:
+    transform 0.35s ease,
+    background 0.3s ease,
+    backdrop-filter 0.3s ease;
 }
+.nav-hidden {
+  transform: translateY(-100%);
+}
+
+.nav-visible {
+  transform: translateY(0);
+}
+
+/* efecto blur/oscuro al scrollear */
+.nav-scrolled {
+  background: rgba(15, 15, 15, 0.88) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
 
 /* TOP (logo + hamburguesa) */
 .navbar-top {
@@ -92,6 +113,7 @@
   border: 1px solid #c7c7c736;
   width: 100%;
   background-color: #1e1e1e;
+  color: #ffffff;
 }
 .input-search:focus {
   outline: none;
@@ -112,7 +134,7 @@
   gap: 40px;
 }
 
-.li-products-dropdown{
+.li-products-dropdown {
   display: flex;
   flex-direction: column;
   font-size: 12px;
@@ -148,8 +170,12 @@
 
 /* ACTIONS (carrito, user, logout) */
 
-.navbar-actions-mobile  { display: none; }
-.navbar-actions-desktop { display: flex; }
+.navbar-actions-mobile {
+  display: none;
+}
+.navbar-actions-desktop {
+  display: flex;
+}
 .navbar-actions {
   display: flex;
   align-items: center;
@@ -223,10 +249,16 @@
   .navbar-container {
     padding: 20px;
   }
+  .navbar-actions button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
   .navbar-top {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+    padding: 15px 0px 20px 0px;
   }
   .div-navbar {
     width: 100%;
@@ -238,7 +270,7 @@
     display: flex;
     width: 50%;
   }
-  .hamburger-container{
+  .hamburger-container {
     display: flex;
     width: 100%;
     justify-content: space-between;
@@ -249,8 +281,12 @@
   .hamburger-btn:focus {
     outline: none;
   }
-  .navbar-actions-mobile  { display: flex; }
-  .navbar-actions-desktop { display: none; }
+  .navbar-actions-mobile {
+    display: flex;
+  }
+  .navbar-actions-desktop {
+    display: none;
+  }
   .navbar-menu {
     position: absolute;
     top: 0;
@@ -300,5 +336,11 @@
     width: 100%;
     margin-top: 10px;
     gap: 10px;
+  }
+  .nombre-prod-navbar {
+    font-size: 8px;
+  }
+  .precio-prod-navbar {
+    font-size: 8px;
   }
 }

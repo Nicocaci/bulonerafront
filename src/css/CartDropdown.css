@@ -156,6 +156,23 @@
 }
 @media (max-width: 768px) {
     .cart-dropdown {
-        width: 80%;
+        width: 85%;
+    }
+    .cart-dropdown-name {
+        font-size: 10px;
+    }
+    .cart-dropdown-qty {
+        font-size: 8px;
+    }
+    .cart-dropdown-price {
+        font-size: 10px;
+    }
+    .icono-delete {
+        width: 12px;
+        height: 12px;
+    }
+    .cart-dropdown-image {
+        width: 70px;
+        height: 50px;
     }
 }

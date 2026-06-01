@@ -15,7 +15,13 @@ const NavBar = () => {
   const { cart } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
+  const isHome = location.pathname === "/";
   const searchRef = useRef(null);
+
+  // scroll behavior
+  const [isVisible, setIsVisible] = useState(!isHome);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const lastScrollY = useRef(0);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -95,6 +101,30 @@ const NavBar = () => {
     };
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+
+      if (isHome) {
+        setIsVisible(currentY > 80); // en home: aparece al scrollear
+      } else {
+        setIsVisible(true); // en otras páginas: siempre visible/fijo
+      }
+
+      setIsScrolled(currentY > 10);
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isHome]);
+
+  useEffect(() => {
+    setIsVisible(!isHome);
+    setIsScrolled(false);
+    lastScrollY.current = 0;
+  }, [location.pathname]);
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
 
@@ -108,7 +138,9 @@ const NavBar = () => {
   };
 
   return (
-    <div className="navbar-container">
+    <div
+      className={`navbar-container ${isHome ? "" : "nav-fixed"} ${isVisible ? "nav-visible" : "nav-hidden"} ${isScrolled ? "nav-scrolled" : ""}`}
+    >
       <div className="hamburger-container">
         <div className="div-navbar-2 navbar-actions-mobile">
           <NavbarActions
@@ -199,7 +231,7 @@ const NavBar = () => {
                         />
                         <p className="nombre-prod-navbar">{product.item}</p>
                         <span className="precio-prod-navbar">
-                          $ {product.precio}
+                          $ {product.precioConIva.toLocaleString("es-AR")}
                         </span>
                       </div>
                     </li>

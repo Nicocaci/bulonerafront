@@ -71,7 +71,7 @@ const CartDetail = () => {
 
   return (
     <div className="cart-detail-container">
-      <h1 className="cart-detail-title">Mi Carrito</h1>
+      <p className="cart-detail-title">Mi Carrito</p>
 
       <div className="cart-detail-products-list">
         {cart.products.map((item) => {

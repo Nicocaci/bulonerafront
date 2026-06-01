@@ -7,7 +7,7 @@ import Footer from "./navigation/Footer.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ItemDetail from "./pages/ItemDetail.jsx";
 import CartDetail from "./pages/CartDetail.jsx";
-import Checkout from "./pages/Checkout.jsx";  
+import Checkout from "./pages/Checkout.jsx";
 import Gracias from "./pages/Gracias.jsx";
 import Nosotros from "./pages/Nosotros.jsx";
 import CajaHerramientas from "./pages/CajaHerramientas.jsx";
@@ -15,63 +15,58 @@ import WpButton from "./components/WpButton.jsx";
 
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-const queryClient = new QueryClient();
 
 import './App.css'
 
+const queryClient = new QueryClient();
 
+function AppContent() {
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
-
+  return (
+    <div style={{ paddingTop: isHome ? 0 : 80 }} id="root">
+      <NavBar />
+      <main>
+        <Routes>
+          <Route exact path="/" element={<Home />} />
+          <Route exact path="/productos" element={<ProductosPage />} />
+          <Route exact path="/caja-herramientas" element={<CajaHerramientas />} />
+          <Route exact path="/contacto" element={<Contacto />} />
+          <Route exact path="/nosotros" element={<Nosotros />} />
+          <Route exact path="/producto/:prodId" element={<ItemDetail />} />
+          <Route exact path="/carrito/:cartId" element={<CartDetail />} />
+          <Route exact path="/checkout/:cartId" element={
+            <ProtectedRoute><Checkout /></ProtectedRoute>
+          } />
+          <Route exact path="/perfil" element={
+            <ProtectedRoute><Perfil /></ProtectedRoute>
+          } />
+          <Route exact path="/gracias" element={
+            <ProtectedRoute><Gracias /></ProtectedRoute>
+          } />
+        </Routes>
+        <WpButton />
+      </main>
+      <Footer />
+    </div>
+  );
+}
 
 function App() {
   return (
-    <>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <CartProvider>
-            <BrowserRouter>
-              <div id="root">
-              <NavBar />
-            <main>
-            <Routes>
-              <Route exact path="/" element={<Home/>}/>
-              <Route exact path="/productos" element={<ProductosPage/>}/>
-              <Route exact path="/caja-herramientas" element={<CajaHerramientas/>}/>
-              <Route exact path="/contacto" element={<Contacto/>}/>
-              <Route exact path="/nosotros" element={<Nosotros/>}/>
-              <Route exact path="/producto/:prodId" element={<ItemDetail/>}/>
-              <Route exact path="/carrito/:cartId" element={<CartDetail/>}/>  
-              <Route exact path="/checkout/:cartId" element={
-                  <ProtectedRoute>
-                    <Checkout/>
-                  </ProtectedRoute>
-                }
-              />
-              <Route exact path="/perfil" element={
-                  <ProtectedRoute>
-                    <Perfil/>
-                  </ProtectedRoute>
-                }
-              />
-              <Route exact path="/gracias" element={
-                <ProtectedRoute>
-                  <Gracias/>
-                </ProtectedRoute>
-              }/>
-            </Routes>
-            <WpButton/>
-            </main>
-            <Footer />
-            </div>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <CartProvider>
+          <BrowserRouter>
+            <AppContent />
           </BrowserRouter>
         </CartProvider>
       </AuthProvider>
-      </QueryClientProvider>
-    </>
-  )
+    </QueryClientProvider>
+  );
 }
 
 export default App;
