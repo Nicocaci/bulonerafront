@@ -71,7 +71,7 @@ const Contacto = () => {
             <div className="atencion-grid-2">
               <FcAbout size={60} />
               <div style={{ marginLeft: "10px" }}>
-                <p className="horario-atencion">buloeltriangulo@gmail.com</p>
+                <p className="horario-atencion">b.eltraingulo@gmail.com</p>
               </div>
             </div>
           </div>

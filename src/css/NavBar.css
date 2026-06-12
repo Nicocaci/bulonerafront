@@ -2,7 +2,7 @@
 .navbar-container {
   width: 100%;
   padding: 20px 300px 0px 300px;
-  background: #111;
+  background: #111111c2;
   color: white;
   z-index: 1000;
   position: fixed;

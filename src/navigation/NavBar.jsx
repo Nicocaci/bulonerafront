@@ -139,7 +139,7 @@ const NavBar = () => {
 
   return (
     <div
-      className={`navbar-container ${isHome ? "" : "nav-fixed"} ${isVisible ? "nav-visible" : "nav-hidden"} ${isScrolled ? "nav-scrolled" : ""}`}
+      className={`navbar-container `}
     >
       <div className="hamburger-container">
         <div className="div-navbar-2 navbar-actions-mobile">

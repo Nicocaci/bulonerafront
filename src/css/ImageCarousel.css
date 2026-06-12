@@ -30,9 +30,11 @@
 
 .carousel-image {
     width: 100%;
-    height: 100%;
+    height: 80%;
     /* mantiene aspecto cortando si hace falta */
     display: block;
+    position:absolute;
+    bottom: 0;
 }
 
 .carousel-caption {

@@ -39,7 +39,11 @@ const faqs = [
   {
     category: "Envíos",
     items: [
-      {
+        {
+        question: "¿Hacen envíos a todo el país?",
+        answer: "Sí, realizamos envíos a todo el territorio argentino. El costo varía según la ubicación y el peso del pedido.",
+        },
+        {
         question: "¿Cuánto tarda el envío?",
         answer: "El envío estándar tarda entre 3 y 5 días hábiles. También ofrecemos express en 24 hs para el AMBA.",
       },

@@ -14,6 +14,8 @@ import Faq from "./pages/Faq.jsx";
 import CajaHerramientas from "./pages/CajaHerramientas.jsx";
 import WpButton from "./components/WpButton.jsx";
 
+import ScrollToTop from "./utils/ScrollToTop.jsx";
+
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
@@ -31,6 +33,7 @@ function AppContent() {
     <div style={{ paddingTop: isHome ? 0 : 80 }} id="root">
       <NavBar />
       <main>
+        <ScrollToTop />
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route exact path="/productos" element={<ProductosPage />} />

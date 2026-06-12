@@ -159,7 +159,7 @@ const Checkout = () => {
     if (!cart || !cart.products) return 0;
     return cart.products.reduce((acc, item) => {
       const price =
-        item.product?.precio ||
+        item.product?.precioConIva ||
         item.product?.price ||
         item.precio ||
         item.price ||

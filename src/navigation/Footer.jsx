@@ -28,7 +28,7 @@ const Footer = () => {
       <div>
         <p className="titulo-footer">Contacto</p>
         <ul className="li-footer">
-          <li>b.eltriangulo@gmail.com</li>
+          <li>b.eltraingulo@gmail.com</li>
           <li>+54 9 11 5154-4062</li>
         </ul>
         <p className="titulo-footer">Redes Sociales</p>
