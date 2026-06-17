@@ -108,4 +108,13 @@
         bottom: 12px;
         font-size: 14px;
     }
+    .carousel-arrow {
+        width: 36px;
+        height: 36px;
+        font-size: 22px;
+        top: 70%;
+    }
+    .carousel-image {
+        height: 60%;
+    }
 }

@@ -13,6 +13,7 @@ const ItemDetail = () => {
   const [error, setError] = useState(null);
   const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
   const { addProductToCart } = useCart();
+  const [cantidad, setCantidad] = useState(1);
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -60,8 +61,7 @@ const ItemDetail = () => {
   }, [prodId]);
 
   const handleAddToCart = (productId) => {
-    const quantity = 1;
-    addProductToCart(productId, quantity, producto);
+    addProductToCart(productId, cantidad, producto);
     Swal.fire({
       icon: "success",
       title: "Producto agregado al carrito",
@@ -141,7 +141,9 @@ const ItemDetail = () => {
               </div>
               <div className="item-grid-2-content-sku">
                 <strong>Marca:</strong>
-                <p className="item-grid-2-content-sku-value">{producto.marca}</p>
+                <p className="item-grid-2-content-sku-value">
+                  {producto.marca}
+                </p>
               </div>
             </div>
             <div className="item-grid-2-content-description">
@@ -158,16 +160,45 @@ const ItemDetail = () => {
               <div className="item-grid-2-content-subcategoria">
                 <strong>Precio:</strong>
                 <p className="precio-item">
-                  ${producto.precioConIva.toLocaleString('es-AR')}
+                  ${producto.precioConIva.toLocaleString("es-AR")}
                 </p>
               </div>
-              <div className="btn-item-container">
-                <button
-                  className="btn-item"
-                  onClick={() => handleAddToCart(producto._id)}
-                >
-                  Agregar al carrito
-                </button>
+              <div className="probando-btn">
+                <div className="cantidad-container">
+                  <button
+                    className="cantidad-btn"
+                    onClick={() => setCantidad((prev) => Math.max(1, prev - 1))}
+                    disabled={cantidad <= 1}
+                  >
+                    −
+                  </button>
+                  <div className="cantidad-divider" />
+                  <input
+                    className="cantidad-input"
+                    type="number"
+                    value={cantidad}
+                    min={1}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      if (!isNaN(val) && val >= 1) setCantidad(val);
+                    }}
+                  />
+                  <div className="cantidad-divider" />
+                  <button
+                    className="cantidad-btn"
+                    onClick={() => setCantidad((prev) => prev + 1)}
+                  >
+                    +
+                  </button>
+                </div>
+                <div className="btn-item-container">
+                  <button
+                    className="btn-item"
+                    onClick={() => handleAddToCart(producto._id)}
+                  >
+                    Agregar al carrito
+                  </button>
+                </div>
               </div>
             </div>
           </div>

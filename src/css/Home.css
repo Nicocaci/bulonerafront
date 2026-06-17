@@ -259,7 +259,7 @@
 
 @media (max-width:768px) {
     .home-banner {
-        height: 40dvh;
+        height: 60dvh;
         overflow: visible;
     }
     .titulo-herramientas {

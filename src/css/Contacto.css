@@ -132,6 +132,6 @@
 }
 @media (max-width: 767px) {
   .contacto-container {
-    padding: 20px;
+    padding: 100px 20px;
   }
 }

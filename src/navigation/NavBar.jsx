@@ -139,7 +139,7 @@ const NavBar = () => {
 
   return (
     <div
-      className={`navbar-container `}
+      className={`navbar-container`}
     >
       <div className="hamburger-container">
         <div className="div-navbar-2 navbar-actions-mobile">
