@@ -29,12 +29,13 @@
 
 .auth-modal__title {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 15px;
   color: #000000;
 }
 
 .auth-modal__subtitle {
-  margin: 4px 0 20px;
+  margin-bottom: 10px;
+  font-size: 10px;
   color: #555;
 }
 
@@ -53,10 +54,10 @@
 }
 
 .auth-modal__form input {
-  padding: 10px 12px;
+  padding: 5px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 1rem;
+  font-size: 10px;
 }
 
 .auth-modal__error {
@@ -66,12 +67,12 @@
 
 .auth-modal__submit {
   margin-top: 8px;
-  padding: 12px;
+  padding: 5px;
   border: none;
   border-radius: 6px;
   background-color: #1e1e1e;
   color: #fff;
-  font-size: 1rem;
+  font-size: 10px;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
@@ -82,12 +83,12 @@
 
 .auth-modal__toggle {
   margin-top: 8px;
-  padding: 12px;
+  padding: 5px;
   border: none;
   border-radius: 6px;
   background-color: #1e1e1e;
   color: #fff;
-  font-size: 1rem;
+  font-size: 10px;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }

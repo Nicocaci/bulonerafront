@@ -66,29 +66,15 @@ export const AuthProvider = ({ children }) => {
       const token = data?.token;
       if (!token) throw new Error("No token recibido");
 
-      // 2️⃣ Logear automáticamente
-      await login(data);
-
-      // 3️⃣ 🔥 Traer carrito guest
+      // 2️⃣ Marcar que llegó un registro con carrito de invitado
       const guestCart = JSON.parse(localStorage.getItem("guest_cart"));
 
       if (guestCart?.products?.length) {
-        // 4️⃣ 🔥 Enviarlo al backend
-        const { data: updatedCart } = await axiosInstance.post(
-          "/api/cart/me/assign-guest",
-          {
-            products: guestCart.products,
-          },
-        );
-
-        localStorage.removeItem("guest_cart");
-
-        // 🔥 ACTUALIZAR STATE
-        setUser((prev) => ({
-          ...prev,
-          cart: updatedCart.products,
-        }));
+        localStorage.setItem("justRegistered", "true");
       }
+
+      // 3️⃣ Logear automáticamente
+      await login(data);
 
       return data;
     } catch (error) {
