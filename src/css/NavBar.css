@@ -1,8 +1,7 @@
 /* CONTENEDOR GENERAL */
 .navbar-container {
   width: 100%;
-  padding: 20px 300px 0px 300px;
-  background: #111111c2;
+  background: #181818;
   color: white;
   z-index: 1000;
   position: fixed;
@@ -31,11 +30,25 @@
 
 
 /* TOP (logo + hamburguesa) */
+.mxh-nav-sep {
+    width: 1px;
+    height: 14px;
+    background-color: #cccccc;
+    flex-shrink: 0;
+    margin: 0 2px;
+}
+.navbar-top-container {
+  width: 80%;
+  margin: 0 auto;
+  background-color: #181818;
+  padding: 24px 20px 10px 20px;
+}
+
 .navbar-top {
   display: flex;
   align-items: center;
-  padding: 15px 20px;
-  gap: 20px;
+  gap: 50px;
+  background-color: #181818;
 }
 
 .logo-navbar {
@@ -76,18 +89,40 @@
 }
 
 /* MENU */
+.btn-navbar {
+  background: none;
+  border: none;
+  color: #181818;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.btn-navbar:hover {
+  color: #ccc;
+}
+.navbar-menu-container {
+  width: 100%;
+  background-color: #ffffff;
+    border-bottom: 1px solid #ccc;
+}
 .navbar-menu {
   display: flex;
-  justify-content: space-between;
+  justify-content:space-between;
   align-items: center;
   padding: 10px 20px;
+  background-color: #ffffff;
+  width: 80%;
+  margin: 0 auto;
 }
 
 /* LINKS */
 .li-navbar {
   display: flex;
-  gap: 50px;
+  gap: 20px;
   list-style: none;
+  align-items: center;
 }
 
 .li-navbar li {
@@ -95,10 +130,11 @@
 }
 
 .li-navbar a {
-  color: white;
+  color: #181818;
   text-decoration: none;
   font-weight: 500;
   transition: 0.2s;
+  font-size: 10px;
 }
 
 .li-navbar a:hover {

@@ -6,19 +6,41 @@ import { FaToolbox, FaTools } from "react-icons/fa";
 import { FcSettings, FcShipped } from "react-icons/fc";
 import ImageCarousel from "../utils/ImageCarousel.jsx";
 import OfertasDestacadas from "../components/OfertasDestacadas.jsx";
+import MosaicBanner from "../components/MosaicBanner.jsx";
 
 const Home = () => {
   return (
     <div>
       {/* BANNER HOME */}
-        <div className="home-banner">
-          <ImageCarousel />
-        </div>
+      <div className="home-banner">
+        {/* <ImageCarousel /> */}
+        <MosaicBanner
+          images={{
+            topLeft: {
+              src: "/fondo-automotor.png",
+              alt: "Descuentos",
+              href: "/ofertas",
+            },
+            bottomLeft: {
+              src: "/fondo-fijaciones.png",
+              alt: "Armá tu setup",
+              href: "/armar-pc",
+            },
+            center: {
+              src: "/KIT_CARPINTERO.jpg",
+              alt: "Producto destacado",
+              href: "/producto",
+            },
+            topRight: { src: "/fondo-herrameintas.png", alt: "Accesorios", href: "/accesorios" },
+            bottomRight: { src: "/fondo-buloneria.png", alt: "Envíos gratis", href: "/envios" },
+          }}
+        />
+      </div>
       <BrandSlider />
 
       <div className="container-destacado">
         {/* CATEGORIA DE HERRAMIENTAS */}
-        <div className="container-herramientas">
+        {/* <div className="container-herramientas">
           <p className="titulo-herramientas">CATEGORÍA DE HERRAMIENTAS</p>
           <div className="grid-herramientas">
             <Link className="link-home" to="/productos?categoria=Buloneria">
@@ -101,7 +123,7 @@ const Home = () => {
               </div>
             </Link>
           </div>
-        </div>
+        </div> */}
 
         <div className="container-caja-herramientas">
           <OfertasDestacadas />

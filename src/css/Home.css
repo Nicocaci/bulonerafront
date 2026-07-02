@@ -2,7 +2,8 @@
     position: relative;
     overflow: hidden;
     display: block;
-    height: 90dvh;
+    height: max-content;
+    padding-bottom: 50px;
 }
 
 .banner-video {
@@ -259,7 +260,6 @@
 
 @media (max-width:768px) {
     .home-banner {
-        height: 60dvh;
         overflow: visible;
     }
     .titulo-herramientas {

@@ -14,6 +14,13 @@
   text-decoration:none;
   color:#ffffff
 }
+.d-flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 3px;
+}
 
 /* Footer Style */
 html, body, #root {

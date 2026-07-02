@@ -4,11 +4,13 @@ import { AuthContext } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getImageUrl } from "../utils/imageUtils";
+import { FiAlignJustify } from "react-icons/fi";
 
 import AuthModal from "../components/AuthModal";
 import ProductsDropdown from "./Navbar/ProductsDropdown.jsx";
 import NavbarActions from "./Navbar/NavbarActions.jsx";
 import axiosInstance from "../utils/axiosConfig";
+import NavbarMenu from "./Navbar/NavbarMenu.jsx";
 
 const NavBar = () => {
   const { isAuthenticated, logOut } = useContext(AuthContext);
@@ -24,6 +26,7 @@ const NavBar = () => {
   const lastScrollY = useRef(0);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showNavbarMenu, setShowNavbarMenu] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [results, setResults] = useState([]);
@@ -138,9 +141,7 @@ const NavBar = () => {
   };
 
   return (
-    <div
-      className={`navbar-container`}
-    >
+    <div className={`navbar-container`}>
       <div className="hamburger-container">
         <div className="div-navbar-2 navbar-actions-mobile">
           <NavbarActions
@@ -166,121 +167,183 @@ const NavBar = () => {
         </button>
       </div>
       {/* TOP */}
-      <div className="navbar-top">
-        <div className="div-navbar-1">
-          <img
-            className="logo-navbar"
-            src="/logo_bulonera_completo.jpg"
-            alt="logo"
-            onClick={() => {
-              window.location.href = "/";
-            }}
-          />
-        </div>
-        <div className="div-navbar">
-          <form
-            ref={searchRef}
-            className="input-search-container"
-            onSubmit={handleSearchSubmit}
-          >
-            <input
-              placeholder="🔎 Buscar productos..."
-              type="search"
-              className="input-search"
-              value={searchInput}
-              onChange={(e) => {
-                setSearchInput(e.target.value);
-                if (e.target.value.trim()) {
-                  setShowDropdown(true);
-                }
-              }}
-              onFocus={() => {
-                if (searchInput.trim()) {
-                  setShowDropdown(true);
-                }
+      <div className="navbar-top-container">
+        <div className="navbar-top">
+          <div className="div-navbar-1">
+            <img
+              className="logo-navbar"
+              src="/logo_bulonera_completo.jpg"
+              alt="logo"
+              onClick={() => {
+                window.location.href = "/";
               }}
             />
+          </div>
+          <div className="div-navbar">
+            <form
+              ref={searchRef}
+              className="input-search-container"
+              onSubmit={handleSearchSubmit}
+            >
+              <input
+                placeholder="🔎 Buscar productos..."
+                type="search"
+                className="input-search"
+                value={searchInput}
+                onChange={(e) => {
+                  setSearchInput(e.target.value);
+                  if (e.target.value.trim()) {
+                    setShowDropdown(true);
+                  }
+                }}
+                onFocus={() => {
+                  if (searchInput.trim()) {
+                    setShowDropdown(true);
+                  }
+                }}
+              />
 
-            {showDropdown && searchInput.trim() && (
-              <ul className="search-dropdown">
-                {loading && <li style={{ color: "#000000" }}>Cargando...</li>}
+              {showDropdown && searchInput.trim() && (
+                <ul className="search-dropdown">
+                  {loading && <li style={{ color: "#000000" }}>Cargando...</li>}
 
-                {!loading && hasSearched && results.length === 0 && (
-                  <li style={{ color: "#000000" }}>
-                    No se encontraron productos
-                  </li>
-                )}
-
-                {!loading &&
-                  results.map((product) => (
-                    <li
-                      key={product._id}
-                      onClick={(e) => {
-                        e.stopPropagation(); // evita que se cierre antes
-                        setSearchInput(product.item || "");
-                        setShowDropdown(false);
-                        navigate(`/producto/${product._id}`);
-                      }}
-                      className="probando-drop"
-                    >
-                      <div className="dropdown-navbar-container">
-                        <img
-                          className="img-navbar-dropwdown  "
-                          src={getImageUrl(product.imagen?.[0])}
-                          alt={product.item}
-                        />
-                        <p className="nombre-prod-navbar">{product.item}</p>
-                        <span className="precio-prod-navbar">
-                          $ {product.precioConIva.toLocaleString("es-AR")}
-                        </span>
-                      </div>
+                  {!loading && hasSearched && results.length === 0 && (
+                    <li style={{ color: "#000000" }}>
+                      No se encontraron productos
                     </li>
-                  ))}
-              </ul>
+                  )}
+
+                  {!loading &&
+                    results.map((product) => (
+                      <li
+                        key={product._id}
+                        onClick={(e) => {
+                          e.stopPropagation(); // evita que se cierre antes
+                          setSearchInput(product.item || "");
+                          setShowDropdown(false);
+                          navigate(`/producto/${product._id}`);
+                        }}
+                        className="probando-drop"
+                      >
+                        <div className="dropdown-navbar-container">
+                          <img
+                            className="img-navbar-dropwdown  "
+                            src={getImageUrl(product.imagen?.[0])}
+                            alt={product.item}
+                          />
+                          <p className="nombre-prod-navbar">{product.item}</p>
+                          <span className="precio-prod-navbar">
+                            $ {product.precioConIva.toLocaleString("es-AR")}
+                          </span>
+                        </div>
+                      </li>
+                    ))}
+                </ul>
+              )}
+            </form>
+          </div>
+          <div className="div-navbar-2 navbar-actions-desktop">
+            <NavbarActions
+              isAuthenticated={isAuthenticated}
+              logOut={logOut}
+              onUserClick={handleUserClick}
+              cartItemsCount={cartItemsCount}
+            />
+            {showAuthModal && (
+              <AuthModal onClose={() => setShowAuthModal(false)} />
             )}
-          </form>
-        </div>
-        <div className="div-navbar-2 navbar-actions-desktop">
-          <NavbarActions
-            isAuthenticated={isAuthenticated}
-            logOut={logOut}
-            onUserClick={handleUserClick}
-            cartItemsCount={cartItemsCount}
-          />
-          {showAuthModal && (
-            <AuthModal onClose={() => setShowAuthModal(false)} />
-          )}
+          </div>
         </div>
       </div>
 
       {/* MENU */}
-      <div className={`navbar-menu ${isMenuOpen ? "open" : ""}`} ref={menuRef}>
-        <button className="close-btn" onClick={toggleMenu}>
-          X
-        </button>
-        <ul className="li-navbar">
-          <ProductsDropdown closeMenu={() => setIsMenuOpen(false)} />
+      <div className="navbar-menu-container">
+        <div
+          className={`navbar-menu ${isMenuOpen ? "open" : ""}`}
+          ref={menuRef}
+        >
+          <button className="close-btn" onClick={toggleMenu}>
+            X
+          </button>
+          <button
+            className="btn-navbar"
+            onClick={() => setShowNavbarMenu((prev) => !prev)}
+          >
+            <FiAlignJustify />
+            Productos
+          </button>
 
-          <li>
-            <Link to="/contacto" onClick={() => setIsMenuOpen(false)}>
-              CONTACTO
-            </Link>
-          </li>
+          <NavbarMenu
+            isOpen={showNavbarMenu}
+            onClose={() => setShowNavbarMenu(false)}
+          />
+          <ul className="li-navbar">
+            {/* <ProductsDropdown closeMenu={() => setIsMenuOpen(false)} /> */}
+            <li>
+              <Link
+                to="/productos?ofertas=true"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                OFERTAS
+              </Link>
+            </li>
+            <div className="mxh-nav-sep"></div>
+            <li>
+              <Link
+                to="/productos?categoria=Herramientas+Manuales"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                He. Manuales
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/productos?categoria=Herramientas+Electricas"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                He. Eléctricas
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/productos?categoria=Soldadura"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Soldadura
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/productos?categoria=Automotor"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Automotor
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/productos?categoria=Jardin"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Jardín
+              </Link>
+            </li>
+            <div className="mxh-nav-sep"></div>
+            <li>
+              <Link to="/contacto" onClick={() => setIsMenuOpen(false)}>
+                CONTACTO
+              </Link>
+            </li>
 
-          <li>
-            <Link to="/nosotros" onClick={() => setIsMenuOpen(false)}>
-              NOSOTROS
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/productos?ofertas=true"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              OFERTAS
-            </Link>
-          </li>
-        </ul>
+            <li>
+              <Link to="/nosotros" onClick={() => setIsMenuOpen(false)}>
+                NOSOTROS
+              </Link>
+            </li>
+          </ul>
+
+          <button className="btn-navbar">Modo Claro</button>
+        </div>
       </div>
     </div>
   );

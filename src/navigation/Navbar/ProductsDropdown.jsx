@@ -81,7 +81,7 @@ const ProductsDropdown = ({ closeMenu }) => {
       onClick={() => setOpen((prev) => !prev)} // toggle
       ref={dropdownRef}
     >
-      <Link>CATEGORÍAS</Link>
+      <Link>PRODUCTOS</Link>
 
       {open && (
         <div className="products-dropdown">
