@@ -136,7 +136,7 @@
   overflow-y: auto;
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 5px;
   border-left: 1px solid #6d6d6d;
 
   animation: slideInSub 0.25s ease-out;
@@ -152,17 +152,12 @@
     transform: translateX(0);
   }
 }
-
-.submenu-categorias li {
-  border-bottom: 1px solid #eee;
-}
-
 .submenu-categorias a {
   display: block;
-  padding: 8px;
+  padding: 10px;
   text-decoration: none;
   color: #333;
-  font-size: 14px;
+  font-size: 10px;
 }
 
 .submenu-categorias a:hover {
