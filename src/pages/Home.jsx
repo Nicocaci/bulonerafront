@@ -7,6 +7,7 @@ import { FcSettings, FcShipped } from "react-icons/fc";
 import ImageCarousel from "../utils/ImageCarousel.jsx";
 import OfertasDestacadas from "../components/OfertasDestacadas.jsx";
 import MosaicBanner from "../components/MosaicBanner.jsx";
+import CategoriaSeccion from "../components/CategoriaSeccion.jsx";
 
 const Home = () => {
   return (
@@ -127,6 +128,9 @@ const Home = () => {
 
         <div className="container-caja-herramientas">
           <OfertasDestacadas />
+        </div>
+        <div className="container-caja-herramientas">
+          <CategoriaSeccion />
         </div>
       </div>
     </div>

@@ -1,48 +1,48 @@
 import React from "react";
 import axiosInstance from "../utils/axiosConfig.js";
 import "../css/OfertasDestacadas.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getImageUrl } from "../utils/imageUtils.js";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
+
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-const OfertasDestacadas = () => {
-  const navigation = useNavigate();
-
+const CategoriaSeccion = () => {
+  const navigate = useNavigate();
   const {
-    data: ofertas = [],
+    data: productos = [],
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["ofertas"],
+    queryKey: ["herramientas-manuales"],
     queryFn: async () => {
-      const { data } = await axiosInstance.get("/api/products/ofertas");
-      return data;
+      const { data } = await axiosInstance.get("/api/products", {
+        params: {
+          category: "Herramientas Manuales",
+          limit: 20, // opcional, si querés mostrar más de 6
+        },
+      });
+
+      return data.products;
     },
     staleTime: 1000 * 60 * 5,
   });
 
-  const ahorro = (precioConIva, precioFinal) => {
-    const diff = precioConIva - precioFinal;
-    return diff.toLocaleString('es-AR');
-  }
-
   if (isLoading) {
-    return <div className="ofertas-loading">Cargando ofertas...</div>;
+    return <div className="ofertas-loading">Cargando productos...</div>;
   }
 
   if (isError) {
-    return <div className="ofertas-error">Error al cargar ofertas</div>;
+    return <div className="ofertas-error">Error al cargar productos</div>;
   }
-
+  console.log(productos);
   return (
     <div>
-      <h2 className="titulo-ofertas">OFERTAS DESTACADAS</h2>
+      <h2 className="titulo-ofertas">HERRAMIENTAS MANUALES</h2>
 
       <div className="ofertas-wrapper">
         <Swiper
@@ -77,43 +77,34 @@ const OfertasDestacadas = () => {
               slidesPerView: 4,
               spaceBetween: 16,
             },
-          1920: {
+            1920: {
               slidesPerView: 5,
-              spaceBetween: 16
+              spaceBetween: 16,
             },
           }}
           className="ofertas-swiper"
         >
-          {ofertas.map((oferta) => (
-            <SwiperSlide key={oferta._id}>
+          {productos.map((producto) => (
+            <SwiperSlide key={producto._id}>
               <div className="oferta-card">
                 <img
                   className="oferta-image"
-                  src={getImageUrl(oferta.imagen?.[0])}
-                  alt={oferta.item}
-                  loading="lazy"
+                  src={getImageUrl(producto.imagen?.[0])}
+                  alt={producto.item}
                 />
+
                 <div className="titulo-oferta-container">
-                  <p className="descuento">-{oferta.oferta.descuento}%</p>
-                  <div className="titulo-oferta-container">
-                    <p className="oferta-title">{oferta.item}</p>
-                  </div>
-                  <p className="oferta-price-base">
-                    ${oferta.precioConIva.toLocaleString('es-AR')}
-                  </p>
+                  <p className="oferta-title">{producto.item}</p>
+
                   <p className="oferta-price">
-                    ${oferta.precioFinal.toLocaleString('es-AR')}
-                  </p>
-                  <p className="ahorro">
-                    Ahorrás ${ahorro(oferta.precioConIva, oferta.precioFinal)}
+                    ${producto.precioConIva.toLocaleString("es-AR")}
                   </p>
                 </div>
+
                 <div className="btn-container">
                   <button
                     className="btn-ver-producto"
-                    onClick={() => {
-                      navigation(`/producto/${oferta._id}`);
-                    }}
+                    onClick={() => navigate(`/producto/${producto._id}`)}
                   >
                     Ver producto
                   </button>
@@ -129,12 +120,15 @@ const OfertasDestacadas = () => {
       </div>
 
       <div className="ofertas-footer">
-        <Link to="/productos?ofertas=true" className="ver-todas-link">
-          Ver todas las ofertas
+        <Link
+          to="/productos?categoria=Herramientas%20Manuales"
+          className="ver-todas-link"
+        >
+          Ver todos los productos
         </Link>
       </div>
     </div>
   );
 };
 
-export default OfertasDestacadas;
+export default CategoriaSeccion;
