@@ -178,13 +178,17 @@
 }
 @media (max-width: 768px) {
   .navbarmenu {
-    width: 60vw;
+    width: 50vw;
   }
   .submenu-categorias {
-    left: 60vw; /* justo pegado al borde derecho de .navbarmenu (que mide 60vw) */
-    width: 60vw;
+    left: 50vw; /* justo pegado al borde derecho de .navbarmenu (que mide 60vw) */
+    width: 50vw;
   }
   .navbarmenu a {
+    font-size: 12px;
+  }
+  .submenu-back {
+    padding: 8px 6px;
     font-size: 12px;
   }
 }
