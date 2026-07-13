@@ -33,6 +33,7 @@ const NavBar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const menuRef = useRef(null);
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
@@ -138,6 +139,21 @@ const NavBar = () => {
 
     navigate(nextUrl);
     setIsMenuOpen(false);
+    setIsMobileSearchOpen(false);
+  };
+
+  const handleMobileSearchToggle = () => {
+    setIsMobileSearchOpen((prev) => {
+      const nextValue = !prev;
+
+      if (nextValue) {
+        setTimeout(() => {
+          searchRef.current?.querySelector("input")?.focus();
+        }, 0);
+      }
+
+      return nextValue;
+    });
   };
 
   return (
@@ -149,6 +165,7 @@ const NavBar = () => {
             logOut={logOut}
             onUserClick={handleUserClick}
             cartItemsCount={cartItemsCount}
+            onSearchClick={handleMobileSearchToggle}
           />
           {showAuthModal && (
             <AuthModal onClose={() => setShowAuthModal(false)} />
@@ -156,7 +173,7 @@ const NavBar = () => {
         </div>
         <img
           className="logo-navbar logo-navbar-mobile"
-          src="/logo_bulonera_completo.jpg"
+          src="/soloLogo.png"
           alt="logo"
           onClick={() => {
             window.location.href = "/";
@@ -182,7 +199,9 @@ const NavBar = () => {
           <div className="div-navbar">
             <form
               ref={searchRef}
-              className="input-search-container"
+              className={`input-search-container ${
+                isMobileSearchOpen ? "mobile-search-open" : "mobile-search-closed"
+              }`}
               onSubmit={handleSearchSubmit}
             >
               <input

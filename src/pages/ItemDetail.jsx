@@ -229,7 +229,7 @@ const ItemDetail = () => {
             </div>
           </div>
         </div>
-        <p className="titulo-detail">Descripción</p>
+        <p className="titulo-descripcion">Descripción</p>
         <div className="item-grid-3">
           <div>
             <p className="descripcion-detail">

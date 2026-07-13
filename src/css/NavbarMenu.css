@@ -176,4 +176,15 @@
   align-items: center;
   gap: 6px;
 }
-
+@media (max-width: 768px) {
+  .navbarmenu {
+    width: 60vw;
+  }
+  .submenu-categorias {
+    left: 60vw; /* justo pegado al borde derecho de .navbarmenu (que mide 60vw) */
+    width: 60vw;
+  }
+  .navbarmenu a {
+    font-size: 12px;
+  }
+}

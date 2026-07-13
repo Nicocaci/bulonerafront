@@ -147,6 +147,12 @@
   color: #ccc !important; 
   text-decoration: underline;
 }
+.mobile-search-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 .input-search-container {
   width: 100%;
 }
@@ -301,9 +307,26 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-    padding: 15px 0px 20px 0px;
+  }
+
+  .navbar-top-container {
+    width: 100%;
+    padding: 10px 20px;
   }
   .div-navbar {
+    width: 100%;
+  }
+
+  .mobile-search-wrapper {
+    justify-content: flex-end;
+  }
+
+  .input-search-container.mobile-search-closed {
+    display: none;
+  }
+
+  .input-search-container.mobile-search-open {
+    display: flex;
     width: 100%;
   }
   .div-navbar-1 {
@@ -311,7 +334,6 @@
   }
   .logo-navbar {
     display: flex;
-    width: 50%;
   }
   .hamburger-container {
     display: flex;
@@ -346,6 +368,7 @@
 
   .navbar-menu.open {
     display: flex;
+    gap: 20px;
   }
   .close-btn {
     align-self: flex-end;
@@ -355,12 +378,20 @@
     font-size: 24px;
     cursor: pointer;
     width: 30px;
+    display: inline-block;
+    position: absolute;
   }
 
   .li-navbar {
     flex-direction: column;
     width: 100%;
     gap: 15px;
+  }
+  .li-navbar a {
+    color: #ffffff;
+  }
+  .btn-navbar {
+    color: #ffffff;
   }
 
   .li-navbar li {
@@ -385,5 +416,8 @@
   }
   .precio-prod-navbar {
     font-size: 8px;
+  }
+  .mxh-nav-sep {
+    display: none;
   }
 }

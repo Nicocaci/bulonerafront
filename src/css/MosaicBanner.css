@@ -81,9 +81,6 @@
 
 @media (max-width: 768px) {
   @media (max-width: 768px) {
-    .mosaicBanner {
-      padding-top: 200px;
-    }
     .mosaicGrid {
       grid-template-columns: 1fr 1fr;
       grid-template-rows: auto repeat(2, 1fr);
