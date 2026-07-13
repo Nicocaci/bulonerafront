@@ -4,7 +4,7 @@
   margin: 0 auto;
   padding: 0 16px;
   box-sizing: border-box;
-  padding-top:150px;
+  padding-top: 150px;
 }
 
 .mosaicGrid {
@@ -27,7 +27,7 @@
 .tileImg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+    object-fit: cover;
   display: block;
 }
 
@@ -80,27 +80,48 @@
 }
 
 @media (max-width: 768px) {
-  .mosaicGrid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    height: auto;
-  }
+  @media (max-width: 768px) {
+    .mosaicBanner {
+      padding-top: 200px;
+    }
+    .mosaicGrid {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto repeat(2, 1fr);
+      height: auto;
+      gap: 10px;
+    }
 
-  .center {
-    grid-column: 1 / 2;
-    grid-row: 1 / 2;
-    height: 260px;
-  }
+    .center {
+      grid-column: 1 / 3;
+      grid-row: 1 / 2;
+      height: 320px;
+    }
 
-  .topLeft {
-    grid-column: 1 / 2;
-    grid-row: 2 / 3;
-    height: 160px;
-  }
+    .topLeft {
+      grid-column: 1 / 2;
+      grid-row: 2 / 3;
+      height: 150px;
+    }
 
-  .bottomLeft,
-  .topRight,
-  .bottomRight {
-    display: none;
+    .topRight {
+      grid-column: 2 / 3;
+      grid-row: 2 / 3;
+      height: 150px;
+    }
+
+    .bottomLeft {
+      grid-column: 1 / 2;
+      grid-row: 3 / 4;
+      height: 150px;
+    }
+
+    .bottomRight {
+      grid-column: 2 / 3;
+      grid-row: 3 / 4;
+      height: 150px;
+    }
+    .tileImg {
+      object-fit: initial;
+    } 
   }
 }

@@ -154,14 +154,9 @@
     text-align: center;
 }
 
-
-.container-destacado {
-    background: #000000;
-}
-
 .container-caja-herramientas {
   width: 100%;
-  background-color: #ffffffde;
+  background-color: #d4d4d4;
   padding: 80px 40px;
   box-sizing: border-box;
 }

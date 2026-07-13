@@ -134,11 +134,18 @@
   text-decoration: none;
   font-weight: 500;
   transition: 0.2s;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .li-navbar a:hover {
   color: #ccc;
+}
+.ofertas-link {
+  color: #1d9912 !important; 
+}
+.ofertas-link:hover {
+  color: #ccc !important; 
+  text-decoration: underline;
 }
 .input-search-container {
   width: 100%;

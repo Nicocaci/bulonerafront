@@ -5,6 +5,10 @@ import { useCart } from "../context/CartContext";
 import Swal from "sweetalert2";
 import { getImageUrl } from "../utils/imageUtils";
 import "../css/ItemDetail.css";
+import { BsTruck } from "react-icons/bs";
+import { CiHeart } from "react-icons/ci";
+import { MdOutlineVerified, MdOutlineVerifiedUser } from "react-icons/md";
+import { PiHeadsetDuotone } from "react-icons/pi";
 
 const ItemDetail = () => {
   const { prodId } = useParams();
@@ -134,71 +138,129 @@ const ItemDetail = () => {
           </div>
           <div className="item-grid-2">
             <div className="item-grid-2-content">
-              <h1 className="titulo-detail">{producto.item}</h1>
+              <p className="titulo-categoria">{producto.categoria}</p>
+              <p className="titulo-detail">{producto.item}</p>
               <div className="item-grid-2-content-sku">
-                <strong>Modelo:</strong>
-                <p className="item-grid-2-content-sku-value">{producto.sku}</p>
+                <p className="precio-siniva">SKU: {producto.sku}</p>
               </div>
-              <div className="item-grid-2-content-sku">
-                <strong>Marca:</strong>
-                <p className="item-grid-2-content-sku-value">
-                  {producto.marca}
+              <div className="item-grid-2-content-precio">
+                <p className="item-grid-2-content-precio-value">
+                  {producto.precioConIva.toLocaleString("es-AR", {
+                    style: "currency",
+                    currency: "ARS",
+                  })}
                 </p>
+                <p className="precio-siniva">
+                  Precio sin IVA:{" "}
+                  {producto.precio.toLocaleString("es-AR", {
+                    style: "currency",
+                    currency: "ARS",
+                  })}
+                </p>
+                <div className="item-grid-2-content-stats">
+                  <div className="probando2">
+                    <p>6</p>
+                    <p>Cuotas sin interés</p>
+                  </div>
+                  <div className="probando1">
+                    <BsTruck />
+                    <div>
+                      <p>Envío a todo el país</p>
+                      <p className="precio-siniva">Calcula tu envío</p>
+                    </div>
+                  </div>
+                  <div className="probando1">
+                    <p>🟢</p>
+                    <div>
+                      <p>Stock disponible</p>
+                      <p className="precio-siniva">Entrega Inmediata</p>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <p className="precio-siniva">Cantidad</p>
+                  <div className="item-grid-2-content-stats">
+                    <div>
+                      {" "}
+                      <div className="cantidad-container">
+                        <button
+                          className="cantidad-btn"
+                          onClick={() =>
+                            setCantidad((prev) => Math.max(1, prev - 1))
+                          }
+                          disabled={cantidad <= 1}
+                        >
+                          −
+                        </button>
+                        <div className="cantidad-divider" />
+                        <input
+                          className="cantidad-input"
+                          type="number"
+                          value={cantidad}
+                          min={1}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value);
+                            if (!isNaN(val) && val >= 1) setCantidad(val);
+                          }}
+                        />
+                        <div className="cantidad-divider" />
+                        <button
+                          className="cantidad-btn"
+                          onClick={() => setCantidad((prev) => prev + 1)}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        className="btn-item"
+                        onClick={() => handleAddToCart(producto._id)}
+                      >
+                        Agregar al carrito
+                      </button>
+                    </div>
+                    <div>
+                      <CiHeart />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="item-grid-2-content-description">
-              <div className="item-grid-2-content-subcategoria">
-                <strong>Tipo de producto:</strong>
-                <p>{producto.subcategoria}</p>
-              </div>
-              <strong>Descripción:</strong>
-              {descripcionFormateada.split("\n").map((linea, i) => (
-                <p className="descripcion-prod" key={i}>
-                  {linea.trim()}
-                </p>
+          </div>
+        </div>
+        <p className="titulo-detail">Descripción</p>
+        <div className="item-grid-3">
+          <div>
+            <p className="descripcion-detail">
+              {descripcionFormateada.split("\n").map((linea, index) => (
+                <React.Fragment key={index}>
+                  {linea}
+                  <br />
+                </React.Fragment>
               ))}
-              <div className="item-grid-2-content-subcategoria">
-                <strong>Precio:</strong>
-                <p className="precio-item">
-                  ${producto.precioConIva.toLocaleString("es-AR")}
-                </p>
+            </p>
+          </div>
+          <div className="descripcion-detail">
+            <div className="item-stats">
+              <MdOutlineVerified />
+              <div>
+                <p>Garantía Oficial</p>
+                <p className="precio-siniva">12 meses</p>
               </div>
-              <div className="probando-btn">
-                <div className="cantidad-container">
-                  <button
-                    className="cantidad-btn"
-                    onClick={() => setCantidad((prev) => Math.max(1, prev - 1))}
-                    disabled={cantidad <= 1}
-                  >
-                    −
-                  </button>
-                  <div className="cantidad-divider" />
-                  <input
-                    className="cantidad-input"
-                    type="number"
-                    value={cantidad}
-                    min={1}
-                    onChange={(e) => {
-                      const val = parseInt(e.target.value);
-                      if (!isNaN(val) && val >= 1) setCantidad(val);
-                    }}
-                  />
-                  <div className="cantidad-divider" />
-                  <button
-                    className="cantidad-btn"
-                    onClick={() => setCantidad((prev) => prev + 1)}
-                  >
-                    +
-                  </button>
-                </div>
-                <div className="btn-item-container">
-                  <button
-                    className="btn-item"
-                    onClick={() => handleAddToCart(producto._id)}
-                  >
-                    Agregar al carrito
-                  </button>
-                </div>
+            </div>
+            <div className="item-stats">
+              <PiHeadsetDuotone />
+              <div>
+                <p>Soporte Técnico</p>
+                <p className="precio-siniva">Asesoramiento post venta</p>
+              </div>
+            </div>
+            <div className="item-stats">
+              <MdOutlineVerifiedUser />
+              <div>
+                <p>Compra Protegida</p>
+                <p className="precio-siniva">Tus datos y pagos seguros</p>
               </div>
             </div>
           </div>

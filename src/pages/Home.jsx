@@ -23,17 +23,17 @@ const Home = () => {
               href: "/ofertas",
             },
             bottomLeft: {
-              src: "/fondo-fijaciones.png",
+              src: "/cotiza.jpeg",
               alt: "Armá tu setup",
               href: "/armar-pc",
             },
             center: {
-              src: "/KIT_CARPINTERO.jpg",
-              alt: "Producto destacado",
+              src: "/bannerObrero.jpeg",
+              alt: "Banner Obrero",
               href: "/producto",
             },
-            topRight: { src: "/fondo-herrameintas.png", alt: "Accesorios", href: "/accesorios" },
-            bottomRight: { src: "/fondo-buloneria.png", alt: "Envíos gratis", href: "/envios" },
+            topRight: { src: "/catalogo.jpeg", alt: "Catálogo", href: "/accesorios" },
+            bottomRight: { src: "/enviosBanner.jpeg", alt: "Envíos gratis", href: "/envios" },
           }}
         />
       </div>

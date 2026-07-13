@@ -279,10 +279,11 @@ const NavBar = () => {
           />
           <ul className="li-navbar">
             {/* <ProductsDropdown closeMenu={() => setIsMenuOpen(false)} /> */}
-            <li>
+            <li >
               <Link
                 to="/productos?ofertas=true"
                 onClick={() => setIsMenuOpen(false)}
+                className="ofertas-link"
               >
                 OFERTAS
               </Link>
