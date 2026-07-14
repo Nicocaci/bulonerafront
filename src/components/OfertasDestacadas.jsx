@@ -44,7 +44,7 @@ const OfertasDestacadas = () => {
     <div>
       <div className="ofertas-header">
         <h2 className="titulo-ofertas">OFERTAS DESTACADAS</h2>
-        <p>Los mejores precios del momento, por tiempo limitado.</p>
+        <p className="subtitulo-ofertas">Los mejores precios del momento, por tiempo limitado.</p>
       </div>
 
       <div className="ofertas-wrapper">

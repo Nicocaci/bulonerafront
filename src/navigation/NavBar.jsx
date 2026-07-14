@@ -5,6 +5,7 @@ import { useCart } from "../context/CartContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getImageUrl } from "../utils/imageUtils";
 import { FiAlignJustify } from "react-icons/fi";
+import { FaPercent } from "react-icons/fa";
 
 import AuthModal from "../components/AuthModal";
 import ProductsDropdown from "./Navbar/ProductsDropdown.jsx";
@@ -304,7 +305,7 @@ const NavBar = () => {
                 onClick={() => setIsMenuOpen(false)}
                 className="ofertas-link"
               >
-                OFERTAS
+               <FaPercent size={10} className="icono-ofertas" /> OFERTAS
               </Link>
             </li>
             <div className="mxh-nav-sep"></div>

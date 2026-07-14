@@ -21,6 +21,12 @@
   font-size: 2rem;
   margin: auto;
 }
+.subtitulo-ofertas {
+  color: #555;
+  font-size: 1rem;
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
 .oferta-card {
   width: 100%;
   background: white;

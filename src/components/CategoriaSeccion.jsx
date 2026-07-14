@@ -44,7 +44,7 @@ const CategoriaSeccion = () => {
     <div>
       <div className="ofertas-header">
         <h2 className="titulo-ofertas">HERRAMIENTAS MANUALES</h2>
-        <p>Herramientas de confianza para trabajar sin límites.</p>
+        <p className="subtitulo-ofertas">Herramientas de confianza para trabajar sin límites.</p>
       </div>
 
       <div className="ofertas-wrapper">
