@@ -42,7 +42,10 @@ const CategoriaSeccion = () => {
   console.log(productos);
   return (
     <div>
-      <h2 className="titulo-ofertas">HERRAMIENTAS MANUALES</h2>
+      <div className="ofertas-header">
+        <h2 className="titulo-ofertas">HERRAMIENTAS MANUALES</h2>
+        <p>Herramientas de confianza para trabajar sin límites.</p>
+      </div>
 
       <div className="ofertas-wrapper">
         <Swiper
@@ -62,8 +65,12 @@ const CategoriaSeccion = () => {
           }}
           breakpoints={{
             320: {
-              slidesPerView: 1,
-              spaceBetween: 16,
+              slidesPerView: 2, // en mobile chico se ven 1 y media, invita a deslizar
+              spaceBetween: 12,
+            },
+            480: {
+              slidesPerView: 2,
+              spaceBetween: 12,
             },
             768: {
               slidesPerView: 2,
@@ -86,30 +93,32 @@ const CategoriaSeccion = () => {
         >
           {productos.map((producto) => (
             <SwiperSlide key={producto._id}>
-              <div className="oferta-card">
-                <img
-                  className="oferta-image"
-                  src={getImageUrl(producto.imagen?.[0])}
-                  alt={producto.item}
-                />
+              <Link to={`/producto/${producto._id}`} className="link-none">
+                <div className="oferta-card">
+                  <img
+                    className="oferta-image"
+                    src={getImageUrl(producto.imagen?.[0])}
+                    alt={producto.item}
+                  />
 
-                <div className="titulo-oferta-container">
-                  <p className="oferta-title">{producto.item}</p>
+                  <div className="titulo-oferta-container">
+                    <p className="oferta-title">{producto.item}</p>
 
-                  <p className="oferta-price">
-                    ${producto.precioConIva.toLocaleString("es-AR")}
-                  </p>
+                    <p className="oferta-price">
+                      ${producto.precioConIva.toLocaleString("es-AR")}
+                    </p>
+                  </div>
+
+                  <div className="btn-container">
+                    <button
+                      className="btn-ver-producto"
+                      onClick={() => navigate(`/producto/${producto._id}`)}
+                    >
+                      Ver producto
+                    </button>
+                  </div>
                 </div>
-
-                <div className="btn-container">
-                  <button
-                    className="btn-ver-producto"
-                    onClick={() => navigate(`/producto/${producto._id}`)}
-                  >
-                    Ver producto
-                  </button>
-                </div>
-              </div>
+              </Link>
             </SwiperSlide>
           ))}
 

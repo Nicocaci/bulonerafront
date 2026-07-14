@@ -287,13 +287,27 @@
 .close-btn {
   display: none;
 }
-
+@media (max-width: 1300px){
+  .navbar-menu {
+    width: 100%;
+  }
+  .li-navbar {
+    gap: 10px;
+  }
+  .li-navbar a {
+    font-size: 10px;
+  }
+  .btn-navbar {
+    font-size: 10px;
+  }
+}
 /* ========================= */
 /* 📱 MOBILE */
 /* ========================= */
 .logo-navbar-mobile {
   display: none;
 }
+
 @media (max-width: 768px) {
   .navbar-container {
     padding: 20px;

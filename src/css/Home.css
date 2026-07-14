@@ -281,8 +281,6 @@
     }
     .container-caja-herramientas{
         height: max-content;
-        gap: 50px;
-        margin-top: 50px;
         padding: 80px 10px ;
     }
     .container-caja-herramientas h2 {

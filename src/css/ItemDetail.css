@@ -286,12 +286,15 @@
   padding-bottom: 5px;
   margin-bottom: 10px;
 }
-
+@media (max-width: 1300px) {
+  .item-detail-container {
+    width: 80%;
+  }
+}
 /* 📱 MOBILE */
 @media (max-width: 768px) {
   .item-detail-container {
     width: 90%;
-    padding: 100px 10px;
   }
 
   .item-detail-grid {
@@ -306,12 +309,19 @@
     margin: auto;
     flex-direction: column;
   }
+  .item-grid-2-content-stats {
+    gap: 20px;
+  }
   .img-item-detail {
     width: 100%;
   }
 
   .item-grid-2 {
     order: 1;
+  }
+  .item-grid-3 {
+    padding: 0;
+    gap: 10px;
   }
   .item-page {
     padding-top: 30px;
@@ -324,5 +334,31 @@
   }
   .btn-item {
     font-size: 10px;
+  }
+  .probando2{
+    font-size: 8px;
+  }
+  .probando1 {
+    font-size: 8px;
+  }
+  .precio-siniva {
+    font-size: 8px;
+  }
+  .cantidad-container{
+    width: 100px;
+    height: 35px;
+  }
+  .cantidad-btn {
+    font-size: 10px;
+  }
+  .item-stats {
+    font-size: 10px;
+  }
+  .descripcion-detail {
+    font-size: 10px;
+  }
+  .titulo-descripcion {
+    font-size: 12px;
+    margin-top: 10px;
   }
 }

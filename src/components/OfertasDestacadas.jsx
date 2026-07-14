@@ -29,8 +29,8 @@ const OfertasDestacadas = () => {
 
   const ahorro = (precioConIva, precioFinal) => {
     const diff = precioConIva - precioFinal;
-    return diff.toLocaleString('es-AR');
-  }
+    return diff.toLocaleString("es-AR");
+  };
 
   if (isLoading) {
     return <div className="ofertas-loading">Cargando ofertas...</div>;
@@ -42,7 +42,10 @@ const OfertasDestacadas = () => {
 
   return (
     <div>
-      <h2 className="titulo-ofertas">OFERTAS DESTACADAS</h2>
+      <div className="ofertas-header">
+        <h2 className="titulo-ofertas">OFERTAS DESTACADAS</h2>
+        <p>Los mejores precios del momento, por tiempo limitado.</p>
+      </div>
 
       <div className="ofertas-wrapper">
         <Swiper
@@ -62,8 +65,12 @@ const OfertasDestacadas = () => {
           }}
           breakpoints={{
             320: {
-              slidesPerView: 1,
-              spaceBetween: 16,
+              slidesPerView: 2, // en mobile chico se ven 1 y media, invita a deslizar
+              spaceBetween: 12,
+            },
+            480: {
+              slidesPerView: 2,
+              spaceBetween: 12,
             },
             768: {
               slidesPerView: 2,
@@ -77,48 +84,50 @@ const OfertasDestacadas = () => {
               slidesPerView: 4,
               spaceBetween: 16,
             },
-          1920: {
+            1920: {
               slidesPerView: 5,
-              spaceBetween: 16
+              spaceBetween: 16,
             },
           }}
           className="ofertas-swiper"
         >
           {ofertas.map((oferta) => (
             <SwiperSlide key={oferta._id}>
-              <div className="oferta-card">
-                <img
-                  className="oferta-image"
-                  src={getImageUrl(oferta.imagen?.[0])}
-                  alt={oferta.item}
-                  loading="lazy"
-                />
-                <div className="titulo-oferta-container">
-                  <p className="descuento">-{oferta.oferta.descuento}%</p>
+              <Link to={`/producto/${oferta._id}`} className="link-none">
+                <div className="oferta-card">
+                  <img
+                    className="oferta-image"
+                    src={getImageUrl(oferta.imagen?.[0])}
+                    alt={oferta.item}
+                    loading="lazy"
+                  />
                   <div className="titulo-oferta-container">
-                    <p className="oferta-title">{oferta.item}</p>
+                    <p className="descuento">-{oferta.oferta.descuento}%</p>
+                    <div className="titulo-oferta-container">
+                      <p className="oferta-title">{oferta.item}</p>
+                    </div>
+                    <p className="oferta-price-base">
+                      ${oferta.precioConIva.toLocaleString("es-AR")}
+                    </p>
+                    <p className="oferta-price">
+                      ${oferta.precioFinal.toLocaleString("es-AR")}
+                    </p>
+                    <p className="ahorro">
+                      Ahorrás ${ahorro(oferta.precioConIva, oferta.precioFinal)}
+                    </p>
                   </div>
-                  <p className="oferta-price-base">
-                    ${oferta.precioConIva.toLocaleString('es-AR')}
-                  </p>
-                  <p className="oferta-price">
-                    ${oferta.precioFinal.toLocaleString('es-AR')}
-                  </p>
-                  <p className="ahorro">
-                    Ahorrás ${ahorro(oferta.precioConIva, oferta.precioFinal)}
-                  </p>
+                  <div className="btn-container">
+                    <button
+                      className="btn-ver-producto"
+                      onClick={() => {
+                        navigation(`/producto/${oferta._id}`);
+                      }}
+                    >
+                      Ver producto
+                    </button>
+                  </div>
                 </div>
-                <div className="btn-container">
-                  <button
-                    className="btn-ver-producto"
-                    onClick={() => {
-                      navigation(`/producto/${oferta._id}`);
-                    }}
-                  >
-                    Ver producto
-                  </button>
-                </div>
-              </div>
+              </Link>
             </SwiperSlide>
           ))}
 

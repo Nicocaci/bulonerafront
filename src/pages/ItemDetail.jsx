@@ -9,6 +9,7 @@ import { BsTruck } from "react-icons/bs";
 import { CiHeart } from "react-icons/ci";
 import { MdOutlineVerified, MdOutlineVerifiedUser } from "react-icons/md";
 import { PiHeadsetDuotone } from "react-icons/pi";
+import Breadcrumb from "../components/Breadcrumb.jsx";
 
 const ItemDetail = () => {
   const { prodId } = useParams();
@@ -92,6 +93,18 @@ const ItemDetail = () => {
   return (
     <div className="item-page">
       <div className="item-detail-container">
+        <Breadcrumb
+          items={[
+            {
+              label: producto.categoria,
+              path: `/productos?categoria=${encodeURIComponent(producto.categoria)}`,
+            },
+            {
+              label: producto.subcategoria,
+              path: `/productos?categoria=${encodeURIComponent(producto.categoria)}&subcategoria=${encodeURIComponent(producto.subcategoria)}`,
+            },
+          ]}
+        />
         <div className="item-detail-grid">
           <div className="item-grid-1">
             <img
@@ -163,7 +176,7 @@ const ItemDetail = () => {
                     <p>Cuotas sin interés</p>
                   </div>
                   <div className="probando1">
-                    <BsTruck />
+                    <BsTruck size={25} />
                     <div>
                       <p>Envío a todo el país</p>
                       <p className="precio-siniva">Calcula tu envío</p>
@@ -243,21 +256,21 @@ const ItemDetail = () => {
           </div>
           <div className="descripcion-detail">
             <div className="item-stats">
-              <MdOutlineVerified />
+              <MdOutlineVerified size={25} />
               <div>
                 <p>Garantía Oficial</p>
                 <p className="precio-siniva">12 meses</p>
               </div>
             </div>
             <div className="item-stats">
-              <PiHeadsetDuotone />
+              <PiHeadsetDuotone size={25} />
               <div>
                 <p>Soporte Técnico</p>
                 <p className="precio-siniva">Asesoramiento post venta</p>
               </div>
             </div>
             <div className="item-stats">
-              <MdOutlineVerifiedUser />
+              <MdOutlineVerifiedUser size={25} />
               <div>
                 <p>Compra Protegida</p>
                 <p className="precio-siniva">Tus datos y pagos seguros</p>
