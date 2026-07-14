@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "../css/Breadcrumb.css";
+import "../css/BreadCrumb.css";
 
 const Breadcrumb = ({ items }) => {
   return (
