@@ -6,6 +6,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getImageUrl } from "../utils/imageUtils";
 import { FiAlignJustify } from "react-icons/fi";
 import { FaPercent } from "react-icons/fa";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 import AuthModal from "../components/AuthModal";
 import ProductsDropdown from "./Navbar/ProductsDropdown.jsx";
@@ -15,6 +16,7 @@ import NavbarMenu from "./Navbar/NavbarMenu.jsx";
 
 const NavBar = () => {
   const { isAuthenticated, logOut } = useContext(AuthContext);
+  const { theme, toggleTheme } = useTheme();
   const { cart } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
@@ -201,7 +203,9 @@ const NavBar = () => {
             <form
               ref={searchRef}
               className={`input-search-container ${
-                isMobileSearchOpen ? "mobile-search-open" : "mobile-search-closed"
+                isMobileSearchOpen
+                  ? "mobile-search-open"
+                  : "mobile-search-closed"
               }`}
               onSubmit={handleSearchSubmit}
             >
@@ -299,13 +303,13 @@ const NavBar = () => {
           />
           <ul className="li-navbar">
             {/* <ProductsDropdown closeMenu={() => setIsMenuOpen(false)} /> */}
-            <li >
+            <li>
               <Link
                 to="/productos?ofertas=true"
                 onClick={() => setIsMenuOpen(false)}
                 className="ofertas-link"
               >
-               <FaPercent size={10} className="icono-ofertas" /> OFERTAS
+                <FaPercent size={10} className="icono-ofertas" /> OFERTAS
               </Link>
             </li>
             <div className="mxh-nav-sep"></div>
@@ -363,7 +367,9 @@ const NavBar = () => {
             </li>
           </ul>
 
-          <button className="btn-navbar">Modo Claro</button>
+          <button onClick={toggleTheme} aria-label="Cambiar tema">
+            {theme === "light" ? "🌙" : "☀️"}
+          </button>
         </div>
       </div>
     </div>

@@ -1,3 +1,7 @@
+.slider-container{
+    width: 100%;
+    background-color: var(--prodContainer-bg);
+}
 .slider {
     overflow: hidden;
     position: relative;

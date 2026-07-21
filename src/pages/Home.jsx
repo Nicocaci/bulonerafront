@@ -25,15 +25,15 @@ const Home = () => {
             bottomLeft: {
               src: "/cotiza.jpeg",
               alt: "Armá tu setup",
-              href: "/armar-pc",
+              href: "/contacto",
             },
             center: {
               src: "/bannerObrero.jpeg",
               alt: "Banner Obrero",
-              href: "/producto",
+              href: "/producto/6a57bf7aa07778044d79f2fd",
             },
-            topRight: { src: "/catalogo.jpeg", alt: "Catálogo", href: "/accesorios" },
-            bottomRight: { src: "/enviosBanner.jpeg", alt: "Envíos gratis", href: "/envios" },
+            topRight: { src: "/catalogo.jpeg", alt: "Catálogo", href: "/productos?page=1" },
+            bottomRight: { src: "/enviosBanner.jpeg", alt: "Envíos gratis", href: "/faq" },
           }}
         />
       </div>

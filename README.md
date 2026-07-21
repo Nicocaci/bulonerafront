@@ -1,17 +1,68 @@
-# React + Vite
+# BULONERA EL TRIÁNGULO, HERRAMIENTAS Y SEGURIDAD INDUSTRIAL
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Status](https://img.shields.io/badge/status-production-brightgreen)
+![Frontend](https://img.shields.io/badge/frontend-React-blue)
+![Backend](https://img.shields.io/badge/backend-Node.js-green)
+![Database](https://img.shields.io/badge/database-MongoDB-darkgreen)
+![Payments](https://img.shields.io/badge/payments-Mercado%20Pago-009ee3)
 
-Currently, two official plugins are available:
+E-commerce **full-stack** desarrollado de punta a punta, enfocado en brindar una experiencia de compra simple, rápida y moderna.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+La aplicación se encuentra actualmente **en producción**, permitiendo a los usuarios interactuar con una plataforma real que integra frontend, backend y servicios externos.
 
-## React Compiler
+---
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## 🚀 Demo
 
-## Expanding the ESLint configuration
+👉 [Ver aplicación en producción](https://buloneraeltriangulo.com)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-"# bulonerafront" 
+---
+
+## 📌 Descripción
+
+**BULONERA EL TRIÁNGULO** es una aplicación de comercio electrónico que permite a los usuarios:
+
+- 🛍️ Explorar un catálogo dinámico de productos  
+- 🛒 Gestionar un carrito de compras  
+- 💳 Realizar compras mediante una pasarela de pago integrada  
+
+El sistema está diseñado bajo una arquitectura **full-stack desacoplada**, utilizando una **API REST** para la comunicación entre cliente y servidor.
+
+---
+
+## 🛠️ Tecnologías utilizadas
+
+### 🎨 Frontend
+- React
+- Axios
+- CSS
+
+### ⚙️ Backend
+- Node.js
+- Express
+
+### 🗄️ Base de datos
+- MongoDB
+
+### 🔗 Integraciones
+- Mercado Pago (pagos online)
+- API REST
+
+---
+
+## ✨ Funcionalidades principales
+
+- 🛍️ Catálogo dinámico de productos  
+- 🛒 Carrito de compras interactivo  
+- 💳 Checkout paso a paso optimizado para UX  
+- 📦 Gestión de órdenes de compra  
+- 🧑‍💼 Panel administrativo:
+  - Alta / baja / modificación de productos  
+  - Gestión de pedidos
+  - Seguimiento de envíos  
+
+---
+
+## 🧩 Arquitectura
+
+El proyecto sigue una arquitectura basada en **API REST**, con separación clara de responsabilidades:

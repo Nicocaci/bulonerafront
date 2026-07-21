@@ -15,7 +15,7 @@
   margin: auto;
 }
 .titulo-ofertas {
-  color: #080808;
+  color: var(--text-color);
   display: flex;
   align-items: center;
   font-size: 30px;
@@ -28,7 +28,7 @@
   margin-bottom: 20px;
 }
 .oferta-card {
-  width: 100%;
+  width: 80%;
   background: white;
   border-radius: 12px;
   padding: 15px;
@@ -320,6 +320,7 @@
   }
 
   .oferta-card {
+    width: 100%;
     padding: 10px;
   }
 

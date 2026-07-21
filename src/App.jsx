@@ -13,6 +13,7 @@ import Nosotros from "./pages/Nosotros.jsx";
 import Faq from "./pages/Faq.jsx";
 import CajaHerramientas from "./pages/CajaHerramientas.jsx";
 import WpButton from "./components/WpButton.jsx";
+import { ThemeProvider } from "./context/ThemeContext.jsx";
 
 import ScrollToTop from "./utils/ScrollToTop.jsx";
 
@@ -84,15 +85,17 @@ function AppContent() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <CartProvider>
-          <BrowserRouter>
-            <AppContent />
-          </BrowserRouter>
-        </CartProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <CartProvider>
+            <BrowserRouter>
+              <AppContent />
+            </BrowserRouter>
+          </CartProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 

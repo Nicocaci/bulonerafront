@@ -28,14 +28,13 @@
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
 }
 
-
 /* TOP (logo + hamburguesa) */
 .mxh-nav-sep {
-    width: 1px;
-    height: 14px;
-    background-color: #cccccc;
-    flex-shrink: 0;
-    margin: 0 2px;
+  width: 1px;
+  height: 14px;
+  background-color: #cccccc;
+  flex-shrink: 0;
+  margin: 0 2px;
 }
 .navbar-top-container {
   width: 80%;
@@ -92,7 +91,7 @@
 .btn-navbar {
   background: none;
   border: none;
-  color: #181818;
+  color: var(--text-color);
   cursor: pointer;
   font-size: 16px;
   display: flex;
@@ -104,15 +103,17 @@
 }
 .navbar-menu-container {
   width: 100%;
-  background-color: #ffffff;
-    border-bottom: 1px solid #ccc;
+  background-color: var(--navbar-bg);
+  color: var(--text-color);
+  border-bottom: 1px solid var(--border-color);
 }
 .navbar-menu {
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: #ffffff;
+  background-color: var(--navbar-bg);
+  color: var(--text-color);
   width: 80%;
   margin: 0 auto;
 }
@@ -130,7 +131,7 @@
 }
 
 .li-navbar a {
-  color: #181818;
+  color: var(--text-color);
   text-decoration: none;
   font-weight: 500;
   transition: 0.2s;
@@ -141,10 +142,10 @@
   color: #ccc;
 }
 .ofertas-link {
-  color: #1d9912 !important; 
+  color: #1d9912 !important;
 }
 .ofertas-link:hover {
-  color: #ccc !important; 
+  color: #ccc !important;
   text-decoration: underline;
 }
 .mobile-search-wrapper {
@@ -287,7 +288,7 @@
 .close-btn {
   display: none;
 }
-@media (max-width: 1300px){
+@media (max-width: 1300px) {
   .navbar-menu {
     width: 100%;
   }
