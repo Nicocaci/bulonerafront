@@ -10,7 +10,7 @@
 
 .auth-modal {
   width: min(90%, 420px);
-  background-color: #fff;
+  background-color: var(--cards-bg);
   border-radius: 12px;
   padding: 24px 28px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
@@ -30,7 +30,7 @@
 .auth-modal__title {
   margin: 0;
   font-size: 15px;
-  color: #000000;
+  color: var(--text-color);
 }
 
 .auth-modal__subtitle {

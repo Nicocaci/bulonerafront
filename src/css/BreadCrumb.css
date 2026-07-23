@@ -24,7 +24,7 @@
 }
 
 .breadcrumb-current {
-  color: #333;
+  color: var(--text-color);
   font-weight: 600;
 }
 

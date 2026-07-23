@@ -95,12 +95,14 @@ const OfertasDestacadas = () => {
             <SwiperSlide key={oferta._id}>
               <Link to={`/producto/${oferta._id}`} className="link-none">
                 <div className="oferta-card">
+                  <div className="img-container">
                   <img
                     className="oferta-image"
                     src={getImageUrl(oferta.imagen?.[0])}
                     alt={oferta.item}
                     loading="lazy"
                   />
+                  </div>
                   <div className="titulo-oferta-container">
                     <p className="descuento">-{oferta.oferta.descuento}%</p>
                     <div className="titulo-oferta-container">
@@ -115,7 +117,7 @@ const OfertasDestacadas = () => {
                     <p className="ahorro">
                       Ahorrás ${ahorro(oferta.precioConIva, oferta.precioFinal)}
                     </p>
-                  </div>
+                  
                   <div className="btn-container">
                     <button
                       className="btn-ver-producto"
@@ -125,6 +127,7 @@ const OfertasDestacadas = () => {
                     >
                       Ver producto
                     </button>
+                  </div>
                   </div>
                 </div>
               </Link>

@@ -86,7 +86,7 @@ const Contacto = () => {
           </p>
           <form onSubmit={handleSubmit} >
             <div className="form-group">
-              <label htmlFor="nombre">Nombre *</label>
+              <label className="label-form" htmlFor="nombre">Nombre *</label>
               <input
                 type="text"
                 id="nombre"
@@ -143,17 +143,9 @@ const Contacto = () => {
                 value={formData.mensaje}
                 onChange={handleChange}
                 rows="10"
-                style={{
-                  padding: "12px",
-                  border: "1px solid #ccc",
-                  borderRadius: "6px",
-                  fontSize: "1rem",
-                  fontFamily: "inherit",
-                  resize: "vertical",
-                  transition: "border-color 0.3s ease",
-                }}
                 placeholder="Escribe tu mensaje aquí..."
                 required
+                className="text-area"
               ></textarea>
             </div>
 

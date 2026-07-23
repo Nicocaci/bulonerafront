@@ -95,20 +95,19 @@ const CategoriaSeccion = () => {
             <SwiperSlide key={producto._id}>
               <Link to={`/producto/${producto._id}`} className="link-none">
                 <div className="oferta-card">
+                  <div className="img-container">
                   <img
                     className="oferta-image"
                     src={getImageUrl(producto.imagen?.[0])}
                     alt={producto.item}
                   />
-
+                  </div>
                   <div className="titulo-oferta-container">
                     <p className="oferta-title">{producto.item}</p>
 
                     <p className="oferta-price">
                       ${producto.precioConIva.toLocaleString("es-AR")}
                     </p>
-                  </div>
-
                   <div className="btn-container">
                     <button
                       className="btn-ver-producto"
@@ -116,6 +115,7 @@ const CategoriaSeccion = () => {
                     >
                       Ver producto
                     </button>
+                    </div>
                   </div>
                 </div>
               </Link>

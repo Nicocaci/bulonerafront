@@ -367,8 +367,16 @@ const NavBar = () => {
             </li>
           </ul>
 
-          <button onClick={toggleTheme} aria-label="Cambiar tema">
-            {theme === "light" ? "🌙" : "☀️"}
+          <button
+            className={`theme-toggle ${theme === "light" ? "light" : ""}`}
+            onClick={toggleTheme}
+            aria-label="Cambiar tema"
+          >
+            <span className="toggle-track">
+              <span className="toggle-thumb">
+                {theme === "light" ? "☀️" : "🌙"}
+              </span>
+            </span>
           </button>
         </div>
       </div>

@@ -5,7 +5,7 @@
   height: 100vh;
   width: 15vw;
 
-  background-color: var(--prodContainer-bg);
+  background-color: var(--menuCat-bg);
   z-index: 1000;
 
 
@@ -57,6 +57,9 @@
 .navbarmenu li {
   border-bottom: 1px solid #eee;
 }
+.navbarmenu li:hover {
+  background-color: var(--menuCatHover-bg);
+}
 
 .navbarmenu a {
   display: block;
@@ -66,7 +69,7 @@
   font-size: 15px;
 }
 .navbarmenu a:hover {
-  background-color: #dfdfdf;
+  background-color: var(--menuCatHover-bg);
 }
 
 .back-menu {
@@ -117,7 +120,7 @@
   color: #181818;
 }
 .menu-categorias:hover {
-  border-left: 3px solid #f45d22;
+  border-left: 8px solid #f45d22;
 }
 
 .menu-categorias-container {
@@ -131,7 +134,7 @@
   width: 15vw;
   height: 100vh;
 
-  background-color: #f7f7f7;
+  background-color: var(--menuCat-bg);
   z-index: 1000;
 
   overflow-y: auto;
@@ -160,13 +163,13 @@
   display: block;
   padding: 10px;
   text-decoration: none;
-  color: #333;
-  font-size: 10px;
+  color: var(--text-color);
+  font-size: 12px;
 }
 
 .submenu-categorias a:hover {
-  background-color: #dfdfdf;
-  border-left: 3px solid #f45d22;
+  background-color: var(--menuCatHover-bg);
+  border-left: 8px solid #f45d22;
 }
 
 .submenu-back {
