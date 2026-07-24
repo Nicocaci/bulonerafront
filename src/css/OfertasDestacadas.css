@@ -270,6 +270,9 @@
   .ofertas-header {
     width: 90%;
   }
+  .ver-todas-link {
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -306,7 +309,10 @@
   }
 
   .titulo-ofertas {
-    font-size: 1.5rem;
+    font-size: 15px;
+  }
+  .subtitulo-ofertas {
+    font-size: 10px;
   }
 
   .ofertas-footer {
@@ -328,7 +334,9 @@
 
   .oferta-card {
     width: 100%;
-    padding: 10px;
+  }
+  .oferta-title{
+    font-size: 10px;
   }
 
   .oferta-image {
