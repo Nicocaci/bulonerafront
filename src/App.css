@@ -49,7 +49,7 @@ main {
   --menuCatHover-bg: #d7d7d7;
   --sliderContainer-bg: #ffffff;
   --footer-bg: #ffffff;
-  --filterBox-bg:#ffffff;
+  --filterBox-bg:#E0E0E0;
   --cards-bg: #EBE8E8 ;
   --itemContent-bg: #ffffff;
   --buloneraTitle-color:#153174;
@@ -57,6 +57,7 @@ main {
   --statsCard-bg:#00000014;
   --adminSection-bg: #FFFFFF;
   --tableHead-bg: #F0F0F0;
+  --itemContainer-bg: #E0E0E0;
 }
 
 [data-theme="dark"] {
@@ -79,7 +80,8 @@ main {
   --statsCard-bg:#202324;
   --adminSection-bg: #202324;
   --adminHover-bg:#373d3f;
-  --tableHead-bg:#333536F5; 
+  --tableHead-bg:#333536F5;
+  --itemContainer-bg: #333536f5; 
 }
 
 body {

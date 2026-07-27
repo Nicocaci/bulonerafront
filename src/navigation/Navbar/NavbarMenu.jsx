@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "../../css/NavbarMenu.css";
 import axiosInstance from "../../utils/axiosConfig.js";
 
-const NavbarMenu = ({ onClose, isOpen }) => {
+const NavbarMenu = ({ onClose, isOpen, onSelectCategory }) => {
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -89,6 +89,10 @@ const NavbarMenu = ({ onClose, isOpen }) => {
     }, 150);
   };
 
+  const handleCategorySelect = () => {
+    onSelectCategory?.();
+  };
+
   return (
     <>
       <div
@@ -126,7 +130,7 @@ const NavbarMenu = ({ onClose, isOpen }) => {
                       <Link
                         className="menu-categorias-link"
                         to={`/productos?categoria=${encodeURIComponent(categoria)}`}
-                        onClick={onClose}
+                        onClick={handleCategorySelect}
                       >
                         {categoria}
                       </Link>
@@ -160,7 +164,7 @@ const NavbarMenu = ({ onClose, isOpen }) => {
                               to={`/productos?categoria=${encodeURIComponent(
                                 categoria,
                               )}&subcategoria=${encodeURIComponent(sub)}`}
-                              onClick={onClose}
+                              onClick={handleCategorySelect}
                             >
                               {sub}
                             </Link>

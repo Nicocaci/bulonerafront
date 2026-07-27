@@ -159,6 +159,11 @@ const NavBar = () => {
     });
   };
 
+  const closeAllMobileMenus = () => {
+    setShowNavbarMenu(false);
+    setIsMenuOpen(false);
+  };
+
   return (
     <div className={`navbar-container`}>
       <div className="hamburger-container">
@@ -300,6 +305,7 @@ const NavBar = () => {
           <NavbarMenu
             isOpen={showNavbarMenu}
             onClose={() => setShowNavbarMenu(false)}
+            onSelectCategory={closeAllMobileMenus}
           />
           <ul className="li-navbar">
             {/* <ProductsDropdown closeMenu={() => setIsMenuOpen(false)} /> */}
