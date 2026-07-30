@@ -96,13 +96,12 @@
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
 }
 
 .form-group label {
     font-weight: 600;
     color: var(--text-color);
-    font-size: 0.95rem;
+    font-size: 12px;
 }
 
 .form-group input {
@@ -112,6 +111,7 @@
     font-size: 1rem;
     transition: border-color 0.3s ease;
     background-color: var(--cards-bg);
+    margin-bottom: 5px;
 }
 
 .form-group input:focus {

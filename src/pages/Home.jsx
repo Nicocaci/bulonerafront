@@ -18,9 +18,9 @@ const Home = () => {
         <MosaicBanner
           images={{
             topLeft: {
-              src: "/fondo-automotor.png",
+              src: "/solucion.jpeg",
               alt: "Descuentos",
-              href: "/ofertas",
+              href: "/contacto",
             },
             bottomLeft: {
               src: "/cotiza.jpeg",

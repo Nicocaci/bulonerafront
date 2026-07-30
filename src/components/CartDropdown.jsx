@@ -130,7 +130,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
                 to={`/carrito/${cart._id}`}
                 onClick={onClose}
               >
-                <p className="cart-dropdown-checkout">Ir al carrito</p>
+                <p className="cart-dropdown-checkout">IR A PAGAR</p>
               </Link>
             </div>
             <span className="cart-dropdown-total">

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "../css/Contacto.css";
-import MapaBulonera from "../utils/MapaBulonera";
+import MapaBulonera from "../utils/MapaBulonera.jsx";
 import { FcShop, FcAbout } from "react-icons/fc";
 import axiosInstance from "../utils/axiosConfig.js";
 import Swal from "sweetalert2";
@@ -50,11 +50,10 @@ const Contacto = () => {
   };
   return (
     <div className="contacto-container">
-      <p className="titulo-contacto">Contáctanos</p>
       <div className="grid-contacto">
         <div className="atencion-cliente-container">
           <div className="atencion-cliente-titulo">
-            <p className="subtitulo-contacto">Atención al cliente</p>
+            <p className="titulo-contacto">Atención al cliente</p>
             <p>
               Dispuestos a atenderte, de tu lado, con profesionalismo
             </p>
@@ -63,15 +62,15 @@ const Contacto = () => {
             <div className="atencion-grid-1">
               <FcShop size={60} />
               <div style={{ marginLeft: "10px" }}>
-                <p className="horario-atencion">Lunes a Viernes: 8hs – 19hs</p>
-                <p className="horario-atencion">Sábados: 8hs – 12:30hs</p>
+                <p className="horario-atencion">Lunes a Viernes: 8hs – 18hs</p>
+                <p className="horario-atencion">Sábados: 8hs – 13hs</p>
               </div>
             </div>
 
             <div className="atencion-grid-2">
               <FcAbout size={60} />
               <div style={{ marginLeft: "10px" }}>
-                <p className="horario-atencion">b.eltraingulo@gmail.com</p>
+                <p className="horario-atencion">eltrianguloventasonline@gmail.com</p>
               </div>
             </div>
           </div>
@@ -81,9 +80,10 @@ const Contacto = () => {
           </div>
         </div>
         <div className="formulario-contacto">
-          <p>
-            <span className="titulo-bulonera">Dejanos tu mensaje</span>
-          </p>
+            <p className="titulo-contacto">Cotización</p>
+            <p className="subtitulo-contacto">Solicitá tu cotización sin cargo</p>
+
+          
           <form onSubmit={handleSubmit} >
             <div className="form-group">
               <label className="label-form" htmlFor="nombre">Nombre *</label>
@@ -131,7 +131,7 @@ const Contacto = () => {
                 name="telefono"
                 value={formData.telefono}
                 onChange={handleChange}
-                placeholder="+54 9 11 1234 5678"
+                placeholder=""
                 required
               />
             </div>

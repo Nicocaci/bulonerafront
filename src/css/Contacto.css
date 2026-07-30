@@ -9,14 +9,13 @@
 .titulo-contacto {
   font-size: 2.5rem;
   color: var(--text-color);
-  margin-bottom: 50px;
-  font-weight: 700;
+  font-weight: 300;
 }
 .subtitulo-contacto {
-  font-size: 1.5rem;
+  font-size: 18px;
   color: var(--text-color);
   margin-bottom: 5px;
-  font-weight: 600;
+  font-weight: 400;
 }
 .container-mapa {
   width: 100%;
