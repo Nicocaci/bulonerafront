@@ -96,6 +96,7 @@
 .form-group {
     display: flex;
     flex-direction: column;
+
 }
 
 .form-group label {
@@ -112,7 +113,7 @@
     transition: border-color 0.3s ease;
     background-color: var(--cards-bg);
     margin-bottom: 5px;
-}
+    width: 95%;}
 
 .form-group input:focus {
     outline: none;

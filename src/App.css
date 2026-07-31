@@ -20,6 +20,12 @@
   width: 100%;
   padding: 3px;
 }
+.d-flex-row{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 3px;
+}
 
 /* Footer Style */
 html,
