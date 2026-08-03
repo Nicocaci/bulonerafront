@@ -114,6 +114,11 @@
   color: #888;
   margin-bottom: 10px;
 }
+.inline-icon {
+  vertical-align: middle;
+  margin: 0 2px;
+  font-size: 14px;
+}
 
 .btn-seleccionar {
   display: inline-block;
@@ -138,6 +143,31 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.archivos-seleccionados li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--borderForm-color);
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: default;
+}
+.file-icon {
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.remove-file-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #999;
+  font-size: 14px;
+}
+.remove-file-btn:hover {
+  color: #ff4d4f;
 }
 
 .archivo-item {
@@ -286,7 +316,7 @@
 .divider-line {
   flex: 1;
   height: 1px;
-  background-color:var(--borderForm-color); /* color de la línea */
+  background-color: var(--borderForm-color); /* color de la línea */
 }
 
 .divider-text {
@@ -294,6 +324,7 @@
   font-size: 14px;
   color: #666;
 }
+
 
 /* MEDIAS QUERYS CELULARES */
 @media (max-width: 480px) {

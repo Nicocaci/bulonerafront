@@ -2,7 +2,15 @@ import { useState } from "react";
 import "../css/Contacto.css";
 import MapaBulonera from "../utils/MapaBulonera.jsx";
 import { FcShop, FcAbout } from "react-icons/fc";
-import { FaRegClock, FaLock, FaWhatsapp } from "react-icons/fa";
+import {
+  FaRegClock,
+  FaLock,
+  FaWhatsapp,
+  FaFilePdf,
+  FaFileWord,
+  FaFileExcel,
+  FaFileImage,
+} from "react-icons/fa";
 import { BsFillQuestionSquareFill, BsFillSendFill } from "react-icons/bs";
 import { MdOutlineVerifiedUser } from "react-icons/md";
 import { IoIosPaper } from "react-icons/io";
@@ -68,6 +76,28 @@ const Contacto = () => {
         text: error.response?.data?.message || "Error al enviar el mensaje",
         confirmButtonColor: "#000",
       });
+    }
+  };
+
+  //Funcion Helper para elegir el icono del archivo seleccionado
+  const getFileIcon = (fileName) => {
+    const ext = fileName.split(".").pop().toLowerCase();
+
+    switch (ext) {
+      case "pdf":
+        return <FaFilePdf color="#e53e3e" />;
+      case "doc":
+      case "docx":
+        return <FaFileWord color="#2b579a" />;
+      case "xls":
+      case "xlsx":
+        return <FaFileExcel color="#217346" />;
+      case "jpg":
+      case "jpeg":
+      case "png":
+        return <FaFileImage color="#805ad5" />;
+      default:
+        return <FaFile color="#718096" />;
     }
   };
 
@@ -163,15 +193,26 @@ const Contacto = () => {
                         />
                       </label>
                       <p className="file-upload-hint">
-                        Formatos permitidos: PDF, Word, Excel, Imágenes (JPG,
-                        PNG)
+                        Formatos permitidos:{" "}
+                        <FaFilePdf className="inline-icon" color="#e53e3e" />{" "}
+                        PDF,{" "}
+                        <FaFileWord className="inline-icon" color="#2b579a" />{" "}
+                        Word,{" "}
+                        <FaFileExcel className="inline-icon" color="#217346" />{" "}
+                        Excel,{" "}
+                        <FaFileImage className="inline-icon" color="#805ad5" />{" "}
+                        Imágenes (JPG, PNG)
                       </p>
 
                       <ul className="archivos-seleccionados">
                         {archivos.map((file, i) => (
                           <li key={i}>
+                            <span className="file-icon">
+                              {getFileIcon(file.name)}
+                            </span>
                             {file.name}
                             <button
+                              className="remove-file-btn"
                               type="button"
                               onClick={() => removeArchivo(i)}
                             >
@@ -208,7 +249,6 @@ const Contacto = () => {
                       value={formData.empresa}
                       onChange={handleChange}
                       placeholder="Mi empresa S.R.L"
-                      
                     />
                   </div>
                 </div>
