@@ -181,7 +181,7 @@ const NavBar = () => {
         </div>
         <img
           className="logo-navbar logo-navbar-mobile"
-          src="/soloLogo.png"
+          src="/logo-fondo-negro.png"
           alt="logo"
           onClick={() => {
             window.location.href = "/";
@@ -197,7 +197,7 @@ const NavBar = () => {
           <div className="div-navbar-1">
             <img
               className="logo-navbar"
-              src="/logo_bulonera_completo.jpg"
+              src="/logo-fondo-negro.png"
               alt="logo"
               onClick={() => {
                 window.location.href = "/";

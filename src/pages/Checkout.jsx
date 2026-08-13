@@ -10,6 +10,8 @@ import Datos from "./checkout/Datos.jsx";
 import Pago from "./checkout/Pago.jsx";
 import Envio from "./checkout/Envio.jsx";
 import Confirmar from "./checkout/Confirmar.jsx";
+import { getCartWeight, getCartPaquetes, getCartPaquetesEnvio } from "../utils/cartShipping.js";
+import { shipOrder } from "../utils/shipping.js";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -24,23 +26,18 @@ const Checkout = () => {
     apellido: "",
     email: "",
     telefono: "",
-    direccion: "",
+    calle: "",
+    numero: "",
     ciudad: "",
+    provincia: "",
     codigoPostal: "",
     metodoPago: "efectivo",
     notas: "",
+    shippingChoice: null,
   });
 
   const [errors, setErrors] = useState({});
   const [confirmAccepted, setConfirmAccepted] = useState(false);
-
-  const buildHeaders = () => {
-    const headers = {};
-    if (user?.token) {
-      headers.Authorization = `Bearer ${user.token}`;
-    }
-    return headers;
-  };
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -117,14 +114,18 @@ const Checkout = () => {
     }
 
     if (step === 3) {
-      if (!formData.direccion.trim())
-        newErrors.direccion = "La dirección es requerida";
+      if (!formData.calle.trim()) newErrors.calle = "La calle es requerida";
+      if (!formData.numero.trim()) newErrors.numero = "El número es requerido";
       if (!formData.ciudad.trim()) newErrors.ciudad = "La ciudad es requerida";
+      if (!formData.provincia)
+        newErrors.provincia = "La provincia es requerida";
       if (!formData.codigoPostal.trim()) {
         newErrors.codigoPostal = "El código postal es requerido";
       } else if (!/^[0-9]+$/.test(formData.codigoPostal)) {
         newErrors.codigoPostal = "El código postal debe contener solo números";
       }
+      if (!formData.shippingChoice)
+        newErrors.shippingChoice = "Elegí una opción de envío";
     }
 
     if (step === 4) {
@@ -223,22 +224,54 @@ const Checkout = () => {
         };
       });
 
+      const total = calculateTotal();
+
       const orderData = {
         user: user.id,
         products: products,
-        total: calculateTotal(),
+        total,
         paymentMethod: formData.metodoPago,
         status: "pendiente",
+        shippingAddress: {
+          calle: formData.calle,
+          numero: formData.numero,
+          ciudad: formData.ciudad,
+          provincia: formData.provincia,
+          codigoPostal: formData.codigoPostal,
+          notas: formData.notas,
+        },
       };
-
-      console.log("orderData:", orderData);
-      console.log("user:", user);
 
       const response = await axiosInstance.post("/api/orders", orderData, {
         headers: {
-          Authorization: `Bearer ${user.token}`, // ← directo, sin buildHeaders
+          Authorization: `Bearer ${user.token}`,
         },
       });
+
+      const createdOrder = response.data;
+
+      // Crear el pedido + envío en Enviopack (solo a domicilio)
+      try {
+        await shipOrder(createdOrder._id || createdOrder.id, {
+          nombre: formData.nombre,
+          apellido: formData.apellido,
+          email: formData.email,
+          monto: total,
+          provincia: formData.provincia,
+          calle: formData.calle,
+          numero: formData.numero,
+          codigo_postal: formData.codigoPostal,
+          paquetes: getCartPaquetesEnvio(cart),
+          shippingChoice: formData.shippingChoice,
+        });
+      } catch (shipError) {
+        console.error("Error al generar el envío en Enviopack:", shipError);
+        Swal.fire({
+          icon: "warning",
+          title: "Pedido creado",
+          text: "Tu pedido se registró, pero hubo un problema al generar el envío. Nuestro equipo lo va a revisar.",
+        });
+      }
 
       try {
         await clearCart(cart?._id || null);
@@ -275,6 +308,13 @@ const Checkout = () => {
       });
     } finally {
       setProcessing(false);
+    }
+  };
+
+  const handleSelectShipping = (option) => {
+    setFormData((prev) => ({ ...prev, shippingChoice: option }));
+    if (errors.shippingChoice) {
+      setErrors((prev) => ({ ...prev, shippingChoice: "" }));
     }
   };
 
@@ -364,6 +404,9 @@ const Checkout = () => {
             formData={formData}
             errors={errors}
             onChange={handleInputChange}
+            cartWeight={getCartWeight(cart)}
+            cartPaquetes={getCartPaquetes(cart)}
+            onSelectShipping={handleSelectShipping}
           />
         )}
         {currentStep === 4 && (

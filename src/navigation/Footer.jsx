@@ -1,12 +1,13 @@
 import React from "react";
 import "../css/Footer.css";
-
+import { useTheme } from "../context/ThemeContext.jsx";
 
 const Footer = () => {
+  const {theme} = useTheme();
   return (
     <div className="footer-container">
       <div>
-        <img className="logo-footer" src="/favicon.ico" alt="logo" />
+        <img className="logo-footer" src={theme === "dark" ? "/logo-fondo-negro.png" : "/logo-fondo-blanco.png"} alt="logo" />
       </div>
       <div>
         <p className="titulo-footer">BULONERA EL TRIANGULO </p>

@@ -167,6 +167,27 @@
   color: #555555;
   transform: translateX(-5px);
 }
+@media (max-width: 1650px) {
+  .cart-dropdown {
+    width: 30%;
+  }
+}
+
+@media (max-width:1300px) {
+  .cart-dropdown {
+    width: 35%;
+  }
+}
+@media (max-width: 1100px) {
+  .cart-dropdown {
+    width: 40%;
+  }
+}
+@media (max-width: 900px) {
+  .cart-dropdown {
+    width: 50%;
+  }
+}
 @media (max-width: 768px) {
   .cart-dropdown {
     width: 85%;

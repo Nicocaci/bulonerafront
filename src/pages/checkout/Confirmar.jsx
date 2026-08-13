@@ -33,10 +33,23 @@ const Confirmar = ({
     const fetchProducts = async () => {
       const details = await Promise.all(
         products.map(async (item) => {
-          if (item.product && item.product.name) return item;
-          // If not populated, fetch the product
+          // Si item.product ya es un objeto poblado (tiene _id), no hace falta fetchear
+          if (
+            item.product &&
+            typeof item.product === "object" &&
+            item.product._id
+          ) {
+            return item;
+          }
+          // Si no está poblado, sacamos el id como string
           try {
-            const productId = item.product_id || item.product || item._id;
+            const productId =
+              item.product_id ||
+              (typeof item.product === "string" ? item.product : null) ||
+              item._id;
+
+            if (!productId) return item;
+
             const res = await axiosInstance.get(`/api/products/${productId}`);
             return { ...item, product: res.data };
           } catch (error) {
@@ -137,7 +150,7 @@ const Confirmar = ({
                     : item.product?._id) ||
                   item._id;
                 const name = product.item || "Producto";
-                const price = product.precioConIva  || 0;
+                const price = product.precioConIva || 0;
                 const quantity = item.quantity || 1;
                 const imagen = Array.isArray(product.imagen)
                   ? product.imagen[0]

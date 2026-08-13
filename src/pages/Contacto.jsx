@@ -241,7 +241,7 @@ const Contacto = () => {
                     />
                   </div>
                   <div>
-                    <label htmlFor="empresa">Empresa/Comercio *</label>
+                    <label htmlFor="empresa">Empresa/Comercio (Opcional)</label>
                     <input
                       type="text"
                       id="empresa"
@@ -267,7 +267,7 @@ const Contacto = () => {
                     />
                   </div>
                   <div>
-                    <label htmlFor="telefono">Teléfono</label>
+                    <label htmlFor="telefono">Teléfono *</label>
                     <input
                       type="tel"
                       id="telefono"
