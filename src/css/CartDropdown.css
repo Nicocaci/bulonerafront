@@ -167,6 +167,7 @@
   color: #555555;
   transform: translateX(-5px);
 }
+
 @media (max-width: 1650px) {
   .cart-dropdown {
     width: 30%;
@@ -183,7 +184,7 @@
     width: 40%;
   }
 }
-@media (max-width: 900px) {
+@media (max-width: 920px) {
   .cart-dropdown {
     width: 50%;
   }
@@ -211,5 +212,21 @@
   }
   .center {
     height: 100%;
+  }
+}
+@media (max-width: 460px) {
+  .cart-dropdown-checkout{
+    font-size: 12px;
+  }
+  .cart-dropdown-clear{
+    font-size: 12px;
+  }
+}
+@media (max-width:380px) {
+  .cart-dropdown-checkout{
+    font-size: 10px;
+  }
+  .cart-dropdown-clear {
+    font-size: 10px;
   }
 }
