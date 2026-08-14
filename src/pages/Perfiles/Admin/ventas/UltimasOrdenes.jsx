@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../../utils/axiosConfig.js";
+import PrintLabelButton from "./PrintLabelButton.jsx";
 
 function UltimasOrdenes({ onOrderUpdated }) {
   const [orders, setOrders] = useState([]);
@@ -50,6 +51,7 @@ function UltimasOrdenes({ onOrderUpdated }) {
           <th>Total</th>
           <th>Metodo Pago</th>
           <th>Estado</th>
+          <th>Envío</th>
           <th>Fecha</th>
         </tr>
       </thead>
@@ -80,6 +82,19 @@ function UltimasOrdenes({ onOrderUpdated }) {
                 <option value="entregado">Entregado</option>
                 <option value="cancelado">Cancelado</option>
               </select>
+            </td>
+
+            <td>
+              {order.enviopack?.necesitaAtencion && (
+                <span title="Requiere atención" style={{ marginRight: 6 }}>
+                  ⚠️
+                </span>
+              )}
+              {order.enviopack?.envioId ? (
+                <PrintLabelButton envioId={order.enviopack.envioId} />
+              ) : (
+                <span style={{ color: "#999" }}>Sin envío</span>
+              )}
             </td>
 
             <td>{new Date(order.date).toLocaleDateString()}</td>

@@ -246,32 +246,36 @@ export const CartProvider = ({ children }) => {
   // 🟢 CLEAR CART
   // =============================
 
-  const clearCart = useCallback(async () => {
-    swal.fire({
-        title: "¿Vaciar carrito?",
-        text: "Esta acción no se puede deshacer",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí, vaciar",
-        cancelButtonText: "No, cancelar",
-      })
-      .then(async (result) => {
-        if (result.isConfirmed) {
-          try {
-            if (!user?.token) {
-              return clearLocalCart();
-            } else {
-              const updated = await request("DELETE", "/api/cart/me");
-              setCart(updated);
-              return updated;
-            }
-          } catch (err) {
-            console.error("clearCart error:", err);
-            throw err;
-          }
-        }
-      });
-  }, [user?.token, clearLocalCart, request]);
+const clearCartSilently = useCallback(async () => {
+  try {
+    if (!user?.token) {
+      return clearLocalCart();
+    } else {
+      const updated = await request("DELETE", "/api/cart/me");
+      setCart(updated);
+      return updated;
+    }
+  } catch (err) {
+    console.error("clearCartSilently error:", err);
+    throw err;
+  }
+}, [user?.token, clearLocalCart, request]);
+
+// Tu clearCart existente, para el botón "Vaciar carrito" manual del usuario
+const clearCart = useCallback(async () => {
+  swal.fire({
+    title: "¿Vaciar carrito?",
+    text: "Esta acción no se puede deshacer",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Sí, vaciar",
+    cancelButtonText: "No, cancelar",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      return clearCartSilently();
+    }
+  });
+}, [clearCartSilently]);
 
   // =============================
   // 🔥 SYNC GUEST → BACKEND
@@ -330,28 +334,23 @@ export const CartProvider = ({ children }) => {
   // 🧠 MEMO
   // =============================
 
-  const value = useMemo(
-    () => ({
-      cart,
-      error,
-      getCart,
-      getCartById,
-      addProductToCart,
-      removeProductFromCart,
-      updateProductQuantity,
-      clearCart,
-    }),
-    [
-      cart,
-      error,
-      getCart,
-      getCartById,
-      addProductToCart,
-      removeProductFromCart,
-      updateProductQuantity,
-      clearCart,
-    ],
-  );
+const value = useMemo(
+  () => ({
+    cart,
+    error,
+    getCart,
+    getCartById,
+    addProductToCart,
+    removeProductFromCart,
+    updateProductQuantity,
+    clearCart,
+    clearCartSilently, // 👈 nuevo
+  }),
+  [
+    cart, error, getCart, getCartById, addProductToCart,
+    removeProductFromCart, updateProductQuantity, clearCart, clearCartSilently,
+  ],
+);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };

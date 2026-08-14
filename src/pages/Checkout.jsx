@@ -15,7 +15,7 @@ import { shipOrder } from "../utils/shipping.js";
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { cart, getCart, clearCart } = useCart();
+  const {  cart, getCart, clearCartSilently  } = useCart();
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
@@ -258,6 +258,7 @@ const Checkout = () => {
           email: formData.email,
           monto: total,
           provincia: formData.provincia,
+          localidad: formData.ciudad,
           calle: formData.calle,
           numero: formData.numero,
           codigo_postal: formData.codigoPostal,
@@ -274,7 +275,7 @@ const Checkout = () => {
       }
 
       try {
-        await clearCart(cart?._id || null);
+        await clearCartSilently();
       } catch (clearError) {
         console.error("Error al vaciar el carrito:", clearError);
       }

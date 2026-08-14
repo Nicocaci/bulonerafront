@@ -171,10 +171,6 @@ const ItemDetail = () => {
                   })}
                 </p>
                 <div className="item-grid-2-content-stats">
-                  <div className="probando2">
-                    <p>6</p>
-                    <p>Cuotas sin interés</p>
-                  </div>
                   <div className="probando1">
                     <BsTruck size={25} />
                     <div>
@@ -259,7 +255,6 @@ const ItemDetail = () => {
               <MdOutlineVerified size={25} />
               <div>
                 <p>Garantía Oficial</p>
-                <p className="precio-siniva">12 meses</p>
               </div>
             </div>
             <div className="item-stats">
