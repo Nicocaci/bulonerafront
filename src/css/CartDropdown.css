@@ -222,11 +222,19 @@
     font-size: 12px;
   }
 }
-@media (max-width:380px) {
+@media (max-width:390px) {
   .cart-dropdown-checkout{
     font-size: 10px;
   }
   .cart-dropdown-clear {
     font-size: 10px;
   }
+}
+@media (max-width:357px) {
+  .cart-dropdown-checkout{
+    font-size: 8px;
+  }
+  .cart-dropdown-clear {
+    font-size: 8px;
+  }  
 }
