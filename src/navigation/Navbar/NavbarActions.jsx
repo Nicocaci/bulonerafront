@@ -15,16 +15,16 @@ const NavbarActions = ({
 
   return (
     <div className="navbar-actions">
-      <button type="button" onClick={onSearchClick} aria-label="Buscar productos">
+      <button  className="btn-actions" type="button" onClick={onSearchClick} aria-label="Buscar productos">
         <IoMdSearch />
       </button>
 
-      <button onClick={onUserClick}>
+      <button className="btn-actions" onClick={onUserClick}>
         <FaUser />
       </button>
 
       <div className="cart-btn-container">
-        <button onClick={() => setShowCart((prev) => !prev)}>
+        <button className="btn-actions" onClick={() => setShowCart((prev) => !prev)}>
           <FaShoppingCart />
           {cartItemsCount > 0 && <span style={{fontSize: "15px"}}>{cartItemsCount}</span>}
         </button>
@@ -32,7 +32,7 @@ const NavbarActions = ({
         <CartDropdown isOpen={showCart} onClose={() => setShowCart(false)} />
       </div>
 
-      {isAuthenticated && <button onClick={logOut}><IoLogOut /></button>}
+      {isAuthenticated && <button className="btn-actions" onClick={logOut}><IoLogOut /></button>}
     </div>
   );
 };

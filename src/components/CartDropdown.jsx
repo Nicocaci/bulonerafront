@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import "../css/CartDropdown.css";
 import { Link } from "react-router-dom";
@@ -6,7 +6,9 @@ import { getImageUrl } from "../utils/imageUtils";
 import Swal from "sweetalert2";
 
 const CartDropdown = ({ onClose, isOpen }) => {
-  const { cart, clearCart, updateProductQuantity } = useCart();
+  const { cart, clearCartSilently, updateProductQuantity } = useCart();
+  const [updatingQuantities, setUpdatingQuantities] = useState({});
+  const [error, setError] = useState(null);
   const products = cart?.products || [];
   const dropdownRef = useRef(null);
 
@@ -39,13 +41,74 @@ const CartDropdown = ({ onClose, isOpen }) => {
     return acc + price * quantity;
   }, 0);
 
+  const handleQuantityChange = async (productId, newQuantity) => {
+    const quantity = parseInt(newQuantity, 10);
+
+    if (isNaN(quantity) || quantity < 0) return;
+
+    setUpdatingQuantities((prev) => ({ ...prev, [productId]: true }));
+
+    try {
+      await updateProductQuantity(productId, quantity);
+    } catch (error) {
+      console.error("Error al actualizar la cantidad:", error);
+      setError(error.message || "Error al actualizar la cantidad");
+    } finally {
+      setUpdatingQuantities((prev) => {
+        const newState = { ...prev };
+        delete newState[productId];
+        return newState;
+      });
+    }
+  };
+
+  const handleClearCart = async () => {
+    if (products.length === 0) return;
+
+    const result = await Swal.fire({
+      title: "¿Vaciar carrito?",
+      text: "Se eliminarán todos los productos del carrito.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, vaciar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await clearCartSilently();
+        Swal.fire({
+          title: "Carrito vaciado",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } catch (error) {
+        console.error("Error al vaciar el carrito:", error);
+        Swal.fire({
+          title: "Error",
+          text: "No se pudo vaciar el carrito. Intentá de nuevo.",
+          icon: "error",
+        });
+      }
+    }
+  };
   return (
     <div className={`cart-dropdown ${isOpen ? "open" : ""}`} ref={dropdownRef}>
       <div>
-        <p className="back-cart" onClick={onClose}>➡</p>
+        <p className="back-cart" onClick={onClose}>
+          ➡
+        </p>
       </div>
       <div className="cart-dropdown-header">
-        <p>Mi carrito</p>
+        <div>
+          <p>Mi carrito</p>
+        </div>
+        <div>
+          <p className="vaciar-carrito" onClick={handleClearCart}>Vaciar</p>
+        </div>
       </div>
 
       {products.length === 0 ? (
@@ -59,8 +122,10 @@ const CartDropdown = ({ onClose, isOpen }) => {
               const image = getImageUrl(product.imagen || product.image);
               const name =
                 product.item || product.nombre || product.name || "Producto";
+              const marca = product.marca;
               const quantity = item.quantity || item.cantidad || 1;
               const price = product.precioConIva || product.price || 0;
+              const itemTotal = price * quantity;
 
               return (
                 <div
@@ -92,27 +157,56 @@ const CartDropdown = ({ onClose, isOpen }) => {
                     }}
                   />
                   <div className="cart-dropdown-info">
+                    <p className="cart-dropdown-marca">{marca}</p>
                     <p className="cart-dropdown-name">{name}</p>
-                    <div className="cart-dropdown-qty-container">
-                      <div className="center">
-                        <p className="cart-dropdown-qty">
-                          Cantidad: {quantity}
-                        </p>
-                        <svg
-                          onClick={() =>
-                            updateProductQuantity(id, quantity - 1)
-                          }
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="icono-delete"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                        </svg>
+                    <p className="cart-dropdown-price">
+                      ${price.toLocaleString("es-AR")}/u
+                    </p>
+                    <div className="cart-dropdown-total-container">
+                      <div className="cart-dropdown-quantity">
+                        <label htmlFor={`quantity-${id}`}></label>
+                        <div className="cantidad-container-cart">
+                          <button
+                            type="button"
+                            className="cantidad-btn"
+                            onClick={() =>
+                              handleQuantityChange(
+                                id,
+                                Math.max(0, (item.quantity || 1) - 1),
+                              )
+                            }
+                            disabled={updatingQuantities[id]}
+                          >
+                            −
+                          </button>
+                          <input
+                            type="number"
+                            id={`quantity-${id}`}
+                            min="0"
+                            value={item.quantity || 1}
+                            onChange={(e) =>
+                              handleQuantityChange(id, e.target.value)
+                            }
+                            disabled={updatingQuantities[id]}
+                            className="cart-dropdown-quantity-input"
+                          />
+                          <button
+                            type="button"
+                            className="cantidad-btn"
+                            onClick={() =>
+                              handleQuantityChange(id, (item.quantity || 1) + 1)
+                            }
+                            disabled={updatingQuantities[id]}
+                          >
+                            +
+                          </button>
+                        </div>
                       </div>
-                      <p className="cart-dropdown-price">${price.toLocaleString('es-AR')}</p>
+                      <div>
+                        <p className="cart-dropdown-total-item">
+                          ${itemTotal.toLocaleString("es-AR")}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -121,10 +215,17 @@ const CartDropdown = ({ onClose, isOpen }) => {
           </div>
 
           <div className="cart-dropdown-footer">
+            <div className="footer-total-container">
+              <div>
+                <p className="total-label">Total:</p>
+              </div>
+              <div>
+                <span className="footer-total-cart">
+                  ${total.toLocaleString("es-AR")}
+                </span>
+              </div>
+            </div>
             <div className="cart-dropdown-footer-buttons">
-              <p className="cart-dropdown-clear" onClick={() => clearCart()}>
-                Limpiar carrito
-              </p>
               <Link
                 className="link-none"
                 to={`/carrito/${cart._id}`}
@@ -133,9 +234,6 @@ const CartDropdown = ({ onClose, isOpen }) => {
                 <p className="cart-dropdown-checkout">IR A PAGAR</p>
               </Link>
             </div>
-            <span className="cart-dropdown-total">
-              Total: ${total.toLocaleString('es-AR')}
-            </span>
           </div>
         </>
       )}

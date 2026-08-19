@@ -25,6 +25,22 @@
 .cart-dropdown-header {
   color: black;
   padding-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.vaciar-carrito {
+  color: #ccc;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+.vaciar-carrito:hover {
+  transition: 0.3s;
+  color: #f51010;
+  background-color: #ee010127;
+  
 }
 .cart-dropdown-empty {
   color: black;
@@ -45,14 +61,16 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 100%;
+  height: 850px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .cart-dropdown-item {
   display: flex;
   justify-content: space-between;
   gap: 30px;
-  background-color: #ffffff;
+  background-color: #e0e0e0;
   padding: 10px;
   border-radius: 10px;
 }
@@ -65,44 +83,116 @@
   width: 400px;
   justify-content: center;
 }
-
+.cart-dropdown-marca {
+  color: #f45d22;
+  font-size: 12px;
+  font-weight: 800;
+}
 .cart-dropdown-name {
   font-size: 14px;
   color: #000000;
 }
+.cart-dropdown-quantity {
+  font-size: 10px;
+  font-weight: bold;
+  color: #000000;
+  display: flex;
+}
+.cantidad-container-cart {
+  display: inline-flex;
+  align-items: center;
+  border: 0.5px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+  height: 30px;
+  transition: border-color 0.15s;
+  width: max-content;
+}
+.cart-dropdown-quantity-input {
+  width: 50px;
+  font-size: 10px;
+  text-align: center;
+  border: 2px solid #f45d22;
+  border-radius: 5px;
+  background-color: #ffffff;
+  color: #000000;
+  font-weight: bold;
+}
+.cart-dropdown-total-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 3%;
+}
+.cart-dropdown-total-item {
+  color: #d34810;
+  font-size: 12px;
+  font-weight: 600;
+}
+.cart-dropdown-quantity-input {
+  width: 36px;
+  border: none;
+  text-align: center;
+  -moz-appearance: textfield;
+}
 
+/* Ocultar las flechitas nativas del input number */
+.cart-dropdown-quantity-input::-webkit-outer-spin-button,
+.cart-dropdown-quantity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 .cart-dropdown-qty {
   font-size: 12px;
   color: #000000;
 }
 
 .cart-dropdown-price {
-  font-size: 14px;
-  color: #000000;
+  font-size: 10px;
+  color: #999999;
   display: flex;
-  justify-content: flex-end;
 }
 
 .cart-dropdown-footer {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  flex-direction: column;
   padding-bottom: 100px;
   padding-top: 15px;
   border-top: 1px solid #1f1010;
 }
+.footer-total-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.total-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000000;
+}
+.footer-total-cart {
+  color: #d34810;
+  font-size: 18px;
+  font-weight: 700;
+}
 
 .cart-dropdown-checkout {
   background: none;
-  border: 1px solid var(--borderForm-color);
   padding: 5px;
   border-radius: 5px;
+  margin-top: 5%;
+  width: 100%;
   cursor: pointer;
   font-size: 15px;
   color: #ffffff;
   text-decoration: none;
   list-style: none;
   background-color: #f45d22;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .cart-dropdown-checkout:hover {
   transition: 0.7s;
@@ -110,14 +200,13 @@
 }
 
 .cart-dropdown-image {
-  width: 90px;
-  height: 70px;
+  width: 80px;
+  height: 50px;
   border-radius: 10px;
 }
 
 .cart-dropdown-clear {
   background: none;
-  border: 1px solid var(--borderForm-color);
   padding: 5px;
   border-radius: 5px;
   cursor: pointer;
@@ -128,15 +217,13 @@
   background-color: #f51010;
 }
 .cart-dropdown-clear:hover {
-    transition: 0.7s;
-    background-color:#ca0606 ;
+  transition: 0.7s;
+  background-color: #ca0606;
 }
 
 .cart-dropdown-footer-buttons {
-  display: flex;
-  gap: 10px;
-  align-items: center;
   color: #000000;
+  width: 100%;
 }
 
 .icono-delete {
@@ -174,7 +261,7 @@
   }
 }
 
-@media (max-width:1300px) {
+@media (max-width: 1300px) {
   .cart-dropdown {
     width: 35%;
   }
@@ -215,26 +302,26 @@
   }
 }
 @media (max-width: 460px) {
-  .cart-dropdown-checkout{
+  .cart-dropdown-checkout {
     font-size: 12px;
   }
-  .cart-dropdown-clear{
+  .cart-dropdown-clear {
     font-size: 12px;
   }
 }
-@media (max-width:390px) {
-  .cart-dropdown-checkout{
+@media (max-width: 390px) {
+  .cart-dropdown-checkout {
     font-size: 10px;
   }
   .cart-dropdown-clear {
     font-size: 10px;
   }
 }
-@media (max-width:357px) {
-  .cart-dropdown-checkout{
+@media (max-width: 357px) {
+  .cart-dropdown-checkout {
     font-size: 8px;
   }
   .cart-dropdown-clear {
     font-size: 8px;
-  }  
+  }
 }

@@ -33,6 +33,7 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
           <th>Categoria</th>
           <th>Subcategoria</th>
           <th>Precio</th>
+          <th>Medidas</th>
           <th>Oferta Destacada</th>
           <th>Acciones</th>
         </tr>
@@ -47,6 +48,11 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
             <td>{p.categoria}</td>
             <td>{p.subcategoria}</td>
             <td>${p.precio.toLocaleString('es-AR')}</td>
+            <td>
+              {p.alto ?? "-"}x{p.ancho ?? "-"}x{p.largo ?? "-"} cm
+              <br />
+              {p.peso ?? "-"} kg
+            </td>
             <td>
               {p.oferta?.activa
                 ? `${p.oferta.descuento}% ${p.oferta.vence ? `(vence: ${new Date(p.oferta.vence).toLocaleDateString("es-AR")})` : "(sin vencimiento)"}`
