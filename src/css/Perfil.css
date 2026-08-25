@@ -1,6 +1,6 @@
 .profile-container {
     max-width: 1200px;
-    margin: 200px auto 50px;
+    margin: 100px auto 50px;
     padding: 20px;
 }
 
@@ -340,4 +340,14 @@
     .form-group input {
         font-size: 15px;
     }
+}
+@media (max-width: 415px) {
+    .form-group label {
+        font-size: 8px;
+    }
+    .form-group input {
+        padding: 8px;
+        font-size: 8px;
+    }
+    
 }

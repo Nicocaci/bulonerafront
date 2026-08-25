@@ -40,7 +40,6 @@
   transition: 0.3s;
   color: #f51010;
   background-color: #ee010127;
-  
 }
 .cart-dropdown-empty {
   color: black;
@@ -103,22 +102,12 @@
   align-items: center;
   border: 0.5px solid #ccc;
   border-radius: 8px;
-  background: #fff;
   overflow: hidden;
   height: 30px;
   transition: border-color 0.15s;
   width: max-content;
 }
-.cart-dropdown-quantity-input {
-  width: 50px;
-  font-size: 10px;
-  text-align: center;
-  border: 2px solid #f45d22;
-  border-radius: 5px;
-  background-color: #ffffff;
-  color: #000000;
-  font-weight: bold;
-}
+
 .cart-dropdown-total-container {
   display: flex;
   justify-content: space-between;
@@ -131,12 +120,19 @@
   font-weight: 600;
 }
 .cart-dropdown-quantity-input {
-  width: 36px;
+  width: 50px;
+  font-size: 10px;
+  text-align: center;
+  border: 2px solid #f45d22;
+  border-radius: 5px;
+  background-color: #ffffff;
+  color: var(--text-color);
+  font-weight: bold;
   border: none;
   text-align: center;
+  background-color: var(--prodContainer-bg);
   -moz-appearance: textfield;
 }
-
 /* Ocultar las flechitas nativas del input number */
 .cart-dropdown-quantity-input::-webkit-outer-spin-button,
 .cart-dropdown-quantity-input::-webkit-inner-spin-button {

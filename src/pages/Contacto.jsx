@@ -342,7 +342,7 @@ const Contacto = () => {
         <div className="atencion-cliente-container">
           <div className="atencion-cliente-titulo">
             <p className="titulo-contacto">Atención al cliente</p>
-            <p>Dispuestos a atenderte, de tu lado, con profesionalismo</p>
+            <p className="subtitulo-contacto">Dispuestos a atenderte, de tu lado, con profesionalismo</p>
           </div>
           <div className="atencion-cliente-descripcion">
             <div className="atencion-grid-1">

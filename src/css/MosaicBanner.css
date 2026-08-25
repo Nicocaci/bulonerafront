@@ -82,10 +82,14 @@
     .tileImg {
       object-fit: initial;
     }
+    .mosaicBanner {
+      width: 85%;
+    }
   }
   @media (max-width: 768px) {
     .mosaicBanner {
       padding-top: 150px;
+      width: 95%;
     }
     .mosaicGrid {
       grid-template-columns: 1fr 1fr;
