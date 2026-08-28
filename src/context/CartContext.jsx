@@ -57,6 +57,7 @@ export const CartProvider = ({ children }) => {
 
   const request = useCallback(async (method, url, body) => {
     try {
+      setError(null);
       const res = await axiosInstance({
         method,
         url,

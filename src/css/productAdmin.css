@@ -142,7 +142,7 @@ table tbody tr:hover {
 
 table td {
   padding: 12px;
-  font-size: 0.9rem;
+  font-size: 10px;
   color: var(--text-color);
 }
 

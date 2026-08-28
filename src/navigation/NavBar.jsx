@@ -163,6 +163,13 @@ const NavBar = () => {
     setShowNavbarMenu(false);
     setIsMenuOpen(false);
   };
+  // 🔔 Permite que cualquier componente (ej: CartDetail) abra el modal de login
+  useEffect(() => {
+    const handleOpenAuthModal = () => setShowAuthModal(true);
+    window.addEventListener("open-login-modal", handleOpenAuthModal);
+    return () =>
+      window.removeEventListener("open-login-modal", handleOpenAuthModal);
+  }, []);
 
   return (
     <div className={`navbar-container`}>

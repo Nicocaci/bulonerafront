@@ -1,14 +1,52 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import "../css/CartDetail.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { AuthContext } from "../context/AuthContext";
 import { getImageUrl } from "../utils/imageUtils";
+
+// 🔒 Detecta si el error es por falta de sesión / token inválido o vencido
+const isAuthError = (message) => {
+  if (!message) return false;
+  const msg = message.toLowerCase();
+  return (
+    msg.includes("token") ||
+    msg.includes("jwt") ||
+    msg.includes("no autorizado") ||
+    msg.includes("unauthorized") ||
+    msg.includes("sesión") ||
+    msg.includes("sesion")
+  );
+};
+
+// 🎨 Pantalla amigable cuando falta iniciar sesión
+const SesionExpirada = () => {
+  const abrirLogin = () => {
+    window.dispatchEvent(new CustomEvent("open-login-modal"));
+  };
+
+  return (
+    <div className="cart-detail-auth-container">
+      <div className="cart-detail-auth-icon">🔒</div>
+      <h2 className="cart-detail-auth-title">Necesitás iniciar sesión</h2>
+      <p className="cart-detail-auth-text">
+        Tu sesión expiró o todavía no iniciaste sesión. Iniciá sesión para ver
+        tu carrito y continuar con tu compra.
+      </p>
+      <button className="cart-detail-auth-btn" onClick={abrirLogin}>
+        Iniciar sesión
+      </button>
+    </div>
+  );
+};
 
 const CartDetail = () => {
   const { cartId } = useParams();
   const navigate = useNavigate();
 
-  // 🔥 AHORA TRAEMOS EL CART DESDE EL CONTEXT
+  const { isAuthenticated } = useContext(AuthContext);
+  const wasAuthenticated = useRef(isAuthenticated);
+
   const {
     cart,
     getCartById,
@@ -20,27 +58,46 @@ const CartDetail = () => {
   const [error, setError] = useState(null);
   const [updatingQuantities, setUpdatingQuantities] = useState({});
 
-  // 🔥 SOLO DISPARAMOS LA CARGA, NO GUARDAMOS EN STATE LOCAL
-  useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        await getCartById(cartId);
-      } catch (error) {
-        setError(error.message || "Error al cargar el carrito");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchCart = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      await getCartById(cartId);
+    } catch (error) {
+      setError(error.message || "Error al cargar el carrito");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // Carga inicial
+  useEffect(() => {
     fetchCart();
   }, [cartId]);
 
+  // 🔥 Si el usuario se loguea DESPUÉS de haber visto la pantalla de "sesión expirada",
+  // volvemos a pedir el carrito automáticamente.
+  useEffect(() => {
+    if (!wasAuthenticated.current && isAuthenticated) {
+      fetchCart();
+    }
+    wasAuthenticated.current = isAuthenticated;
+  }, [isAuthenticated]);
+
   if (loading) return <div>Cargando...</div>;
 
-  if (error || cartError) {
-    return <div className="cart-detail-error">Error: {error || cartError}</div>;
+  const activeError = error || cartError;
+
+  if (activeError) {
+    if (isAuthError(activeError)) {
+      return <SesionExpirada />;
+    }
+    return (
+      <div className="cart-detail-error">
+        Ocurrió un problema al cargar tu carrito. Por favor, intentá de nuevo
+        más tarde.
+      </div>
+    );
   }
 
   if (!cart || !cart.products) {
@@ -52,6 +109,11 @@ const CartDetail = () => {
     const quantity = item.quantity || 1;
     return acc + price * quantity;
   }, 0);
+
+  const totalItems = cart.products.reduce(
+    (acc, item) => acc + (item.quantity || 0),
+    0,
+  );
 
   const handleQuantityChange = async (productId, newQuantity) => {
     const quantity = parseInt(newQuantity, 10);
@@ -76,19 +138,21 @@ const CartDetail = () => {
 
   return (
     <div className="cart-detail-container">
-      <p className="cart-detail-title">Mi Carrito</p>
+      <p className="cart-detail-title">
+        Mi Carrito{" "}
+        {totalItems > 0 &&
+          `(${totalItems} ${totalItems === 1 ? "item" : "items"})`}
+      </p>
       <div className="cart-detail-grid">
         <div className="cart-detail-items">
           {cart.products.map((item) => {
             const product = item.product || item;
             const id = product._id || product.id;
-            const image = getImageUrl(product.imagen || product.image);
             const name =
               product.item || product.nombre || product.name || "Producto";
             const marca = product.marca;
-            const quantity = item.quantity || item.cantidad || 1;
             const price = product.precioConIva || product.price || 0;
-            const itemTotal = price * quantity;
+            const itemTotal = price * (item.quantity || 1);
 
             return (
               <div
@@ -97,7 +161,6 @@ const CartDetail = () => {
               >
                 <img
                   src={getImageUrl(
-                    // Usar siempre la primera imagen disponible
                     Array.isArray(product.imagen)
                       ? product.imagen[0]
                       : Array.isArray(product.imagenes)
@@ -107,14 +170,6 @@ const CartDetail = () => {
                   alt={product.item || "Producto"}
                   className="cart-detail-image"
                   onError={(e) => {
-                    const attemptedUrl = e.target.src;
-                    console.error("❌ Error cargando imagen del producto:", {
-                      producto: product.item,
-                      rutaOriginal: product.imagen,
-                      urlIntentada: attemptedUrl,
-                      apiUrl:
-                        import.meta.env.VITE_API_URL || "http://localhost:3000",
-                    });
                     e.target.src = "/vite.svg";
                   }}
                 />
@@ -126,7 +181,6 @@ const CartDetail = () => {
                   </p>
                   <div className="cart-detail-total-container">
                     <div className="cart-detail-quantity">
-                      <label htmlFor={`quantity-${id}`}></label>
                       <div className="cantidad-container-cart">
                         <button
                           type="button"
@@ -177,7 +231,7 @@ const CartDetail = () => {
         </div>
         <div className="cart-detail-subtotal">
           <div>
-            <p>Resumen</p>
+            <p className="cart-detail-title">Resumen</p>
           </div>
           <div className="cart-detail-content">
             <p>Subtotal</p>
@@ -199,8 +253,6 @@ const CartDetail = () => {
           </button>
         </div>
       </div>
-
-      <div className="cart-detail-total"></div>
     </div>
   );
 };

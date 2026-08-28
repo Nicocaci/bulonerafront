@@ -3,6 +3,9 @@ import axiosInstance from "../../../../utils/axiosConfig.js";
 import { getImageUrl } from "../../../../utils/imageUtils.js";
 import Swal from "sweetalert2";
 import { memo } from "react";
+import { FaRegEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+
 
 const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
   const handleDelete = async (id) => {
@@ -58,9 +61,9 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
                 ? `${p.oferta.descuento}% ${p.oferta.vence ? `(vence: ${new Date(p.oferta.vence).toLocaleDateString("es-AR")})` : "(sin vencimiento)"}`
                 : "No"}
             </td>
-            <td>
-              <button onClick={() => onEdit(p)}>Editar</button>
-              <button onClick={() => handleDelete(p._id)}>Eliminar</button>
+            <td >
+              <button onClick={() => onEdit(p)}><FaRegEdit/></button>
+              <button onClick={() => handleDelete(p._id)}><MdDelete /></button>
             </td>
           </tr>
         ))}
