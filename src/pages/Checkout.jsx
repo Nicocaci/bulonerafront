@@ -10,12 +10,16 @@ import Datos from "./checkout/Datos.jsx";
 import Pago from "./checkout/Pago.jsx";
 import Envio from "./checkout/Envio.jsx";
 import Confirmar from "./checkout/Confirmar.jsx";
-import { getCartWeight, getCartPaquetes, getCartPaquetesEnvio } from "../utils/cartShipping.js";
+import {
+  getCartWeight,
+  getCartPaquetes,
+  getCartPaquetesEnvio,
+} from "../utils/cartShipping.js";
 import { shipOrder } from "../utils/shipping.js";
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const {  cart, getCart, clearCartSilently  } = useCart();
+  const { cart, getCart, clearCartSilently } = useCart();
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
@@ -418,6 +422,7 @@ const Checkout = () => {
             confirmAccepted={confirmAccepted}
             onToggleConfirm={() => setConfirmAccepted((prev) => !prev)}
             errors={errors}
+            paquetes={getCartPaquetesEnvio(cart)}
           />
         )}
 

@@ -10,6 +10,7 @@ const Confirmar = ({
   confirmAccepted,
   onToggleConfirm,
   errors,
+  paquetes,
 }) => {
   const [preferenceId, setPreferenceId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -82,6 +83,17 @@ const Confirmar = ({
             name: formData.nombre,
             surname: formData.apellido,
             email: formData.email,
+          },
+          shipping: {
+            nombre: formData.nombre,
+            apellido: formData.apellido,
+            calle: formData.calle,
+            numero: formData.numero,
+            codigo_postal: formData.codigoPostal,
+            provincia: formData.provincia,
+            localidad: formData.ciudad,
+            paquetes,
+            shippingChoice: formData.shippingChoice,
           },
         },
       );
