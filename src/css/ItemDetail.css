@@ -339,6 +339,10 @@
   overflow: hidden;
   background: #fff;
 }
+.swiper-zoom-container {
+  width: 75% !important;
+  margin: 0 auto !important;
+}
 
 .mobile-gallery-swiper .img-item-detail {
   width: 100%;
