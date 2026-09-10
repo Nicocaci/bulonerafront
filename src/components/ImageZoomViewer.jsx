@@ -1,5 +1,9 @@
-import React, { useState, useRef } from "react";
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import React, { useState, useRef, useEffect } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Zoom, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/zoom";
+import "swiper/css/pagination";
 
 /**
  * Hook simple para detectar si estamos en viewport mobile.
@@ -87,41 +91,98 @@ const DesktopMagnifier = ({ src, alt, className, zoomLevel = 2.5 }) => {
 };
 
 /**
- * Visor de imagen con zoom responsivo:
- * - Desktop: magnifier estilo Mercado Libre (panel aparte, imagen original intacta).
- * - Mobile: zoom por pinch/doble-tap (react-zoom-pan-pinch).
+ * Visor mobile estilo Mercado Libre:
+ * - Slider horizontal entre TODAS las imágenes del producto (Swiper).
+ * - Zoom (pinch / doble-tap) dentro de cada slide, vía el módulo Zoom de Swiper.
+ * - Mientras está zoomeado, Swiper desactiva el swipe entre slides, así no
+ *   se pelean los dos gestos (eso es lo que causaba el "se mueve todo").
+ * - Sincroniza el slide activo con las thumbnails de abajo, en ambas direcciones:
+ *   tocar una thumbnail mueve el slider, y deslizar el slider resalta la thumbnail.
  *
  * Props:
- * - src: string (url de la imagen a mostrar, ya validada/con fallback resuelto)
+ * - images: string[] (urls ya resueltas de todas las imágenes del producto)
+ * - initialIndex: number (índice seleccionado desde afuera, ej. al tocar una thumbnail)
+ * - onIndexChange: (index: number) => void (avisa al padre cuando el usuario swipea)
+ * - alt: string
+ * - className: clase para cada <img>, mantiene tus estilos existentes
+ */
+const MobileGallery = ({ images, initialIndex = 0, onIndexChange, alt, className }) => {
+  const swiperRef = useRef(null);
+
+  // Si el padre cambia el índice (usuario tocó una thumbnail), movemos el swiper.
+  useEffect(() => {
+    if (swiperRef.current && swiperRef.current.activeIndex !== initialIndex) {
+      swiperRef.current.slideTo(initialIndex);
+    }
+  }, [initialIndex]);
+
+  return (
+    <div className="mobile-zoom-container">
+      <Swiper
+        modules={[Zoom, Pagination]}
+        zoom={{ maxRatio: 3 }}
+        pagination={{ clickable: true }}
+        initialSlide={initialIndex}
+        onSwiper={(swiper) => (swiperRef.current = swiper)}
+        onSlideChange={(swiper) => onIndexChange?.(swiper.activeIndex)}
+        className="mobile-gallery-swiper"
+      >
+        {images.map((img, i) => (
+          <SwiperSlide key={i}>
+            <div className="swiper-zoom-container">
+              <img
+                className={className}
+                src={img}
+                alt={`${alt} - ${i + 1}`}
+                onError={(e) => {
+                  e.target.src = "/vite.svg";
+                }}
+              />
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+  );
+};
+
+/**
+ * Visor de imagen con zoom responsivo:
+ * - Desktop: magnifier estilo Mercado Libre (panel aparte, imagen original intacta).
+ * - Mobile: slider entre imágenes + zoom por pinch/doble-tap dentro de cada slide.
+ *
+ * Props:
+ * - src: string — imagen actual para DESKTOP (la que ya usabas)
+ * - images: string[] — todas las imágenes del producto, para MOBILE
+ * - initialIndex: number — índice actualmente seleccionado (sync con thumbnails)
+ * - onIndexChange: (index: number) => void — se dispara al swipear en mobile
  * - alt: string
  * - className: clase para la imagen base (mantiene tus estilos existentes)
  */
-const ImageZoomViewer = ({ src, alt, className = "img-item-detail" }) => {
+const ImageZoomViewer = ({
+  src,
+  images = [],
+  initialIndex = 0,
+  onIndexChange,
+  alt,
+  className = "img-item-detail",
+}) => {
   const isMobile = useIsMobile();
 
-  if (!src) return null;
-
   if (isMobile) {
+    if (!images.length) return null;
     return (
-      <div className="mobile-zoom-container">
-        <TransformWrapper
-          initialScale={1}
-          minScale={1}
-          maxScale={4}
-          doubleClick={{ mode: "toggle" }}
-          pinch={{ step: 5 }}
-          wheel={{ disabled: true }}
-        >
-          <TransformComponent
-            wrapperClass="mobile-zoom-wrapper"
-            contentClass="mobile-zoom-content"
-          >
-            <img className={className} src={src} alt={alt} />
-          </TransformComponent>
-        </TransformWrapper>
-      </div>
+      <MobileGallery
+        images={images}
+        initialIndex={initialIndex}
+        onIndexChange={onIndexChange}
+        alt={alt}
+        className={className}
+      />
     );
   }
+
+  if (!src) return null;
 
   return (
     <DesktopMagnifier src={src} alt={alt} className={className} zoomLevel={2.5} />

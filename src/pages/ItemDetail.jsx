@@ -19,6 +19,10 @@ const ItemDetail = () => {
   const [error, setError] = useState(null);
   const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
   const [imagenPrincipalValida, setImagenPrincipalValida] = useState(null);
+  const [indiceSeleccionado, setIndiceSeleccionado] = useState(0);
+
+  // URLs resueltas de todas las imágenes del producto, para el slider mobile.
+  const imagenesUrls = (producto?.imagenes || []).map((img) => getImageUrl(img));
   const { addProductToCart } = useCart();
   const [cantidad, setCantidad] = useState(1);
 
@@ -139,6 +143,12 @@ const ItemDetail = () => {
           <div className="item-grid-1">
             <ImageZoomViewer
               src={imagenPrincipalValida}
+              images={imagenesUrls}
+              initialIndex={indiceSeleccionado}
+              onIndexChange={(i) => {
+                setIndiceSeleccionado(i);
+                setImagenSeleccionada(imagenesUrls[i]);
+              }}
               alt={producto.item}
               className="img-item-detail"
             />
@@ -151,7 +161,10 @@ const ItemDetail = () => {
                     className={`thumbnail ${imagenSeleccionada === imagenUrl ? "thumbnail-active" : ""}`}
                     src={imagenUrl}
                     alt={`${producto.item} - Imagen ${index + 1}`}
-                    onClick={() => setImagenSeleccionada(imagenUrl)}
+                    onClick={() => {
+                      setImagenSeleccionada(imagenUrl);
+                      setIndiceSeleccionado(index);
+                    }}
                     onError={(e) => {
                       console.error(
                         `❌ Error cargando thumbnail ${index + 1}:`,

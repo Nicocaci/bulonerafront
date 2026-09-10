@@ -21,6 +21,9 @@
 .item-grid-1 {
   width: 100%;
   height: max-content;
+  display: flex;
+  flex-direction: row-reverse;
+  position: relative;
 }
 .img-item-detail {
   width: 100%;
@@ -30,8 +33,9 @@
 }
 
 .thumbnails-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  display: flex;
+  flex-direction: column;
+  width: 80px;
   gap: 10px;
 }
 
@@ -49,12 +53,12 @@
 .thumbnail:hover {
   opacity: 1;
   transform: scale(1.05);
-  border-color: #438796;
+  border-color: #f45d22;
 }
 
 .thumbnail-active {
   opacity: 1;
-  border-color: #438796;
+  border-color: #f45d22;
   border-width: 3px;
 }
 .item-grid-2 {
@@ -319,6 +323,45 @@
   background-repeat: no-repeat;
 }
  
+
+ 
+/* ===== Mobile: slider entre imágenes + zoom por slide (estilo Mercado Libre) ===== */
+
+.mobile-zoom-container {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.mobile-gallery-swiper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.mobile-gallery-swiper .img-item-detail {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  margin-bottom: 0;
+}
+
+.mobile-gallery-swiper .swiper-pagination-bullet-active {
+  background: #f45d22;
+}
+
+@media (max-width:1710px) {
+  .item-detail-container {
+    width: 70%;
+  }
+}
+@media (max-width: 1300px) {
+  .item-detail-container {
+    width: 100%;
+  }
+}
 /* Si tu pantalla es angosta (ej. tablet en horizontal chica) y no entra
    el panel al costado, lo bajamos para que no se corte contra el borde */
 @media (max-width: 1200px) {
@@ -327,43 +370,13 @@
     top: calc(100% + 12px);
   }
 }
- 
-/* ===== Mobile: pinch/pan zoom ===== */
- 
-.mobile-zoom-container {
-  width: 100%;
-  overflow: hidden;
-  touch-action: none;
-}
- 
-.mobile-zoom-wrapper {
-  width: 100% !important;
-  height: 100% !important;
-}
- 
-.mobile-zoom-content {
-  width: 100% !important;
-  display: flex;
-  justify-content: center;
-}
- 
-.mobile-zoom-content .img-item-detail {
-  width: 100%;
-  height: auto;
-  display: block;
-}
- 
-/* El contenedor padre necesita position relative para que el panel
-   flotante del magnifier se posicione bien */
-.item-grid-1 {
-  position: relative;
-}
-@media (max-width: 1300px) {
-  .item-detail-container {
-    width: 100%;
+
+/* 📱 MOBILE */
+@media(max-width: 830px) {
+  .btn-item {
+    font-size: 8px;
   }
 }
-/* 📱 MOBILE */
 @media (max-width: 768px) {
   .item-detail-container {
     width: 100%;
@@ -433,5 +446,8 @@
   .titulo-descripcion {
     font-size: 12px;
     margin-top: 10px;
+  }
+  .thumbnails-container {
+    display: none;
   }
 }
