@@ -10,6 +10,7 @@ import { CiHeart } from "react-icons/ci";
 import { MdOutlineVerified, MdOutlineVerifiedUser } from "react-icons/md";
 import { PiHeadsetDuotone } from "react-icons/pi";
 import Breadcrumb from "../components/Breadcrumb.jsx";
+import ImageZoomViewer from "../components/ImageZoomViewer.jsx";
 
 const ItemDetail = () => {
   const { prodId } = useParams();
@@ -17,8 +18,37 @@ const ItemDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
+  const [imagenPrincipalValida, setImagenPrincipalValida] = useState(null);
   const { addProductToCart } = useCart();
   const [cantidad, setCantidad] = useState(1);
+
+  // Valida que la imagen principal cargue correctamente antes de pasarla
+  // al visor de zoom (Magnify/pinch-zoom no reenvían onError de forma confiable).
+  useEffect(() => {
+    const urlCandidata =
+      imagenSeleccionada ||
+      (producto ? getImageUrl(producto.imagenes?.[0] || producto.imagen) : null);
+
+    if (!urlCandidata) {
+      setImagenPrincipalValida(null);
+      return;
+    }
+
+    let cancelado = false;
+    const img = new Image();
+    img.onload = () => {
+      if (!cancelado) setImagenPrincipalValida(urlCandidata);
+    };
+    img.onerror = () => {
+      console.error("❌ Error cargando imagen principal:", urlCandidata);
+      if (!cancelado) setImagenPrincipalValida("/vite.svg");
+    };
+    img.src = urlCandidata;
+
+    return () => {
+      cancelado = true;
+    };
+  }, [imagenSeleccionada, producto]);
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -107,22 +137,10 @@ const ItemDetail = () => {
         />
         <div className="item-detail-grid">
           <div className="item-grid-1">
-            <img
-              className="img-item-detail"
-              src={
-                imagenSeleccionada ||
-                getImageUrl(producto.imagenes?.[0] || producto.imagen)
-              }
+            <ImageZoomViewer
+              src={imagenPrincipalValida}
               alt={producto.item}
-              onError={(e) => {
-                console.error("❌ Error cargando imagen principal:", {
-                  producto: producto.item,
-                  rutaOriginal: producto.imagen,
-                  imagenSeleccionada: imagenSeleccionada,
-                  urlIntentada: e.target.src,
-                });
-                e.target.src = "/vite.svg";
-              }}
+              className="img-item-detail"
             />
             <div className="thumbnails-container">
               {(producto.imagenes || []).map((imagen, index) => {

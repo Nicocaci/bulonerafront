@@ -21,9 +21,6 @@
 .item-grid-1 {
   width: 100%;
   height: max-content;
-  display: flex;
-  flex-direction: row-reverse;
-  gap: 10px;
 }
 .img-item-detail {
   width: 100%;
@@ -278,6 +275,88 @@
   width: max-content;
   padding-bottom: 5px;
   margin-bottom: 10px;
+}
+.desktop-magnifier-wrapper {
+  position: relative;
+  cursor: crosshair;
+  width: 100%;
+  display: block;
+}
+ 
+.desktop-magnifier-wrapper .img-item-detail {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+ 
+/* Recuadro que sigue al mouse sobre la imagen chica */
+.magnifier-lens {
+  position: absolute;
+  border: 2px solid rgba(0, 0, 0, 0.35);
+  background: rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+  z-index: 2;
+}
+ 
+/* Panel grande que aparece al costado, la imagen original NO se toca */
+.magnifier-zoom-pane {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 20px);
+  width: 480px;
+  height: 480px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 20;
+  border-radius: 4px;
+}
+ 
+.magnifier-zoom-pane-inner {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+}
+ 
+/* Si tu pantalla es angosta (ej. tablet en horizontal chica) y no entra
+   el panel al costado, lo bajamos para que no se corte contra el borde */
+@media (max-width: 1200px) {
+  .magnifier-zoom-pane {
+    left: 0;
+    top: calc(100% + 12px);
+  }
+}
+ 
+/* ===== Mobile: pinch/pan zoom ===== */
+ 
+.mobile-zoom-container {
+  width: 100%;
+  overflow: hidden;
+  touch-action: none;
+}
+ 
+.mobile-zoom-wrapper {
+  width: 100% !important;
+  height: 100% !important;
+}
+ 
+.mobile-zoom-content {
+  width: 100% !important;
+  display: flex;
+  justify-content: center;
+}
+ 
+.mobile-zoom-content .img-item-detail {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+ 
+/* El contenedor padre necesita position relative para que el panel
+   flotante del magnifier se posicione bien */
+.item-grid-1 {
+  position: relative;
 }
 @media (max-width: 1300px) {
   .item-detail-container {
