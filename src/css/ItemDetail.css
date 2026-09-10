@@ -339,9 +339,8 @@
   overflow: hidden;
   background: #fff;
 }
-.swiper-zoom-container {
-  width: 75% !important;
-  margin: 0 auto !important;
+.swiper-wrapper {
+  padding: 0 !important;
 }
 
 .mobile-gallery-swiper .img-item-detail {
