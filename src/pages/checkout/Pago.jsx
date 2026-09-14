@@ -1,22 +1,15 @@
 import React from 'react';
 
-const Pago = ({ formData, errors, onChange }) => {
-
+const Pago = () => {
     return (
         <div className="checkout-step-content">
             <h2>Método de Pago</h2>
             <div className="checkout-form-grid">
                 <div className="checkout-form-group checkout-form-group-full">
-                    <label htmlFor="metodoPago">Método de Pago *</label>
-                    <select
-                        id="metodoPago"
-                        name="metodoPago"
-                        value={formData.metodoPago}
-                        onChange={onChange}
-                    >
-                        {/* <option value="efectivo">Efectivo</option> */}
-                        <option value="mercadopago">Mercado Pago</option>
-                    </select>
+                    <p><strong>Mercado Pago</strong></p>
+                    <p style={{ fontSize: '0.9rem', color: '#666' }}>
+                        Vas a poder pagar con tarjeta, transferencia o efectivo (Rapipago/Pago Fácil) directamente desde Mercado Pago.
+                    </p>
                 </div>
             </div>
         </div>

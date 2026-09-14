@@ -105,6 +105,15 @@ const Confirmar = ({
     }
   };
 
+  const productsTotal = productsWithDetails.reduce((acc, item) => {
+    const product = item.product || item;
+    const price = product.precioConIva || 0;
+    const quantity = item.quantity || 1;
+    return acc + price * quantity;
+  }, 0);
+
+  const shippingCost = Number(formData.shippingChoice?.valor) || 0;
+
   return (
     <div className="checkout-step-content">
       <h2>Confirmación</h2>
@@ -134,16 +143,28 @@ const Confirmar = ({
           </p>
         </div>
 
+        {/* MÉTODO DE ENVÍO */}
+        <div className="checkout-summary-section">
+          <h3>Envío</h3>
+          {formData.shippingChoice ? (
+            <>
+              <p>
+                {formData.shippingChoice.tipo === "sucursal" ? "A sucursal" : "A domicilio"} —{" "}
+                {formData.shippingChoice.correo || "Envío"} ({formData.shippingChoice.servicio})
+              </p>
+              <p>
+                <strong>Costo de envío:</strong> ${Number(formData.shippingChoice.valor).toLocaleString("es-AR")}
+              </p>
+            </>
+          ) : (
+            <p>No se seleccionó método de envío</p>
+          )}
+        </div>
+
         {/* MÉTODO DE PAGO */}
         <div className="checkout-summary-section">
           <h3>Método de Pago</h3>
-          <p>
-            {formData.metodoPago === "efectivo"
-              ? "Efectivo"
-              : formData.metodoPago === "transferencia"
-                ? "Transferencia Bancaria"
-                : "Mercado Pago"}
-          </p>
+          <p>Mercado Pago</p>
         </div>
 
         {/* PRODUCTOS */}
@@ -196,6 +217,8 @@ const Confirmar = ({
 
         {/* TOTAL */}
         <div className="checkout-summary-total">
+          <p>Subtotal productos: ${productsTotal.toLocaleString("es-AR")}</p>
+          <p>Envío: ${shippingCost.toLocaleString("es-AR")}</p>
           <h3>Total: ${total.toLocaleString("es-AR")}</h3>
         </div>
 
@@ -218,7 +241,7 @@ const Confirmar = ({
         </div>
 
         {/* BOTÓN MERCADO PAGO */}
-        {formData.metodoPago === "mercadopago" && confirmAccepted && (
+        {confirmAccepted && (
           <div style={{ marginTop: "20px" }}>
             {!preferenceId && (
               <button

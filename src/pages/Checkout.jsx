@@ -15,14 +15,12 @@ import {
   getCartPaquetes,
   getCartPaquetesEnvio,
 } from "../utils/cartShipping.js";
-import { shipOrder } from "../utils/shipping.js";
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { cart, getCart, clearCartSilently } = useCart();
+  const { cart, getCart } = useCart();
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
-  const [processing, setProcessing] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
 
   const [formData, setFormData] = useState({
@@ -35,7 +33,7 @@ const Checkout = () => {
     ciudad: "",
     provincia: "",
     codigoPostal: "",
-    metodoPago: "efectivo",
+    metodoPago: "mercadopago",
     notas: "",
     shippingChoice: null,
   });
@@ -91,31 +89,7 @@ const Checkout = () => {
       }
     }
 
-    if (step === 2) {
-      if (!formData.metodoPago)
-        newErrors.metodoPago = "El método de pago es requerido";
-
-      if (formData.metodoPago === "tarjeta") {
-        if (
-          !formData.cardNumber?.trim() ||
-          !/^[0-9\s]{13,19}$/.test(formData.cardNumber)
-        ) {
-          newErrors.cardNumber = "Número de tarjeta inválido";
-        }
-        if (
-          !formData.cardExpiry?.trim() ||
-          !/^(0[1-9]|1[0-2])\/[0-9]{2}$/.test(formData.cardExpiry)
-        ) {
-          newErrors.cardExpiry = "Fecha inválida (MM/AA)";
-        }
-        if (
-          !formData.cardCvc?.trim() ||
-          !/^[0-9]{3,4}$/.test(formData.cardCvc)
-        ) {
-          newErrors.cardCvc = "CVC inválido";
-        }
-      }
-    }
+    // Paso 2 (Pago): método fijo "mercadopago", nada que validar acá.
 
     if (step === 3) {
       if (!formData.calle.trim()) newErrors.calle = "La calle es requerida";
@@ -162,7 +136,8 @@ const Checkout = () => {
 
   const calculateTotal = () => {
     if (!cart || !cart.products) return 0;
-    return cart.products.reduce((acc, item) => {
+
+    const productsTotal = cart.products.reduce((acc, item) => {
       const price =
         item.product?.precioConIva ||
         item.product?.price ||
@@ -172,148 +147,10 @@ const Checkout = () => {
       const quantity = item.quantity || item.cantidad || 1;
       return acc + price * quantity;
     }, 0);
-  };
 
-  const handleSubmit = async () => {
-    if (!validateStep(1)) {
-      setCurrentStep(1);
-      return;
-    }
-    if (!validateStep(2)) {
-      setCurrentStep(2);
-      return;
-    }
-    if (!validateStep(3)) {
-      setCurrentStep(3);
-      return;
-    }
-    if (!validateStep(4)) {
-      setCurrentStep(4);
-      return;
-    }
+    const shippingCost = Number(formData.shippingChoice?.valor) || 0;
 
-    if (!user?.id) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Debes estar autenticado para realizar una compra.",
-        confirmButtonColor: "#d33",
-      });
-      return;
-    }
-
-    /**
-     * SI EL PAGO ES CON MERCADO PAGO
-     * NO CREAR ORDEN DESDE EL FRONT
-     * LA CREA EL WEBHOOK
-     */
-    if (formData.metodoPago === "mercadopago") {
-      return;
-    }
-
-    setProcessing(true);
-
-    try {
-      const products = cart.products.map((item) => {
-        const productId = item.product?._id || item.product?.id || item.product;
-        const quantity = item.quantity || item.cantidad || 1;
-
-        if (!productId) {
-          throw new Error("Producto sin ID válido");
-        }
-
-        return {
-          product: productId,
-          quantity: quantity,
-        };
-      });
-
-      const total = calculateTotal();
-
-      const orderData = {
-        user: user.id,
-        products: products,
-        total,
-        paymentMethod: formData.metodoPago,
-        status: "pendiente",
-        shippingAddress: {
-          calle: formData.calle,
-          numero: formData.numero,
-          ciudad: formData.ciudad,
-          provincia: formData.provincia,
-          codigoPostal: formData.codigoPostal,
-          notas: formData.notas,
-        },
-      };
-
-      const response = await axiosInstance.post("/api/orders", orderData, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-
-      const createdOrder = response.data;
-
-      // Crear el pedido + envío en Enviopack (solo a domicilio)
-      try {
-        await shipOrder(createdOrder._id || createdOrder.id, {
-          nombre: formData.nombre,
-          apellido: formData.apellido,
-          email: formData.email,
-          monto: total,
-          provincia: formData.provincia,
-          localidad: formData.ciudad,
-          calle: formData.calle,
-          numero: formData.numero,
-          codigo_postal: formData.codigoPostal,
-          paquetes: getCartPaquetesEnvio(cart),
-          shippingChoice: formData.shippingChoice,
-        });
-      } catch (shipError) {
-        console.error("Error al generar el envío en Enviopack:", shipError);
-        Swal.fire({
-          icon: "warning",
-          title: "Pedido creado",
-          text: "Tu pedido se registró, pero hubo un problema al generar el envío. Nuestro equipo lo va a revisar.",
-        });
-      }
-
-      try {
-        await clearCartSilently();
-      } catch (clearError) {
-        console.error("Error al vaciar el carrito:", clearError);
-      }
-
-      await Swal.fire({
-        icon: "success",
-        title: "¡Compra realizada!",
-        text: "Tu pedido ha sido procesado correctamente.",
-        confirmButtonColor: "#108202",
-      });
-
-      navigate("/gracias", {
-        state: {
-          order: response.data,
-        },
-      });
-    } catch (error) {
-      console.error("Error al procesar el pedido:", {
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message,
-      });
-
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text:
-          error.response?.data?.message ||
-          "No se pudo procesar el pedido. Por favor, intenta nuevamente.",
-        confirmButtonColor: "#d33",
-      });
-    } finally {
-      setProcessing(false);
-    }
+    return productsTotal + shippingCost;
   };
 
   const handleSelectShipping = (option) => {
@@ -397,13 +234,7 @@ const Checkout = () => {
             onChange={handleInputChange}
           />
         )}
-        {currentStep === 2 && (
-          <Pago
-            formData={formData}
-            errors={errors}
-            onChange={handleInputChange}
-          />
-        )}
+        {currentStep === 2 && <Pago />}
         {currentStep === 3 && (
           <Envio
             formData={formData}
@@ -435,12 +266,11 @@ const Checkout = () => {
                 handleBack();
               }}
               className="checkout-btn-secondary"
-              disabled={processing}
             >
               Atrás
             </button>
           )}
-          {currentStep < 4 ? (
+          {currentStep < 4 && (
             <button
               type="button"
               onClick={handleNext}
@@ -448,16 +278,7 @@ const Checkout = () => {
             >
               Continuar
             </button>
-          ) : formData.metodoPago !== "mercadopago" ? (
-            <button
-              type="button"
-              onClick={handleSubmit}
-              className="checkout-btn-primary checkout-btn-submit"
-              disabled={processing || !confirmAccepted}
-            >
-              {processing ? "Procesando..." : "Confirmar Pedido"}
-            </button>
-          ) : null}
+          )}
         </div>
       </div>
     </div>
