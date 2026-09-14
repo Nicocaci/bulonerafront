@@ -14,7 +14,7 @@ const Pago = ({ formData, errors, onChange }) => {
                         value={formData.metodoPago}
                         onChange={onChange}
                     >
-                        <option value="efectivo">Efectivo</option>
+                        {/* <option value="efectivo">Efectivo</option> */}
                         <option value="mercadopago">Mercado Pago</option>
                     </select>
                 </div>
