@@ -29,9 +29,9 @@ const Home = () => {
               href: "/contacto",
             },
             center: {
-              src: "/bannerObrero.jpeg",
+              src: "/promo-1.jpeg",
               alt: "Banner Obrero",
-              href: "/producto/6a57bf7aa07778044d79f2fd",
+              href: "/productos?page=1&marca=Ronix&search=kit",
             },
             topRight: { src: "/catalogo.jpeg", alt: "Catálogo", href: "/productos?page=1" },
             bottomRight: { src: "/enviosBanner.jpeg", alt: "Envíos gratis", href: "/faq" },
