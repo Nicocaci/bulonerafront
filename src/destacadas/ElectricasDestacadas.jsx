@@ -39,7 +39,6 @@ const CategoriaSeccion = () => {
   if (isError) {
     return <div className="ofertas-error">Error al cargar productos</div>;
   }
-  console.log(productos);
   return (
     <div>
       <div className="ofertas-header">
