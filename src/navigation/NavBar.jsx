@@ -174,6 +174,14 @@ const NavBar = () => {
   return (
     <div className={`navbar-container`}>
       <div className="hamburger-container">
+        <img
+          className="logo-navbar logo-navbar-mobile"
+          src="/logo-fondo-negro.png"
+          alt="logo"
+          onClick={() => {
+            window.location.href = "/";
+          }}
+        />
         <div className="div-navbar-2 navbar-actions-mobile">
           <NavbarActions
             isAuthenticated={isAuthenticated}
@@ -186,14 +194,7 @@ const NavBar = () => {
             <AuthModal onClose={() => setShowAuthModal(false)} />
           )}
         </div>
-        <img
-          className="logo-navbar logo-navbar-mobile"
-          src="/logo-fondo-negro.png"
-          alt="logo"
-          onClick={() => {
-            window.location.href = "/";
-          }}
-        />
+
         <button className="hamburger-btn" onClick={toggleMenu}>
           {isMenuOpen ? "\u2715" : "\u2630"}
         </button>
