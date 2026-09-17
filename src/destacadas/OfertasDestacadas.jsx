@@ -118,7 +118,7 @@ const OfertasDestacadas = () => {
                       Ahorrás ${ahorro(oferta.precioConIva, oferta.precioFinal)}
                     </p>
                   
-                  <div className="btn-container">
+                  {/* <div className="btn-container">
                     <button
                       className="btn-ver-producto"
                       onClick={() => {
@@ -127,9 +127,9 @@ const OfertasDestacadas = () => {
                     >
                       Ver producto
                     </button>
+                  </div> */}
                   </div>
-                  </div>
-                </div>
+                </div>  
               </Link>
             </SwiperSlide>
           ))}

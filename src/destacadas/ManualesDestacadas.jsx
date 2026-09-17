@@ -6,6 +6,7 @@ import { getImageUrl } from "../utils/imageUtils.js";
 import { useQuery } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { MdVerified } from "react-icons/md";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -101,19 +102,57 @@ const CategoriaSeccion = () => {
                     alt={producto.item}
                   />
                   </div>
-                  <div className="titulo-oferta-container">
-                    <p className="oferta-title">{producto.item}</p>
-
-                    <p className="oferta-price">
-                      ${producto.precioConIva.toLocaleString("es-AR")}
-                    </p>
-                  <div className="btn-container">
-                    <button
-                      className="btn-ver-producto"
-                      onClick={() => navigate(`/producto/${producto._id}`)}
+                  <div className="product-card-description">
+                    <p className="product-card-text">{producto.item}</p>
+                    <div className="product-marca-container">
+                      <p className="product-marca">{producto.marca}</p>
+                      <MdVerified className="verified-icon" />
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width: "100%",
+                        gap: 4,
+                      }}
                     >
-                      Ver producto
-                    </button>
+                      {producto.oferta?.activa ? (
+                        <>
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                            }}
+                          >
+                            <p className="product-price-tachado">
+                              ${producto.precioConIva.toLocaleString("es-AR")}
+                            </p>
+                            <p className="product-price">
+                              ${producto.precioFinal.toLocaleString("es-AR")}
+                            </p>
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "flex-end",
+                            }}
+                          >
+                            <span className="product-oferta-badge">
+                              -{producto.oferta.descuento}%
+                            </span>
+                            <p className="product-iva">IVA inc.</p>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <p className="product-price">
+                            ${producto.precioConIva.toLocaleString("es-AR")}
+                          </p>
+                          <p className="product-iva">IVA inc.</p>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
