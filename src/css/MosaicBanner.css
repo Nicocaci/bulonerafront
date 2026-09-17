@@ -4,7 +4,7 @@
   margin: 0 auto;
   padding: 0 16px;
   box-sizing: border-box;
-  padding-top: 180px;
+  padding-top: 190px;
 }
 
 .mosaicGrid {
@@ -103,7 +103,7 @@
 @media (max-width: 768px) {
   .mosaicBanner {
     width: 100%;
-    padding-top: 130px;
+    padding-top: 160px;
   }
   .mosaicGrid {
     grid-template-columns: 1fr 1fr;
