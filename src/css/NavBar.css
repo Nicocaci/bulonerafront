@@ -229,7 +229,7 @@
 .navbar-actions {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 25px;
 }
 
  .btn-actions {
@@ -237,6 +237,7 @@
   border: none;
   color: white;
   cursor: pointer;
+  font-size: 18px;
 }
 
 .navbar-cart-wrapper {
@@ -367,7 +368,7 @@
   .navbar-actions button {
     display: flex;
     align-items: center;
-    gap: 5px;
+    font-size: 13px;
   }
   .navbar-top {
     flex-direction: column;
@@ -468,6 +469,7 @@
 
   .navbar-actions {
     width: 100%;
+    gap: 10px;
   }
 
   /* dropdown en mobile */

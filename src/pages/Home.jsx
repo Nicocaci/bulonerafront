@@ -19,22 +19,22 @@ const Home = () => {
         <MosaicBanner
           images={{
             topLeft: {
-              src: "/solucion.jpeg",
+              src: "https://res.cloudinary.com/dn4lt8fhc/image/upload/v1790002630/solucion.jpg",
               alt: "Descuentos",
               href: "/contacto",
             },
             bottomLeft: {
-              src: "/cotiza.jpeg",
+              src: "https://res.cloudinary.com/dn4lt8fhc/image/upload/v1790002630/cotiza.jpg",
               alt: "Armá tu setup",
               href: "/contacto",
             },
             center: {
-              src: "/promo-1.jpeg",
+              src: "https://res.cloudinary.com/dn4lt8fhc/image/upload/v1790002161/promo-1.png",
               alt: "Banner Obrero",
               href: "/productos?page=1&marca=Ronix&search=kit",
             },
-            topRight: { src: "/catalogo.jpeg", alt: "Catálogo", href: "/productos?page=1" },
-            bottomRight: { src: "/enviosBanner.jpeg", alt: "Envíos gratis", href: "/faq" },
+            topRight: { src: "https://res.cloudinary.com/dn4lt8fhc/image/upload/v1790002630/catalogo.jpg", alt: "Catálogo", href: "/productos?page=1" },
+            bottomRight: { src: "https://res.cloudinary.com/dn4lt8fhc/image/upload/v1790002630/enviosBanner.jpg", alt: "Envíos gratis", href: "/faq" },
           }}
         />
       </div>

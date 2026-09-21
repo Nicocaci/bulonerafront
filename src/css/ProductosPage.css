@@ -27,7 +27,7 @@
 .filter-sidebar {
   width: 260px;
   min-width: 200px;
-  background: var(--prodContainer-bg);
+  background: var(--filterBox-bg);
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
@@ -68,7 +68,7 @@
 }
 
 .product-card {
-  width: 250px;
+  width: 220px;
   height: max-content;
   background-color: var(--cards-bg);
   overflow: hidden;
@@ -316,6 +316,7 @@
     border-radius: 0;
     transition: left 0.3s ease;
     overflow-y: auto;
+    background: var(--prodContainer-bg)
   }
 
   .filter-sidebar.open {
@@ -370,9 +371,14 @@
 }
 @media(max-width:400px) {
   .product-card {
-    width: 150px;
+    width: 170px;
   }
   .product-oferta-badge{
     font-size: 8px;
+  }
+}
+@media(max-width: 360px) {
+  .product-card {
+    width: 150px;
   }
 }
