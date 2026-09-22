@@ -26,7 +26,7 @@ const ItemDetail = () => {
     getImageUrl(img),
   );
   const { addProductToCart } = useCart();
-  const [cantidad, setCantidad] = useState(1);
+  const [cantidad, setCantidad] = useState(0);
 
   // Valida que la imagen principal cargue correctamente antes de pasarla
   // al visor de zoom (Magnify/pinch-zoom no reenvían onError de forma confiable).
