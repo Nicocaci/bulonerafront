@@ -36,6 +36,7 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
           <th>Categoria</th>
           <th>Subcategoria</th>
           <th>Precio</th>
+          <th>Stock</th>
           <th>Medidas</th>
           <th>Oferta Destacada</th>
           <th>Acciones</th>
@@ -51,6 +52,7 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
             <td>{p.categoria}</td>
             <td>{p.subcategoria}</td>
             <td>${p.precio.toLocaleString('es-AR')}</td>
+            <td>{p.stock}</td>
             <td>
               {p.alto ?? "-"}x{p.ancho ?? "-"}x{p.largo ?? "-"} cm
               <br />

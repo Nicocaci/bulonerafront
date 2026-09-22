@@ -214,10 +214,10 @@
                       </div>
                     </div>
                     <div className="probando1">
-                      <p>🟢</p>
+                      <p>{producto.stock > 0 ? "🟢" : "🔴"}</p>
                       <div>
-                        <p>Stock disponible</p>
-                        <p className="precio-siniva">Entrega Inmediata</p>
+                        <p>{producto.stock > 0 ? "Stock disponible" : "Sin stock"}</p>
+                        <p className="precio-siniva">{producto.stock > 0 ? "Entrega Inmediata" : "No disponible por el momento"}</p>
                       </div>
                     </div>
                   </div>

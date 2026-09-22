@@ -10,7 +10,7 @@
 
 .auth-modal {
   width: min(90%, 420px);
-  background-color: var(--cards-bg);
+  background-color: var(--auth-bg);
   border-radius: 12px;
   padding: 24px 28px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
@@ -25,18 +25,19 @@
   background: none;
   font-size: 24px;
   cursor: pointer;
+  color: var(--text-color);
 }
 
 .auth-modal__title {
   margin: 0;
-  font-size: 15px;
+  font-size: 18px;
   color: var(--text-color);
 }
 
 .auth-modal__subtitle {
   margin-bottom: 10px;
   font-size: 10px;
-  color: #555;
+  color: var(--text-color);
 }
 
 .auth-modal__form {
@@ -50,14 +51,14 @@
   flex-direction: column;
   font-size: 0.9rem;
   gap: 4px;
-  color: #333;
+  color: var(--text-color);
 }
 
 .auth-modal__form input {
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 10px;
+  font-size: 15px;
 }
 
 .auth-modal__error {
@@ -72,7 +73,7 @@
   border-radius: 6px;
   background-color: #1e1e1e;
   color: #fff;
-  font-size: 10px;
+  font-size: 15px;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
@@ -88,7 +89,7 @@
   border-radius: 6px;
   background-color: #1e1e1e;
   color: #fff;
-  font-size: 10px;
+  font-size: 15px;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }

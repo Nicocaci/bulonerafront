@@ -65,6 +65,7 @@ main {
   --tableHead-bg: #F0F0F0;
   --itemContainer-bg: #E0E0E0;
   --totalContainer-bg:#c4c4c44b;
+  --auth-bg: #dddddd;
 }
 
 [data-theme="dark"] {
@@ -90,6 +91,7 @@ main {
   --tableHead-bg:#333536F5;
   --itemContainer-bg: #333536f5; 
   --totalContainer-bg:#333536f5;
+  --auth-bg: #202324;
 }
 
 body {
