@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
 import { getImageUrl } from "../utils/imageUtils";
+import Swal from "sweetalert2";
 
 // 🔒 Detecta si el error es por falta de sesión / token inválido o vencido
 const isAuthError = (message) => {
@@ -86,7 +87,7 @@ const CartDetail = () => {
 
   if (loading) return <div>Cargando...</div>;
 
-  const activeError = error || cartError;
+  const activeError = error;
 
   if (activeError) {
     if (isAuthError(activeError)) {
@@ -114,19 +115,34 @@ const CartDetail = () => {
     (acc, item) => acc + (item.quantity || 0),
     0,
   );
-
-  const handleQuantityChange = async (productId, newQuantity) => {
+  const handleQuantityChange = async (productId, newQuantity, maxStock) => {
     const quantity = parseInt(newQuantity, 10);
 
     if (isNaN(quantity) || quantity < 0) return;
+
+    if (maxStock != null && quantity > maxStock) {
+      Swal.fire({
+        icon: "warning",
+        title: "Stock insuficiente",
+        text: `Solo hay ${maxStock} unidades disponibles`,
+        confirmButtonColor: "#d33",
+      });
+      return;
+    }
 
     setUpdatingQuantities((prev) => ({ ...prev, [productId]: true }));
 
     try {
       await updateProductQuantity(productId, quantity);
-    } catch (error) {
-      console.error("Error al actualizar la cantidad:", error);
-      setError(error.message || "Error al actualizar la cantidad");
+    } catch (err) {
+      console.error("Error al actualizar la cantidad:", err);
+      Swal.fire({
+        icon: "error",
+        title: "No se pudo actualizar",
+        text: err.message || "Error al actualizar la cantidad",
+        confirmButtonColor: "#d33",
+      });
+      // 👇 ya no hacemos setError(...) acá, para no tapar toda la página
     } finally {
       setUpdatingQuantities((prev) => {
         const newState = { ...prev };
@@ -148,6 +164,7 @@ const CartDetail = () => {
           {cart.products.map((item) => {
             const product = item.product || item;
             const id = product._id || product.id;
+            const stock = product.stock;
             const name =
               product.item || product.nombre || product.name || "Producto";
             const marca = product.marca;
@@ -189,6 +206,7 @@ const CartDetail = () => {
                             handleQuantityChange(
                               id,
                               Math.max(0, (item.quantity || 1) - 1),
+                              stock,
                             )
                           }
                           disabled={updatingQuantities[id]}
@@ -199,9 +217,10 @@ const CartDetail = () => {
                           type="number"
                           id={`quantity-${id}`}
                           min="0"
+                          max={stock}
                           value={item.quantity || 1}
                           onChange={(e) =>
-                            handleQuantityChange(id, e.target.value)
+                            handleQuantityChange(id, e.target.value, stock)
                           }
                           disabled={updatingQuantities[id]}
                           className="cart-detail-quantity-input"
@@ -210,7 +229,11 @@ const CartDetail = () => {
                           type="button"
                           className="cantidad-btn-detail"
                           onClick={() =>
-                            handleQuantityChange(id, (item.quantity || 1) + 1)
+                            handleQuantityChange(
+                              id,
+                              (item.quantity || 1) + 1,
+                              stock,
+                            )
                           }
                           disabled={updatingQuantities[id]}
                         >

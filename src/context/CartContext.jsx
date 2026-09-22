@@ -231,6 +231,7 @@ export const CartProvider = ({ children }) => {
         });
       } catch (err) {
         setCart(prevCart); // rollback
+        throw err;
       }
     },
     [

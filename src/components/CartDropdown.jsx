@@ -41,10 +41,20 @@ const CartDropdown = ({ onClose, isOpen }) => {
     return acc + price * quantity;
   }, 0);
 
-  const handleQuantityChange = async (productId, newQuantity) => {
+  const handleQuantityChange = async (productId, newQuantity, maxStock) => {
     const quantity = parseInt(newQuantity, 10);
 
     if (isNaN(quantity) || quantity < 0) return;
+
+    if (maxStock != null && quantity > maxStock) {
+      Swal.fire({
+        icon: "warning",
+        title: "Stock insuficiente",
+        text: `Solo hay ${maxStock} unidades disponibles`,
+        confirmButtonColor: "#d33",
+      });
+      return; // no llega a pegarle al backend
+    }
 
     setUpdatingQuantities((prev) => ({ ...prev, [productId]: true }));
 
@@ -52,7 +62,12 @@ const CartDropdown = ({ onClose, isOpen }) => {
       await updateProductQuantity(productId, quantity);
     } catch (error) {
       console.error("Error al actualizar la cantidad:", error);
-      setError(error.message || "Error al actualizar la cantidad");
+      Swal.fire({
+        icon: "error",
+        title: "No se pudo actualizar",
+        text: error.message || "Error al actualizar la cantidad",
+        confirmButtonColor: "#d33",
+      });
     } finally {
       setUpdatingQuantities((prev) => {
         const newState = { ...prev };
@@ -61,7 +76,6 @@ const CartDropdown = ({ onClose, isOpen }) => {
       });
     }
   };
-
   const handleClearCart = async () => {
     if (products.length === 0) return;
 
@@ -107,7 +121,9 @@ const CartDropdown = ({ onClose, isOpen }) => {
           <p>Mi carrito</p>
         </div>
         <div>
-          <p className="vaciar-carrito" onClick={handleClearCart}>Vaciar</p>
+          <p className="vaciar-carrito" onClick={handleClearCart}>
+            Vaciar
+          </p>
         </div>
       </div>
 
@@ -119,6 +135,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
             {products.map((item) => {
               const product = item.product || item;
               const id = product._id || product.id;
+              const stock = product.stock;
               const image = getImageUrl(product.imagen || product.image);
               const name =
                 product.item || product.nombre || product.name || "Producto";
@@ -172,7 +189,8 @@ const CartDropdown = ({ onClose, isOpen }) => {
                             onClick={() =>
                               handleQuantityChange(
                                 id,
-                                Math.max(0, (item.quantity || 1) - 1),
+                                (item.quantity || 1) - 1,
+                                stock,
                               )
                             }
                             disabled={updatingQuantities[id]}
@@ -183,9 +201,10 @@ const CartDropdown = ({ onClose, isOpen }) => {
                             type="number"
                             id={`quantity-${id}`}
                             min="0"
+                            max={stock}
                             value={item.quantity || 1}
                             onChange={(e) =>
-                              handleQuantityChange(id, e.target.value)
+                              handleQuantityChange(id, e.target.value, stock)
                             }
                             disabled={updatingQuantities[id]}
                             className="cart-dropdown-quantity-input"
@@ -194,9 +213,16 @@ const CartDropdown = ({ onClose, isOpen }) => {
                             type="button"
                             className="cantidad-btn"
                             onClick={() =>
-                              handleQuantityChange(id, (item.quantity || 1) + 1)
+                              handleQuantityChange(
+                                id,
+                                (item.quantity || 1) + 1,
+                                stock,
+                              )
                             }
-                            disabled={updatingQuantities[id]}
+                            disabled={
+                              updatingQuantities[id] ||
+                              (stock != null && item.quantity >= stock)
+                            }
                           >
                             +
                           </button>
