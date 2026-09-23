@@ -11,6 +11,7 @@ const Envio = ({
   cartPaquetes,
   onSelectShipping,
 }) => {
+  const isEnvio = formData.deliveryMethod === "envio";
   const isRetiro = formData.deliveryMethod === "retiro_local";
 
   const handleMethodChange = (method) => {
@@ -33,11 +34,11 @@ const Envio = ({
       <h2>Método de entrega</h2>
 
       <div className="checkout-delivery-toggle">
-        <label className={`shipping-option ${!isRetiro ? "selected" : ""}`}>
+        <label className={`shipping-option ${isEnvio ? "selected" : ""}`}>
           <input
             type="radio"
             name="deliveryMethod"
-            checked={!isRetiro}
+            checked={isEnvio}
             onChange={() => handleMethodChange("envio")}
           />
           Envío a domicilio / sucursal
@@ -53,13 +54,21 @@ const Envio = ({
         </label>
       </div>
 
-      {isRetiro ? (
+      {errors.deliveryMethod && (
+        <span className="checkout-error" style={{ display: "block", marginTop: "0.5rem" }}>
+          {errors.deliveryMethod}
+        </span>
+      )}
+
+      {isRetiro && (
         <div className="checkout-pickup-info" style={{ marginTop: "1rem" }}>
           <p><strong>Bulonera El Triángulo</strong></p>
           <p>Dirección del local, horarios de atención, etc.</p>
           <p>Sin costo de envío. Te avisamos por email cuando esté listo para retirar.</p>
         </div>
-      ) : (
+      )}
+
+      {isEnvio && (
         <>
           <div className="checkout-form-grid">
             <div className="checkout-form-group">

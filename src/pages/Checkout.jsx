@@ -35,7 +35,7 @@ const Checkout = () => {
     codigoPostal: "",
     metodoPago: "mercadopago",
     notas: "",
-    deliveryMethod: "envio", // "retiro_local" o "envio"
+    deliveryMethod: null, // "retiro_local" o "envio"
     shippingChoice: null,
   });
 
@@ -93,8 +93,9 @@ const Checkout = () => {
     // Paso 2 (Pago): método fijo "mercadopago", nada que validar acá.
 
 if (step === 3) {
-  if (formData.deliveryMethod === "retiro_local") {
-    // no se valida dirección, sólo que haya quedado seteado el "shippingChoice" de retiro
+  if (!formData.deliveryMethod) {
+    newErrors.deliveryMethod = "Seleccioná un método de entrega";
+  } else if (formData.deliveryMethod === "retiro_local") {
     if (!formData.shippingChoice) {
       newErrors.shippingChoice = "Seleccioná el retiro en el local";
     }

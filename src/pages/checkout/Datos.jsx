@@ -3,7 +3,7 @@ import React from 'react';
 const Datos = ({ formData, errors, onChange }) => {
     return (
         <div className="checkout-step-content">
-            <h2>Datos Personales</h2>
+            <h2>Datos Del comprador</h2>
             <div className="checkout-form-grid">
                 <div className="checkout-form-group">
                     <label htmlFor="nombre">Nombre *</label>
