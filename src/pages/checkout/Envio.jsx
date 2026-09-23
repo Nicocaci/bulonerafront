@@ -63,8 +63,9 @@ const Envio = ({
       {isRetiro && (
         <div className="checkout-pickup-info" style={{ marginTop: "1rem" }}>
           <p><strong>Bulonera El Triángulo</strong></p>
-          <p>Dirección del local, horarios de atención, etc.</p>
-          <p>Sin costo de envío. Te avisamos por email cuando esté listo para retirar.</p>
+          <p><strong>Dirección:</strong> Camino General Belgrano 6444</p>
+          <p><strong>Horarios de atención:</strong> lunes a viernes de 8 a 18 hs de corrido, sábados de 8 a 13 hs</p>
+          <p>Te avisamos por email cuando esté listo para retirar.</p>
         </div>
       )}
 
