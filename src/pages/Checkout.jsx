@@ -35,6 +35,7 @@ const Checkout = () => {
     codigoPostal: "",
     metodoPago: "mercadopago",
     notas: "",
+    deliveryMethod: "envio", // "retiro_local" o "envio"
     shippingChoice: null,
   });
 
@@ -91,20 +92,25 @@ const Checkout = () => {
 
     // Paso 2 (Pago): método fijo "mercadopago", nada que validar acá.
 
-    if (step === 3) {
-      if (!formData.calle.trim()) newErrors.calle = "La calle es requerida";
-      if (!formData.numero.trim()) newErrors.numero = "El número es requerido";
-      if (!formData.ciudad.trim()) newErrors.ciudad = "La ciudad es requerida";
-      if (!formData.provincia)
-        newErrors.provincia = "La provincia es requerida";
-      if (!formData.codigoPostal.trim()) {
-        newErrors.codigoPostal = "El código postal es requerido";
-      } else if (!/^[0-9]+$/.test(formData.codigoPostal)) {
-        newErrors.codigoPostal = "El código postal debe contener solo números";
-      }
-      if (!formData.shippingChoice)
-        newErrors.shippingChoice = "Elegí una opción de envío";
+if (step === 3) {
+  if (formData.deliveryMethod === "retiro_local") {
+    // no se valida dirección, sólo que haya quedado seteado el "shippingChoice" de retiro
+    if (!formData.shippingChoice) {
+      newErrors.shippingChoice = "Seleccioná el retiro en el local";
     }
+  } else {
+    if (!formData.calle.trim()) newErrors.calle = "La calle es requerida";
+    if (!formData.numero.trim()) newErrors.numero = "El número es requerido";
+    if (!formData.ciudad.trim()) newErrors.ciudad = "La ciudad es requerida";
+    if (!formData.provincia) newErrors.provincia = "La provincia es requerida";
+    if (!formData.codigoPostal.trim()) {
+      newErrors.codigoPostal = "El código postal es requerido";
+    } else if (!/^[0-9]+$/.test(formData.codigoPostal)) {
+      newErrors.codigoPostal = "El código postal debe contener solo números";
+    }
+    if (!formData.shippingChoice) newErrors.shippingChoice = "Elegí una opción de envío";
+  }
+}
 
     if (step === 4) {
       if (!confirmAccepted)

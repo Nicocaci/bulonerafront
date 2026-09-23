@@ -98,15 +98,24 @@ export const CartProvider = ({ children }) => {
   // 🟢 GET CART BY ID
   // =============================
 
-  const getCartById = useCallback(async () => {
-    try {
-      const data = await request("GET", `/api/cart/me`);
-      return data;
-    } catch (err) {
-      console.error("getCartById error:", err);
-      throw err;
+const getCartById = useCallback(async () => {
+  try {
+    // 👤 Invitado
+    if (!user?.token) {
+      const guest = getLocalCart();
+      setCart(guest);
+      return guest;
     }
-  }, [request]);
+
+    // 🟢 Logeado
+    const data = await request("GET", `/api/cart/me`);
+    setCart(data);
+    return data;
+  } catch (err) {
+    console.error("getCartById error:", err);
+    throw err;
+  }
+}, [user?.token, getLocalCart, request]);
 
   // =============================
   // 🟢 ADD PRODUCT

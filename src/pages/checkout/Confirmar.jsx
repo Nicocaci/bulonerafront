@@ -136,11 +136,27 @@ const Confirmar = ({
 
         {/* DIRECCIÓN */}
         <div className="checkout-summary-section">
-          <h3>Dirección de Envío</h3>
-          <p>{formData.direccion}</p>
-          <p>
-            {formData.ciudad}, CP {formData.codigoPostal}
-          </p>
+          {formData.deliveryMethod === "retiro_local" ? (
+            <div className="checkout-summary-section">
+              <h3>Entrega</h3>
+              <p>Retiro en el local — Bulonera El Triángulo</p>
+              <p>Costo: $0</p>
+            </div>
+          ) : (
+            <>
+              <h3>Dirección de Envío</h3>
+              <p>
+                {formData.calle} {formData.numero}
+              </p>
+              <p>
+                {formData.ciudad}, {formData.provincia} — CP{" "}
+                {formData.codigoPostal}
+              </p>
+              <p>
+                {formData.ciudad}, CP {formData.codigoPostal}
+              </p>
+            </>
+          )}
         </div>
 
         {/* MÉTODO DE ENVÍO */}
@@ -149,11 +165,15 @@ const Confirmar = ({
           {formData.shippingChoice ? (
             <>
               <p>
-                {formData.shippingChoice.tipo === "sucursal" ? "A sucursal" : "A domicilio"} —{" "}
-                {formData.shippingChoice.correo || "Envío"} ({formData.shippingChoice.servicio})
+                {formData.shippingChoice.tipo === "sucursal"
+                  ? "A sucursal"
+                  : "A domicilio"}{" "}
+                — {formData.shippingChoice.correo || "Envío"} (
+                {formData.shippingChoice.servicio})
               </p>
               <p>
-                <strong>Costo de envío:</strong> ${Number(formData.shippingChoice.valor).toLocaleString("es-AR")}
+                <strong>Costo de envío:</strong> $
+                {Number(formData.shippingChoice.valor).toLocaleString("es-AR")}
               </p>
             </>
           ) : (

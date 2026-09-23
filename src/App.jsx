@@ -48,15 +48,7 @@ function AppContent() {
           <Route exact path="/faq" element={<Faq />} />
           <Route exact path="/producto/:prodId" element={<ItemDetail />} />
           <Route exact path="/carrito/:cartId" element={<CartDetail />} />
-          <Route
-            exact
-            path="/checkout/:cartId"
-            element={
-              <ProtectedRoute>
-                <Checkout />
-              </ProtectedRoute>
-            }
-          />
+          <Route exact path="/checkout/:cartId" element={<Checkout />} />
           <Route
             exact
             path="/perfil"
@@ -66,15 +58,7 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
-          <Route
-            exact
-            path="/gracias"
-            element={
-              <ProtectedRoute>
-                <Gracias />
-              </ProtectedRoute>
-            }
-          />
+          <Route exact path="/gracias" element={<Gracias />} />
         </Routes>
         <WpButton />
       </main>
