@@ -87,6 +87,7 @@ const Confirmar = ({
           shipping: {
             nombre: formData.nombre,
             apellido: formData.apellido,
+            telefono: formData.telefono,
             calle: formData.calle,
             numero: formData.numero,
             codigo_postal: formData.codigoPostal,
