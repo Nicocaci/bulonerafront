@@ -5,7 +5,7 @@
   height: 100vh; /* 🔥 pantalla completa */
   width: 25%;
 
-  background-color: #f7f7f7;
+  background-color: var(--cartDropdown-bg);
   box-shadow: -4px 0 15px rgba(0, 0, 0, 0.2);
   padding: 30px;
   z-index: 1000;
@@ -23,7 +23,7 @@
   transform: translateX(0);
 }
 .cart-dropdown-header {
-  color: black;
+  color: var(--text-color);
   padding-bottom: 20px;
   display: flex;
   justify-content: space-between;
@@ -69,12 +69,14 @@
   display: flex;
   justify-content: space-between;
   gap: 30px;
-  background-color: #e0e0e0;
+  background-color: var(--totalContainer-bg);
   padding: 10px;
   border-radius: 10px;
+  border:1px solid var(--border-color);
+  cursor: pointer;
 }
 .cart-dropdown-item:hover {
-  background-color: #e0e0e0;
+  background-color: var(--cartDropdownHover-bg);
 }
 .cart-dropdown-info {
   display: flex;
@@ -89,7 +91,7 @@
 }
 .cart-dropdown-name {
   font-size: 14px;
-  color: #000000;
+  color: var(--text-color);
 }
 .cart-dropdown-quantity {
   font-size: 10px;
@@ -155,7 +157,7 @@
   flex-direction: column;
   padding-bottom: 100px;
   padding-top: 15px;
-  border-top: 1px solid #1f1010;
+  border-top: 1px solid var(--text-color);
 }
 .footer-total-container {
   display: flex;
@@ -166,7 +168,7 @@
 .total-label {
   font-size: 16px;
   font-weight: 600;
-  color: #000000;
+  color: var(--text-color);
 }
 .footer-total-cart {
   color: #d34810;
@@ -243,7 +245,7 @@
 }
 .back-cart {
   font-size: 26px;
-  color: #000000;
+  color: var(--text-color);
   cursor: pointer;
 }
 .back-cart:hover {
@@ -254,6 +256,7 @@
 @media (max-width: 1650px) {
   .cart-dropdown {
     width: 30%;
+    padding: 20px;
   }
 }
 
@@ -274,16 +277,16 @@
 }
 @media (max-width: 768px) {
   .cart-dropdown {
-    width: 85%;
+    width: 90%;
   }
   .cart-dropdown-name {
-    font-size: 10px;
+    font-size: 15px;
   }
   .cart-dropdown-qty {
     font-size: 8px;
   }
   .cart-dropdown-price {
-    font-size: 10px;
+    font-size: 12px;
   }
   .icono-delete {
     width: 12px;
@@ -296,8 +299,14 @@
   .center {
     height: 100%;
   }
-}
+  .cart-dropdown-total-item{
+    font-size: 12px;
+  }
+  }
 @media (max-width: 460px) {
+  .cart-dropdown {
+    width: 100%;
+  }
   .cart-dropdown-checkout {
     font-size: 12px;
   }

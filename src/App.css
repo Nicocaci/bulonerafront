@@ -66,6 +66,8 @@ main {
   --itemContainer-bg: #E0E0E0;
   --totalContainer-bg:#c4c4c44b;
   --auth-bg: #dddddd;
+  --cartDropdown-bg: #ffffff;
+  --cartDropdownHover-bg: #e0e0e0;
 }
 
 [data-theme="dark"] {
@@ -92,6 +94,8 @@ main {
   --itemContainer-bg: #333536f5; 
   --totalContainer-bg:#333536f5;
   --auth-bg: #202324;
+  --cartDropdown-bg: #202324;
+  --cartDropdownHover-bg: #1d1d1d;
 }
 
 body {
