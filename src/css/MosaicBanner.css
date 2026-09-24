@@ -88,13 +88,11 @@
 }
 @media (max-width: 1100px) {
   .mosaicBanner {
-    width: 90%;
+    width: 100%;
   }
 }
 @media (max-width: 900px) {
-  .mosaicBanner {
-    width: 100%;
-  }
+
   .mosaicGrid {
     height: 480px;
   }
