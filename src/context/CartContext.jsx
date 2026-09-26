@@ -121,44 +121,59 @@ const getCartById = useCallback(async () => {
   // 🟢 ADD PRODUCT
   // =============================
 
-  const addProductToCart = useCallback(
-    async (productId, quantity = 1, productData = null) => {
-      if (!productId) throw new Error("productId requerido");
+const addProductToCart = useCallback(
+  async (productId, quantity = 1, productData = null) => {
+    if (!productId) throw new Error("productId requerido");
 
-      // 👤 Invitado
-      if (!user?.token) {
-        const guestCart = getLocalCart();
-        const existing = guestCart.products.find((p) => p._id === productId);
+    // 👤 Invitado
+    if (!user?.token) {
+      const guestCart = getLocalCart();
+      const existing = guestCart.products.find((p) => p._id === productId);
 
-        if (existing) {
-          existing.quantity += quantity;
-          if (!existing.product && productData) {
-            existing.product = productData;
-          }
-        } else {
-          guestCart.products.push({
-            _id: productId,
-            product: productData,
-            quantity,
-          });
-        }
+      const cantidadEnCarrito = existing?.quantity || 0;
+      const stockDisponible = productData?.stock;
+      const cantidadFinal = cantidadEnCarrito + quantity;
 
-        saveLocalCart(guestCart);
-        return guestCart;
+      if (
+        typeof stockDisponible === "number" &&
+        cantidadFinal > stockDisponible
+      ) {
+        throw new Error(
+          stockDisponible === 0
+            ? "Este producto no tiene stock disponible"
+            : `Solo hay ${stockDisponible} unidad(es) disponibles`,
+        );
       }
 
-      // 🟢 Logeado
-      const updated = await request(
-        "POST",
-        `/api/cart/me/products/${productId}`,
-        { quantity },
-      );
+      if (existing) {
+        existing.quantity = cantidadFinal;
+        if (!existing.product && productData) {
+          existing.product = productData;
+        }
+      } else {
+        guestCart.products.push({
+          _id: productId,
+          product: productData,
+          quantity,
+        });
+      }
 
-      setCart(updated);
-      return updated;
-    },
-    [user?.token, getLocalCart, saveLocalCart, request],
-  );
+      saveLocalCart(guestCart);
+      return guestCart;
+    }
+
+    // 🟢 Logeado
+    const updated = await request(
+      "POST",
+      `/api/cart/me/products/${productId}`,
+      { quantity },
+    );
+
+    setCart(updated);
+    return updated;
+  },
+  [user?.token, getLocalCart, saveLocalCart, request],
+);
 
   // =============================
   // 🟢 REMOVE PRODUCT

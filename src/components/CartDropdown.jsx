@@ -4,6 +4,7 @@ import "../css/CartDropdown.css";
 import { Link } from "react-router-dom";
 import { getImageUrl } from "../utils/imageUtils";
 import Swal from "sweetalert2";
+import { GoArrowRight } from "react-icons/go";
 
 const CartDropdown = ({ onClose, isOpen }) => {
   const { cart, clearCartSilently, updateProductQuantity } = useCart();
@@ -112,9 +113,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
   return (
     <div className={`cart-dropdown ${isOpen ? "open" : ""}`} ref={dropdownRef}>
       <div>
-        <p className="back-cart" onClick={onClose}>
-          ➡
-        </p>
+        <GoArrowRight onClick={onClose} className="back-cart" />
       </div>
       <div className="cart-dropdown-header">
         <div>

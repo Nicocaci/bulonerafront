@@ -26,7 +26,8 @@ const ItemDetail = () => {
     getImageUrl(img),
   );
   const { addProductToCart } = useCart();
-  const [cantidad, setCantidad] = useState(0);
+  const [cantidad, setCantidad] = useState(1);
+  const [agregando, setAgregando] = useState(false);
 
   // Valida que la imagen principal cargue correctamente antes de pasarla
   // al visor de zoom (Magnify/pinch-zoom no reenvían onError de forma confiable).
@@ -104,6 +105,18 @@ const ItemDetail = () => {
   }, [prodId]);
 
   const handleAddToCart = async (productId) => {
+    if (agregando) return; // 🔒 bloquea clicks repetidos mientras hay una request en curso
+    if (!cantidad || cantidad < 1) {
+      Swal.fire({
+        icon: "warning",
+        title: "Elegí una cantidad",
+        text: "La cantidad debe ser al menos 1",
+        confirmButtonColor: "#d33",
+      });
+      return;
+    }
+
+    setAgregando(true);
     try {
       await addProductToCart(productId, cantidad, producto);
       Swal.fire({
@@ -121,6 +134,8 @@ const ItemDetail = () => {
         text: error.message || "Ocurrió un error al agregar el producto",
         confirmButtonColor: "#d33",
       });
+    } finally {
+      setAgregando(false);
     }
   };
   const descripcionFormateada = producto?.descripcion?.replace(/\\n/g, "\n");
@@ -283,8 +298,13 @@ const ItemDetail = () => {
                       <button
                         className="btn-item"
                         onClick={() => handleAddToCart(producto._id)}
+                        disabled={producto.stock === 0 || agregando}
                       >
-                        Agregar al carrito
+                        {agregando
+                          ? "Agregando..."
+                          : producto.stock === 0
+                            ? "Sin stock"
+                            : "Agregar al carrito"}
                       </button>
                     </div>
                     <div>
