@@ -9,7 +9,6 @@ import { FaPercent } from "react-icons/fa";
 import { useTheme } from "../context/ThemeContext.jsx";
 
 import AuthModal from "../components/AuthModal";
-import ProductsDropdown from "./Navbar/ProductsDropdown.jsx";
 import NavbarActions from "./Navbar/NavbarActions.jsx";
 import axiosInstance from "../utils/axiosConfig";
 import NavbarMenu from "./Navbar/NavbarMenu.jsx";
@@ -20,34 +19,40 @@ const NavBar = () => {
   const { cart } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
-  const isHome = location.pathname === "/";
-  const searchRef = useRef(null);
 
-  // scroll behavior
-  const [isVisible, setIsVisible] = useState(!isHome);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const lastScrollY = useRef(0);
+  // refs
+  const searchRef = useRef(null); // <form> del buscador (input + dropdown)
+  const menuRef = useRef(null); // menú mobile
+  const hamburgerRef = useRef(null); // botón hamburguesa
 
+  // estados de UI
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showNavbarMenu, setShowNavbarMenu] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+
+  // estados del buscador
   const [searchInput, setSearchInput] = useState("");
   const [results, setResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-  const menuRef = useRef(null);
+
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+
+  const cartItemsCount =
+    cart?.products?.reduce((acc, p) => acc + (p.quantity || 0), 0) || 0;
 
   const handleUserClick = () => {
     if (!isAuthenticated) return setShowAuthModal(true);
     navigate("/perfil");
   };
 
-  const cartItemsCount =
-    cart?.products?.reduce((acc, p) => acc + (p.quantity || 0), 0) || 0;
+  const goHome = () => navigate("/");
 
+  // ─────────────────────────────────────────────
+  // BÚSQUEDA CON DEBOUNCE
+  // ─────────────────────────────────────────────
   useEffect(() => {
     if (!searchInput.trim()) {
       setResults([]);
@@ -66,22 +71,18 @@ const NavBar = () => {
 
         const response = await axiosInstance.get("/api/products", {
           signal: controller.signal,
-          params: {
-            search: searchInput.trim(),
-            limit: 8,
-            page: 1,
-          },
+          params: { search: searchInput.trim(), limit: 8, page: 1 },
         });
 
         setResults(response.data?.products || []);
-        setShowDropdown(true);
       } catch (err) {
-        if (err.name !== "AbortError") {
-          console.error(err);
-          setResults([]);
-        }
+        // si la request fue cancelada por una búsqueda nueva, no hacemos nada
+        if (controller.signal.aborted) return;
+        console.error(err);
+        setResults([]);
       } finally {
-        setLoading(false);
+        // solo apagamos el loading si esta request sigue siendo la vigente
+        if (!controller.signal.aborted) setLoading(false);
       }
     }, 300);
 
@@ -91,47 +92,75 @@ const NavBar = () => {
     };
   }, [searchInput]);
 
-  // CERRAR AL CLICKEAR FUERA DEL MENÚ
+  // ─────────────────────────────────────────────
+  // CERRAR DROPDOWN DEL BUSCADOR AL CLICKEAR AFUERA
+  // ─────────────────────────────────────────────
   useEffect(() => {
+    if (!showDropdown) return;
+
+    const handleClickOutsideSearch = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutsideSearch);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutsideSearch);
+  }, [showDropdown]);
+
+  // ─────────────────────────────────────────────
+  // CERRAR MENÚ MOBILE AL CLICKEAR AFUERA
+  // (ignora el botón hamburguesa, si no se cerraba y se reabría al toque)
+  // ─────────────────────────────────────────────
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+      const clickedInsideMenu = menuRef.current?.contains(event.target);
+      const clickedHamburger = hamburgerRef.current?.contains(event.target);
+
+      if (!clickedInsideMenu && !clickedHamburger) {
         setIsMenuOpen(false);
       }
     };
 
-    if (isMenuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMenuOpen]);
 
+  // ─────────────────────────────────────────────
+  // AL CAMBIAR DE PÁGINA: CERRAR TODO
+  // ─────────────────────────────────────────────
   useEffect(() => {
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-
-      if (isHome) {
-        setIsVisible(currentY > 80); // en home: aparece al scrollear
-      } else {
-        setIsVisible(true); // en otras páginas: siempre visible/fijo
-      }
-
-      setIsScrolled(currentY > 10);
-      lastScrollY.current = currentY;
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isHome]);
-
-  useEffect(() => {
-    setIsVisible(!isHome);
-    setIsScrolled(false);
-    lastScrollY.current = 0;
+    setShowDropdown(false);
+    setIsMobileSearchOpen(false);
+    setIsMenuOpen(false);
+    setShowNavbarMenu(false);
   }, [location.pathname]);
 
+  // ─────────────────────────────────────────────
+  // FOCUS AL ABRIR EL BUSCADOR EN MOBILE
+  // ─────────────────────────────────────────────
+  useEffect(() => {
+    if (isMobileSearchOpen) {
+      searchRef.current?.querySelector("input")?.focus();
+    }
+  }, [isMobileSearchOpen]);
+
+  // ─────────────────────────────────────────────
+  // MODAL DE LOGIN ABIERTO DESDE OTROS COMPONENTES (ej: CartDetail)
+  // ─────────────────────────────────────────────
+  useEffect(() => {
+    const handleOpenAuthModal = () => setShowAuthModal(true);
+    window.addEventListener("open-login-modal", handleOpenAuthModal);
+    return () =>
+      window.removeEventListener("open-login-modal", handleOpenAuthModal);
+  }, []);
+
+  // ─────────────────────────────────────────────
+  // HANDLERS
+  // ─────────────────────────────────────────────
   const handleSearchSubmit = (e) => {
     e.preventDefault();
 
@@ -141,46 +170,40 @@ const NavBar = () => {
       : "/productos";
 
     navigate(nextUrl);
+    setShowDropdown(false);
     setIsMenuOpen(false);
     setIsMobileSearchOpen(false);
+    searchRef.current?.querySelector("input")?.blur();
+  };
+
+  const handleProductClick = (productId) => {
+    setSearchInput(""); // limpia el input → el effect no vuelve a buscar
+    setShowDropdown(false);
+    setIsMobileSearchOpen(false);
+    navigate(`/producto/${productId}`);
   };
 
   const handleMobileSearchToggle = () => {
-    setIsMobileSearchOpen((prev) => {
-      const nextValue = !prev;
-
-      if (nextValue) {
-        setTimeout(() => {
-          searchRef.current?.querySelector("input")?.focus();
-        }, 0);
-      }
-
-      return nextValue;
-    });
+    setIsMobileSearchOpen((prev) => !prev);
+    setShowDropdown(false);
   };
 
   const closeAllMobileMenus = () => {
     setShowNavbarMenu(false);
     setIsMenuOpen(false);
   };
-  // 🔔 Permite que cualquier componente (ej: CartDetail) abra el modal de login
-  useEffect(() => {
-    const handleOpenAuthModal = () => setShowAuthModal(true);
-    window.addEventListener("open-login-modal", handleOpenAuthModal);
-    return () =>
-      window.removeEventListener("open-login-modal", handleOpenAuthModal);
-  }, []);
+
+  const closeMenuOnLink = () => setIsMenuOpen(false);
 
   return (
-    <div className={`navbar-container`}>
+    <div className="navbar-container">
+      {/* ───────── BARRA MOBILE (logo + acciones + hamburguesa) ───────── */}
       <div className="hamburger-container">
         <img
           className="logo-navbar logo-navbar-mobile"
           src="/logo-fondo-negro.png"
           alt="logo"
-          onClick={() => {
-            window.location.href = "/";
-          }}
+          onClick={goHome}
         />
         <div className="div-navbar-2 navbar-actions-mobile">
           <NavbarActions
@@ -190,28 +213,35 @@ const NavBar = () => {
             cartItemsCount={cartItemsCount}
             onSearchClick={handleMobileSearchToggle}
           />
-          {showAuthModal && (
-            <AuthModal onClose={() => setShowAuthModal(false)} />
-          )}
         </div>
 
-        <button className="hamburger-btn" onClick={toggleMenu}>
+        <button
+          type="button"
+          ref={hamburgerRef}
+          className="hamburger-btn"
+          onClick={toggleMenu}
+          aria-label="Abrir menú"
+        >
           {isMenuOpen ? "\u2715" : "\u2630"}
         </button>
       </div>
-      {/* TOP */}
-      <div className="navbar-top-container">
+
+      {/* ───────── TOP (logo + buscador + acciones desktop) ───────── */}
+      <div
+        className={`navbar-top-container ${
+          isMobileSearchOpen ? "search-open" : "search-closed"
+        }`}
+      >
         <div className="navbar-top">
           <div className="div-navbar-1">
             <img
               className="logo-navbar"
               src="/logo-fondo-negro.png"
               alt="logo"
-              onClick={() => {
-                window.location.href = "/";
-              }}
+              onClick={goHome}
             />
           </div>
+
           <div className="div-navbar">
             <form
               ref={searchRef}
@@ -229,14 +259,13 @@ const NavBar = () => {
                 value={searchInput}
                 onChange={(e) => {
                   setSearchInput(e.target.value);
-                  if (e.target.value.trim()) {
-                    setShowDropdown(true);
-                  }
+                  if (e.target.value.trim()) setShowDropdown(true);
                 }}
                 onFocus={() => {
-                  if (searchInput.trim()) {
-                    setShowDropdown(true);
-                  }
+                  if (searchInput.trim()) setShowDropdown(true);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setShowDropdown(false);
                 }}
               />
 
@@ -254,24 +283,19 @@ const NavBar = () => {
                     results.map((product) => (
                       <li
                         key={product._id}
-                        onClick={(e) => {
-                          e.stopPropagation(); // evita que se cierre antes
-                          setSearchInput(product.item || "");
-                          setShowDropdown(false);
-                          navigate(`/producto/${product._id}`);
-                        }}
+                        onClick={() => handleProductClick(product._id)}
                         className="probando-drop"
                       >
                         <div className="dropdown-navbar-container">
                           <img
-                            className="img-navbar-dropwdown  "
+                            className="img-navbar-dropwdown"
                             src={getImageUrl(product.imagen?.[0])}
                             alt={product.item}
                           />
-                          <p className="nombre-prod-navbar">{product.item}</p>
-                          <span className="precio-prod-navbar">
-                            $ {product.precioConIva.toLocaleString("es-AR")}
-                          </span>
+                          <div>
+                            <p className="marca-prod-navbar">{product.marca}</p>
+                            <p className="nombre-prod-navbar">{product.item}</p>
+                          </div>
                         </div>
                       </li>
                     ))}
@@ -279,6 +303,7 @@ const NavBar = () => {
               )}
             </form>
           </div>
+
           <div className="div-navbar-2 navbar-actions-desktop">
             <NavbarActions
               isAuthenticated={isAuthenticated}
@@ -286,23 +311,22 @@ const NavBar = () => {
               onUserClick={handleUserClick}
               cartItemsCount={cartItemsCount}
             />
-            {showAuthModal && (
-              <AuthModal onClose={() => setShowAuthModal(false)} />
-            )}
           </div>
         </div>
       </div>
 
-      {/* MENU */}
+      {/* ───────── MENÚ ───────── */}
       <div className="navbar-menu-container">
         <div
           className={`navbar-menu ${isMenuOpen ? "open" : ""}`}
           ref={menuRef}
         >
-          <button className="close-btn" onClick={toggleMenu}>
+          <button type="button" className="close-btn" onClick={toggleMenu}>
             X
           </button>
+
           <button
+            type="button"
             className="btn-navbar"
             onClick={() => setShowNavbarMenu((prev) => !prev)}
           >
@@ -315,12 +339,12 @@ const NavBar = () => {
             onClose={() => setShowNavbarMenu(false)}
             onSelectCategory={closeAllMobileMenus}
           />
+
           <ul className="li-navbar">
-            {/* <ProductsDropdown closeMenu={() => setIsMenuOpen(false)} /> */}
             <li>
               <Link
                 to="/productos?ofertas=true"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={closeMenuOnLink}
                 className="ofertas-link"
               >
                 <FaPercent size={10} className="icono-ofertas" /> OFERTAS
@@ -330,7 +354,7 @@ const NavBar = () => {
             <li>
               <Link
                 to="/productos?categoria=Herramientas+Manuales"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={closeMenuOnLink}
               >
                 He. Manuales
               </Link>
@@ -338,7 +362,7 @@ const NavBar = () => {
             <li>
               <Link
                 to="/productos?categoria=Herramientas+Electricas"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={closeMenuOnLink}
               >
                 He. Eléctricas
               </Link>
@@ -346,7 +370,7 @@ const NavBar = () => {
             <li>
               <Link
                 to="/productos?categoria=Soldadura"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={closeMenuOnLink}
               >
                 Soldadura
               </Link>
@@ -354,34 +378,31 @@ const NavBar = () => {
             <li>
               <Link
                 to="/productos?categoria=Automotor"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={closeMenuOnLink}
               >
                 Automotor
               </Link>
             </li>
             <li>
-              <Link
-                to="/productos?categoria=Jardin"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              <Link to="/productos?categoria=Jardin" onClick={closeMenuOnLink}>
                 Jardín
               </Link>
             </li>
             <div className="mxh-nav-sep"></div>
             <li>
-              <Link to="/contacto" onClick={() => setIsMenuOpen(false)}>
+              <Link to="/contacto" onClick={closeMenuOnLink}>
                 CONTACTO
               </Link>
             </li>
-
             <li>
-              <Link to="/nosotros" onClick={() => setIsMenuOpen(false)}>
+              <Link to="/nosotros" onClick={closeMenuOnLink}>
                 NOSOTROS
               </Link>
             </li>
           </ul>
 
           <button
+            type="button"
             className={`theme-toggle ${theme === "light" ? "light" : ""}`}
             onClick={toggleTheme}
             aria-label="Cambiar tema"
@@ -394,6 +415,9 @@ const NavBar = () => {
           </button>
         </div>
       </div>
+
+      {/* Un único AuthModal (antes se renderizaba dos veces) */}
+      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </div>
   );
 };
