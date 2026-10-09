@@ -222,6 +222,7 @@ const ProductosPage = () => {
                           alt={p.name}
                           className="product-card-imagen"
                           onError={(e) => (e.target.src = "/vite.svg")}
+                          loading="lazy"
                         />
                       </div>
                       <div className="product-card-description">
