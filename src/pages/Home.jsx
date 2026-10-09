@@ -1,14 +1,8 @@
 import React from "react";
 import "../css/Home.css";
 import BrandSlider from "../utils/BrandSlider.jsx";
-import { Link } from "react-router-dom";
-import { FaToolbox, FaTools } from "react-icons/fa";
-import { FcSettings, FcShipped } from "react-icons/fc";
-import ImageCarousel from "../utils/ImageCarousel.jsx";
-import OfertasDestacadas from "../destacadas/OfertasDestacadas.jsx";
 import MosaicBanner from "../components/MosaicBanner.jsx";
-import ManualesDestacadas from "../destacadas/ManualesDestacadas.jsx";
-import ElectricasDestacadas from "../destacadas/ElectricasDestacadas.jsx";
+import ProductosDestacados from "../destacadas/ProductosDestacados.jsx";
 
 const Home = () => {
   return (
@@ -33,24 +27,55 @@ const Home = () => {
               alt: "Banner Obrero",
               href: "/productos?page=1&marca=Ronix&search=kit",
             },
-            topRight: { src: "https://res.cloudinary.com/dn4lt8fhc/image/upload/v1790002630/catalogo.jpg", alt: "Catálogo", href: "/productos?page=1" },
-            bottomRight: { src: "https://res.cloudinary.com/dn4lt8fhc/image/upload/v1790002630/enviosBanner.jpg", alt: "Envíos gratis", href: "/faq" },
+            topRight: {
+              src: "https://res.cloudinary.com/dn4lt8fhc/image/upload/v1790002630/catalogo.jpg",
+              alt: "Catálogo",
+              href: "/productos?page=1",
+            },
+            bottomRight: {
+              src: "https://res.cloudinary.com/dn4lt8fhc/image/upload/v1790002630/enviosBanner.jpg",
+              alt: "Envíos gratis",
+              href: "/faq",
+            },
           }}
         />
       </div>
       <BrandSlider />
 
-        <div className="container-caja-herramientas">
-          <OfertasDestacadas />
-        </div>
-        <div className="container-caja-herramientas">
-            <ElectricasDestacadas />
-        </div>
-        <div className="container-caja-herramientas">
-          <ManualesDestacadas />
-        </div>
-
+      <div className="container-caja-herramientas">
+        <ProductosDestacados
+          id="ronix"
+          titulo="RONIX"
+          limit={50}
+          filtros={{ marca: "Ronix" }}
+          subtitulo="Toda la linea Ronix en un solo lugar."
+          linkVerTodos="/productos"
+        />
+        <ProductosDestacados
+          id="herramientas-electricas"
+          titulo="HERRAMIENTAS ELÉCTRICAS"
+          limit={50}
+          filtros={{ category: "Herramientas Electricas" }}
+          subtitulo="Descubre nuestra selección de herramientas más populares"
+          linkVerTodos="/productos"
+        />
+        <ProductosDestacados
+          id="soldadura"
+          titulo="SOLDADURA"
+          limit={50}
+          filtros={{ category: "Soldadura" }}
+          subtitulo="Descubre nuestra selección de herramientas más populares"
+        />
+        <ProductosDestacados
+          id="herramientas-manuales"
+          titulo="HERRAMIENTAS MANUALES"
+          limit={50}
+          filtros={{ category: "Herramientas Manuales" }}
+          subtitulo="Descubre nuestra selección de herramientas más populares"
+          linkVerTodos="/productos"
+        />
       </div>
+    </div>
   );
 };
 

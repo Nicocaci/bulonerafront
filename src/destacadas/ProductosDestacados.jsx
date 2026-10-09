@@ -1,7 +1,6 @@
-import React from "react";
 import axiosInstance from "../utils/axiosConfig.js";
 import "../css/OfertasDestacadas.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getImageUrl } from "../utils/imageUtils.js";
 import { useQuery } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -12,22 +11,24 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-const CategoriaSeccion = () => {
-  const navigate = useNavigate();
+const ProductosDestacados = ({
+  id,
+  titulo,
+  subtitulo,
+  filtros = {},
+  linkVerTodos,
+  limit = 20,
+}) => {
   const {
     data: productos = [],
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["herramientas-manuales"],
+    queryKey: ["productos-destacados", filtros, limit],
     queryFn: async () => {
       const { data } = await axiosInstance.get("/api/products", {
-        params: {
-          category: "Herramientas Manuales",
-          limit: 20, // opcional, si querés mostrar más de 6
-        },
+        params: { ...filtros, limit },
       });
-
       return data.products;
     },
     staleTime: 1000 * 60 * 5,
@@ -40,28 +41,32 @@ const CategoriaSeccion = () => {
   if (isError) {
     return <div className="ofertas-error">Error al cargar productos</div>;
   }
+
+  if (productos.length === 0) return null; // no muestra la sección si está vacía
+
   return (
     <div>
       <div className="ofertas-header">
-        <h2 className="titulo-ofertas">HERRAMIENTAS MANUALES</h2>
-        <p className="subtitulo-ofertas">Herramientas de confianza para trabajar sin límites.</p>
+        <h2 className="titulo-ofertas">{titulo}</h2>
+        {subtitulo && <p className="subtitulo-ofertas">{subtitulo}</p>}
       </div>
 
       <div className="ofertas-wrapper">
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
           navigation={{
-            prevEl: ".swiper-button-prev",
-            nextEl: ".swiper-button-next",
+            prevEl: `.prev-${id}`,
+            nextEl: `.next-${id}`,
           }}
           pagination={{
-            el: ".swiper-pagination",
-            clickable: true,
-            dynamicBullets: true,
+                el: `.pagination-${id}`,
+                clickable: true,
+                dynamicBullets: true,
           }}
           autoplay={{
             delay: 5000,
             disableOnInteraction: false,
+            stopOnLastSlide: false,
           }}
           breakpoints={{
             320: {
@@ -96,11 +101,12 @@ const CategoriaSeccion = () => {
               <Link to={`/producto/${producto._id}`} className="link-none">
                 <div className="oferta-card">
                   <div className="img-container">
-                  <img
-                    className="oferta-image"
-                    src={getImageUrl(producto.imagen?.[0])}
-                    alt={producto.item}
-                  />
+                    <img
+                      className="oferta-image"
+                      src={getImageUrl(producto.imagen?.[0])}
+                      alt={producto.item}
+                      loading="lazy"
+                    />
                   </div>
                   <div className="product-card-description">
                     <p className="product-card-text">{producto.item}</p>
@@ -160,22 +166,21 @@ const CategoriaSeccion = () => {
             </SwiperSlide>
           ))}
 
-          <div className="swiper-button-prev"></div>
-          <div className="swiper-button-next"></div>
-          <div className="swiper-pagination"></div>
+          <div className={`swiper-button-prev prev-${id}`}></div>
+          <div className={`swiper-button-next next-${id}`}></div>
+          <div className={`swiper-pagination pagination-${id}`}></div>
         </Swiper>
       </div>
 
-      <div className="ofertas-footer">
-        <Link
-          to="/productos?categoria=Herramientas%20Manuales"
-          className="ver-todas-link"
-        >
-          Ver todos los productos
-        </Link>
-      </div>
+      {linkVerTodos && (
+        <div className="ofertas-footer">
+          <Link to={linkVerTodos} className="ver-todas-link">
+            Ver todos los productos
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
 
-export default CategoriaSeccion;
+export default ProductosDestacados;

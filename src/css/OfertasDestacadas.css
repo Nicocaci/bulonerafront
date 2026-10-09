@@ -174,11 +174,11 @@
 .ofertas-swiper .swiper-button-prev:active {
   transform: scale(0.95);
 }
-
-.ofertas-swiper .swiper-button-next:disabled,
-.ofertas-swiper .swiper-button-prev:disabled {
-  opacity: 0.5;
+.ofertas-swiper .swiper-button-next.swiper-button-disabled,
+.ofertas-swiper .swiper-button-prev.swiper-button-disabled {
+  opacity: 0.3;
   cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* Paginación de Swiper */
