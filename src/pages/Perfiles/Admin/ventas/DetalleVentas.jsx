@@ -25,12 +25,6 @@ function DetalleVentas({ refresh }) {
         <h3>Total Ventas</h3>
         <p>${stats.totalRevenue.toLocaleString("es-AR")}</p>
       </div>
-
-      <div className="stat-card">
-        <h3>Ventas Efectivo</h3>
-        <p>${stats.salesByPaymentMethod.efectivo.toLocaleString("es-AR")}</p>
-      </div>
-
       <div className="stat-card">
         <h3>Ventas MercadoPago</h3>
         <p>${stats.salesByPaymentMethod.mercadopago.toLocaleString("es-AR")}</p>

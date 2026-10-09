@@ -176,6 +176,19 @@ const NavbarMenu = ({ onClose, isOpen, onSelectCategory }) => {
               );
             })}
         </ul>
+        <div className="menu-categorias-container">
+          <li className="menu-categorias">
+            <div className="d-flex-between">
+              <Link
+                className="menu-categorias-link"
+                to={`/productos?todos=true`}
+                onClick={handleCategorySelect}
+              >
+                Todos los Productos
+              </Link>
+            </div>
+          </li>
+        </div>
       </div>
     </>
   );
