@@ -49,7 +49,7 @@ const Home = () => {
           limit={50}
           filtros={{ marca: "Ronix" }}
           subtitulo="Toda la linea Ronix en un solo lugar."
-          linkVerTodos="/productos"
+          linkVerTodos="/productos?page=1&marca=Ronix"
         />
         <ProductosDestacados
           id="herramientas-electricas"
@@ -57,7 +57,7 @@ const Home = () => {
           limit={50}
           filtros={{ category: "Herramientas Electricas" }}
           subtitulo="Descubre nuestra selección de herramientas más populares"
-          linkVerTodos="/productos"
+          linkVerTodos="/productos?categoria=Herramientas%20Electricas"
         />
         <ProductosDestacados
           id="soldadura"
@@ -65,6 +65,7 @@ const Home = () => {
           limit={50}
           filtros={{ category: "Soldadura" }}
           subtitulo="Descubre nuestra selección de herramientas más populares"
+          linkVerTodos="/productos?categoria=Soldadura"
         />
         <ProductosDestacados
           id="herramientas-manuales"
@@ -72,7 +73,7 @@ const Home = () => {
           limit={50}
           filtros={{ category: "Herramientas Manuales" }}
           subtitulo="Descubre nuestra selección de herramientas más populares"
-          linkVerTodos="/productos"
+          linkVerTodos="/productos?categoria=Herramientas+Manuales"
         />
       </div>
     </div>
