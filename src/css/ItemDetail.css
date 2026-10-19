@@ -358,6 +358,60 @@
   background: #f45d22;
 }
 
+/* ===== Productos relacionados (slider debajo de la descripción) =====
+   Reutiliza ProductosDestacados, pensado para el Home a 75% de ancho:
+   acá se ajusta al ancho del detalle y al estilo de los títulos de sección. */
+.productos-relacionados {
+  margin-top: 40px;
+}
+
+.productos-relacionados .ofertas-header,
+.productos-relacionados .ofertas-wrapper {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.productos-relacionados .titulo-ofertas {
+  font-size: 15px;
+  font-weight: 600;
+  border-bottom: 1px solid #f45d22;
+  width: max-content;
+  padding-bottom: 2px;
+  margin: 0 0 10px;
+}
+
+.productos-relacionados .ofertas-swiper {
+  padding: 10px 4px 40px;
+}
+
+.productos-relacionados .oferta-card {
+  width: 100%;
+  height: 100%;
+}
+
+.productos-relacionados .swiper-pagination-bullet-active {
+  background-color: #f45d22;
+  box-shadow: 0 0 8px rgba(244, 93, 34, 0.5);
+}
+
+.productos-relacionados .ofertas-swiper .swiper-button-next,
+.productos-relacionados .ofertas-swiper .swiper-button-prev {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .productos-relacionados {
+    margin-top: 30px;
+  }
+  .productos-relacionados .titulo-ofertas {
+    font-size: 1rem;
+  }
+  .productos-relacionados .ofertas-swiper {
+    padding: 10px 0 35px;
+  }
+}
+
 @media (max-width:1710px) {
   .item-detail-container {
     width: 70%;

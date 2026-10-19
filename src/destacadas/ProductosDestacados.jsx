@@ -11,6 +11,33 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
+const BREAKPOINTS_DEFAULT = {
+  320: {
+    slidesPerView: 2, // en mobile chico se ven 1 y media, invita a deslizar
+    spaceBetween: 12,
+  },
+  480: {
+    slidesPerView: 2,
+    spaceBetween: 12,
+  },
+  768: {
+    slidesPerView: 2,
+    spaceBetween: 16,
+  },
+  1024: {
+    slidesPerView: 3,
+    spaceBetween: 16,
+  },
+  1440: {
+    slidesPerView: 4,
+    spaceBetween: 16,
+  },
+  1920: {
+    slidesPerView: 5,
+    spaceBetween: 16,
+  },
+};
+
 const ProductosDestacados = ({
   id,
   titulo,
@@ -18,9 +45,12 @@ const ProductosDestacados = ({
   filtros = {},
   linkVerTodos,
   limit = 20,
+  productosIniciales, // si se pasa, se muestran estos productos y no se consulta la API
+  className = "",
+  breakpoints = BREAKPOINTS_DEFAULT,
 }) => {
   const {
-    data: productos = [],
+    data: productosApi = [],
     isLoading,
     isError,
   } = useQuery({
@@ -32,7 +62,9 @@ const ProductosDestacados = ({
       return data.products;
     },
     staleTime: 1000 * 60 * 5,
+    enabled: !productosIniciales,
   });
+  const productos = productosIniciales ?? productosApi;
 
   if (isLoading) {
     return <div className="ofertas-loading">Cargando productos...</div>;
@@ -45,7 +77,7 @@ const ProductosDestacados = ({
   if (productos.length === 0) return null; // no muestra la sección si está vacía
 
   return (
-    <div>
+    <div className={className}>
       <div className="ofertas-header">
         <h2 className="titulo-ofertas">{titulo}</h2>
         {subtitulo && <p className="subtitulo-ofertas">{subtitulo}</p>}
@@ -68,32 +100,7 @@ const ProductosDestacados = ({
             disableOnInteraction: false,
             stopOnLastSlide: false,
           }}
-          breakpoints={{
-            320: {
-              slidesPerView: 2, // en mobile chico se ven 1 y media, invita a deslizar
-              spaceBetween: 12,
-            },
-            480: {
-              slidesPerView: 2,
-              spaceBetween: 12,
-            },
-            768: {
-              slidesPerView: 2,
-              spaceBetween: 16,
-            },
-            1024: {
-              slidesPerView: 3,
-              spaceBetween: 16,
-            },
-            1440: {
-              slidesPerView: 4,
-              spaceBetween: 16,
-            },
-            1920: {
-              slidesPerView: 5,
-              spaceBetween: 16,
-            },
-          }}
+          breakpoints={breakpoints}
           className="ofertas-swiper"
         >
           {productos.map((producto) => (

@@ -11,6 +11,7 @@ import { MdOutlineVerified, MdOutlineVerifiedUser } from "react-icons/md";
 import { PiHeadsetDuotone } from "react-icons/pi";
 import Breadcrumb from "../components/Breadcrumb.jsx";
 import ImageZoomViewer from "../components/ImageZoomViewer.jsx";
+import ProductosRelacionados from "../destacadas/ProductosRelacionados.jsx";
 
 const ItemDetail = () => {
   const { prodId } = useParams();
@@ -320,7 +321,7 @@ const ItemDetail = () => {
         <div className="item-grid-3">
           <div>
             <p className="descripcion-detail">
-              {descripcionFormateada.split("\n").map((linea, index) => (
+              {(descripcionFormateada || "").split("\n").map((linea, index) => (
                 <React.Fragment key={index}>
                   {linea}
                   <br />
@@ -351,6 +352,7 @@ const ItemDetail = () => {
             </div>
           </div>
         </div>
+        <ProductosRelacionados producto={producto} />
       </div>
     </div>
   );
