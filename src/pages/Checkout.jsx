@@ -10,11 +10,8 @@ import Datos from "./checkout/Datos.jsx";
 import Pago from "./checkout/Pago.jsx";
 import Envio from "./checkout/Envio.jsx";
 import Confirmar from "./checkout/Confirmar.jsx";
-import {
-  getCartWeight,
-  getCartPaquetes,
-  getCartPaquetesEnvio,
-} from "../utils/cartShipping.js";
+import { getCartWeight, getCartPaquetes } from "../utils/cartShipping.js";
+import { getPrecioUnitario } from "../utils/precio.js";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -144,13 +141,9 @@ if (step === 3) {
   const calculateTotal = () => {
     if (!cart || !cart.products) return 0;
 
+    // Solo para mostrar: el total que se cobra lo calcula el servidor al generar el pago.
     const productsTotal = cart.products.reduce((acc, item) => {
-      const price =
-        item.product?.precioConIva ||
-        item.product?.price ||
-        item.precio ||
-        item.price ||
-        0;
+      const price = getPrecioUnitario(item.product);
       const quantity = item.quantity || item.cantidad || 1;
       return acc + price * quantity;
     }, 0);
@@ -260,7 +253,6 @@ if (step === 3) {
             confirmAccepted={confirmAccepted}
             onToggleConfirm={() => setConfirmAccepted((prev) => !prev)}
             errors={errors}
-            paquetes={getCartPaquetesEnvio(cart)}
           />
         )}
 

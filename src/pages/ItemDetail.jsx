@@ -12,6 +12,7 @@ import { PiHeadsetDuotone } from "react-icons/pi";
 import Breadcrumb from "../components/Breadcrumb.jsx";
 import ImageZoomViewer from "../components/ImageZoomViewer.jsx";
 import ProductosRelacionados from "../destacadas/ProductosRelacionados.jsx";
+import { getPrecioUnitario, formatearPrecio } from "../utils/precio.js";
 
 const ItemDetail = () => {
   const { prodId } = useParams();
@@ -217,11 +218,18 @@ const ItemDetail = () => {
                 <p className="precio-siniva">SKU: {producto.sku}</p>
               </div>
               <div className="item-grid-2-content-precio">
+                {producto.ofertaVigente && (
+                  <div className="item-precio-oferta">
+                    <span className="item-precio-anterior">
+                      {formatearPrecio(producto.precioConIva)}
+                    </span>
+                    <span className="item-precio-badge">
+                      -{producto.oferta.descuento}%
+                    </span>
+                  </div>
+                )}
                 <p className="item-grid-2-content-precio-value">
-                  {producto.precioConIva.toLocaleString("es-AR", {
-                    style: "currency",
-                    currency: "ARS",
-                  })}
+                  {formatearPrecio(getPrecioUnitario(producto))}
                 </p>
                 <p className="precio-siniva">
                   Precio sin IVA:{" "}

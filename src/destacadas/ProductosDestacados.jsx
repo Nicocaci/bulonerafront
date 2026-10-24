@@ -130,7 +130,7 @@ const ProductosDestacados = ({
                         gap: 4,
                       }}
                     >
-                      {producto.oferta?.activa ? (
+                      {producto.ofertaVigente ? (
                         <>
                           <div
                             style={{

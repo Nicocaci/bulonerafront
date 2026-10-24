@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { getImageUrl } from "../utils/imageUtils";
 import Swal from "sweetalert2";
 import { GoArrowRight } from "react-icons/go";
+import { getPrecioUnitario } from "../utils/precio.js";
 
 const CartDropdown = ({ onClose, isOpen }) => {
   const { cart, clearCartSilently, updateProductQuantity } = useCart();
@@ -32,12 +33,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
   }, [onClose]);
 
   const total = products.reduce((acc, item) => {
-    const price =
-      item.product?.precioConIva ||
-      item.product?.price ||
-      item.precioConIva ||
-      item.price ||
-      0;
+    const price = getPrecioUnitario(item.product || item);
     const quantity = item.quantity || item.cantidad || 1;
     return acc + price * quantity;
   }, 0);
@@ -140,7 +136,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
                 product.item || product.nombre || product.name || "Producto";
               const marca = product.marca;
               const quantity = item.quantity || item.cantidad || 1;
-              const price = product.precioConIva || product.price || 0;
+              const price = getPrecioUnitario(product);
               const itemTotal = price * quantity;
 
               return (

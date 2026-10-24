@@ -5,6 +5,7 @@ import { useCart } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
 import { getImageUrl } from "../utils/imageUtils";
 import Swal from "sweetalert2";
+import { getPrecioUnitario } from "../utils/precio.js";
 
 // 🔒 Detecta si el error es por falta de sesión / token inválido o vencido
 const isAuthError = (message) => {
@@ -106,7 +107,7 @@ const CartDetail = () => {
   }
 
   const total = cart.products.reduce((acc, item) => {
-    const price = item.product?.precioConIva || 0;
+    const price = getPrecioUnitario(item.product);
     const quantity = item.quantity || 1;
     return acc + price * quantity;
   }, 0);
@@ -168,7 +169,7 @@ const CartDetail = () => {
             const name =
               product.item || product.nombre || product.name || "Producto";
             const marca = product.marca;
-            const price = product.precioConIva || product.price || 0;
+            const price = getPrecioUnitario(product);
             const itemTotal = price * (item.quantity || 1);
 
             return (

@@ -746,3 +746,38 @@
     font-size: 12px;
   }
 }
+
+/* === Pago y resultado del pago === */
+.checkout-pago {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkout-alerta {
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #f0c36d;
+  background-color: #fff8e5;
+  color: #5c4400;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.checkout-alerta-error {
+  border-color: #e5a3a3;
+  background-color: #fdecec;
+  color: #8a1c1c;
+}
+
+.checkout-resultado-acciones {
+  margin-top: 2rem;
+  display: flex;
+}
+
+.checkout-resultado-acciones .checkout-btn-primary {
+  margin-left: 0;
+  text-align: center;
+  text-decoration: none;
+}

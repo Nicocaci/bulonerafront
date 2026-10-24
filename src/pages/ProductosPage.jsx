@@ -240,7 +240,7 @@ const ProductosPage = () => {
                             gap: 4,
                           }}
                         >
-                          {p.oferta?.activa ? (
+                          {p.ofertaVigente ? (
                             <>
                               <div
                                 style={{

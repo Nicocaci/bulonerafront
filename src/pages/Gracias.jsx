@@ -1,29 +1,150 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import axiosInstance from "../utils/axiosConfig.js";
+
+// Mercado Pago vuelve a esta página en todos los casos (aprobado, pendiente o rechazado)
+// con ?status=...&external_reference=<id de la orden>&payment_id=...
+// El estado real se consulta al backend: los parámetros de la URL se pueden modificar.
+
+const ESTADOS_PAGADOS = ["pagado", "enviado", "entregado"];
+const MAX_REINTENTOS = 5;
+const ESPERA_MS = 3000;
 
 const Gracias = () => {
+  const [searchParams] = useSearchParams();
   const { clearCartSilently } = useCart();
 
+  const orderId = searchParams.get("external_reference");
+  const paymentIdParam = searchParams.get("payment_id");
+  const paymentId = /^\d+$/.test(paymentIdParam || "") ? paymentIdParam : null;
+  const statusMp = searchParams.get("status") || searchParams.get("collection_status");
+
+  const [estado, setEstado] = useState(orderId ? "cargando" : "sin_orden");
+  const [orderNumber, setOrderNumber] = useState(null);
+  const carritoLimpio = useRef(false);
+
   useEffect(() => {
-    clearCartSilently();
-  }, []);
+    if (!orderId) return;
+
+    let cancelado = false;
+    let timeoutId;
+
+    const consultar = async (intento = 1) => {
+      try {
+        const { data } = await axiosInstance.get(`/api/orders/${orderId}/estado-pago`, {
+          params: paymentId ? { payment_id: paymentId } : {},
+        });
+        if (cancelado) return;
+
+        setOrderNumber(data.orderNumber);
+
+        if (ESTADOS_PAGADOS.includes(data.status)) {
+          setEstado("aprobado");
+          return;
+        }
+        if (data.status === "rechazado") {
+          setEstado("rechazado");
+          return;
+        }
+        if (data.status === "pendiente_pago") {
+          // El pago puede estar aprobado y la confirmación demorarse unos segundos
+          const deberiaEstarAprobado = statusMp === "approved";
+          if (deberiaEstarAprobado && intento < MAX_REINTENTOS) {
+            setEstado("confirmando");
+            timeoutId = setTimeout(() => consultar(intento + 1), ESPERA_MS);
+            return;
+          }
+          setEstado(paymentId ? "pendiente" : "sin_pago");
+          return;
+        }
+        setEstado("otro");
+      } catch {
+        if (!cancelado) setEstado("error");
+      }
+    };
+
+    consultar();
+
+    return () => {
+      cancelado = true;
+      clearTimeout(timeoutId);
+    };
+  }, [orderId, paymentId, statusMp]);
+
+  // El carrito se vacía solo cuando el pago está confirmado
+  useEffect(() => {
+    if (estado === "aprobado" && !carritoLimpio.current) {
+      carritoLimpio.current = true;
+      clearCartSilently().catch(() => {});
+    }
+  }, [estado, clearCartSilently]);
+
+  const numero = orderNumber ? ` #${orderNumber}` : "";
+
+  const contenido = {
+    cargando: {
+      titulo: "Verificando tu pago...",
+      texto: "Esperá un momento, estamos consultando el estado de tu pago.",
+    },
+    confirmando: {
+      titulo: "Confirmando tu pago...",
+      texto: "Mercado Pago aprobó el pago y lo estamos registrando. Esto puede tardar unos segundos.",
+    },
+    aprobado: {
+      titulo: "¡Gracias por tu compra!",
+      texto: `Tu pedido${numero} se realizó con éxito. Te enviamos un email con el detalle de tu compra.`,
+    },
+    pendiente: {
+      titulo: "Tu pago está en proceso",
+      texto: `Mercado Pago todavía no confirmó el pago de tu pedido${numero}. Te vamos a avisar por email cuando se acredite. No hace falta que vuelvas a pagar.`,
+    },
+    sin_pago: {
+      titulo: "No se completó el pago",
+      texto: `Tu pedido${numero} quedó sin pagar. Tus productos siguen en el carrito para que puedas intentarlo de nuevo.`,
+    },
+    rechazado: {
+      titulo: "El pago no se realizó",
+      texto: `Mercado Pago rechazó el pago de tu pedido${numero}. No se te cobró nada. Podés intentarlo de nuevo con otro medio de pago; tus productos siguen en el carrito.`,
+    },
+    otro: {
+      titulo: `Pedido${numero}`,
+      texto: "Si tenés dudas sobre el estado de tu pedido, escribinos por WhatsApp o desde la página de contacto.",
+    },
+    error: {
+      titulo: "No pudimos verificar tu pago",
+      texto: "Si Mercado Pago te confirmó el pago, quedate tranquilo: vas a recibir un email con el detalle. Ante cualquier duda, escribinos por WhatsApp.",
+    },
+    sin_orden: {
+      titulo: "No encontramos tu pedido",
+      texto: "Si realizaste un pago, vas a recibir un email de confirmación. Ante cualquier duda, escribinos por WhatsApp.",
+    },
+  }[estado];
+
+  const puedeReintentar = ["rechazado", "sin_pago"].includes(estado);
+  const esperando = ["cargando", "confirmando"].includes(estado);
+
   return (
     <div className="checkout-container">
-      <h1 className="checkout-title">¡Gracias por tu compra!</h1>
+      <h1 className="checkout-title">{contenido.titulo}</h1>
       <div className="checkout-content">
-        <div className="checkout-step-content">
-          <h2>Tu pedido se ha realizado con éxito.</h2>
-          <p>
-            Hemos recibido tu pedido y estamos procesándolo. Te enviaremos un
-            correo electrónico de confirmación con los detalles de tu compra.
-          </p>
-          <div style={{ marginTop: "2rem" }}>
-            <Link to="/productos" className="checkout-btn-primary">
-              Seguir comprando
-            </Link>
-          </div>
+        <div className="checkout-step-content" role="status" aria-live="polite">
+          {esperando && <div className="checkout-spinner" />}
+          <p>{contenido.texto}</p>
+
+          {!esperando && (
+            <div className="checkout-resultado-acciones">
+              {puedeReintentar ? (
+                <Link to="/carrito/mi-carrito" className="checkout-btn-primary">
+                  Volver al carrito
+                </Link>
+              ) : (
+                <Link to="/productos" className="checkout-btn-primary">
+                  Seguir comprando
+                </Link>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
