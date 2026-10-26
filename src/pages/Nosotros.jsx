@@ -15,7 +15,7 @@ const Nosotros = () => {
   });
 
   // referencia separada para la animación de la imagen
-  const { ref: imageRef, inView: imageInView } = useInView({
+  const { ref: imageRef } = useInView({
     triggerOnce: true,
     threshold: 0.4,
   });

@@ -1,10 +1,8 @@
 import React from "react";
-import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export const MarcasLogos = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [paginaActual, setPaginaActual] = useState(1);
 
   const logos = [
     "ronixlogo.png",
@@ -32,13 +30,11 @@ export const MarcasLogos = () => {
   const handleSeleccionarMarca = (logoName) => {
     const marca = getBrandDisplayNameFromFilename(logoName);
     const nextParams = new URLSearchParams(searchParams);
-    setPaginaActual(1);
     nextParams.set("marca", marca);
     setSearchParams(nextParams);
   };
 
   const handleVerTodos = () => {
-    setPaginaActual(1);
     setSearchParams({ todos: "true" });
   };
   return (

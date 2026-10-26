@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 
 
 
-const UserProfile = ({ user }) => {
+const UserProfile = () => {
     const { getProfile, updateProfile, refreshUser } = useContext(AuthContext);
     const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);

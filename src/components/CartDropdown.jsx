@@ -10,7 +10,6 @@ import { getPrecioUnitario } from "../utils/precio.js";
 const CartDropdown = ({ onClose, isOpen }) => {
   const { cart, clearCartSilently, updateProductQuantity } = useCart();
   const [updatingQuantities, setUpdatingQuantities] = useState({});
-  const [error, setError] = useState(null);
   const products = cart?.products || [];
   const dropdownRef = useRef(null);
 
@@ -131,7 +130,6 @@ const CartDropdown = ({ onClose, isOpen }) => {
               const product = item.product || item;
               const id = product._id || product.id;
               const stock = product.stock;
-              const image = getImageUrl(product.imagen || product.image);
               const name =
                 product.item || product.nombre || product.name || "Producto";
               const marca = product.marca;

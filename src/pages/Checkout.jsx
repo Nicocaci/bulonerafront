@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext.jsx";
 import Swal from "sweetalert2";
-import axiosInstance from "../utils/axiosConfig.js";
 import "../css/Checkout.css";
 import Datos from "./checkout/Datos.jsx";
 import Pago from "./checkout/Pago.jsx";
@@ -56,7 +55,7 @@ const Checkout = () => {
             apellido: user.apellido || prev.apellido,
           }));
         }
-      } catch (error) {
+      } catch {
         Swal.fire({
           icon: "error",
           title: "Error",

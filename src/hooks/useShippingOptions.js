@@ -13,7 +13,7 @@ export function useShippingOptions() {
         try {
             const data = await getShippingOptions(params);
             setOptions(data);
-        } catch (err) {
+        } catch {
             setError("No pudimos calcular las opciones de envío. Revisa el código postal");
             setOptions([]);
         } finally {

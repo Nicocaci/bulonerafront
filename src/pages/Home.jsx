@@ -42,7 +42,7 @@ const Home = () => {
       </div>
       <BrandSlider />
 
-      <div className="container-caja-herramientas">
+      <div className="home-destacados">
         <ProductosDestacados
           id="ronix"
           titulo="RONIX"

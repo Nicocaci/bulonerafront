@@ -11,7 +11,6 @@ import Checkout from "./pages/Checkout.jsx";
 import Gracias from "./pages/Gracias.jsx";
 import Nosotros from "./pages/Nosotros.jsx";
 import Faq from "./pages/Faq.jsx";
-import CajaHerramientas from "./pages/CajaHerramientas.jsx";
 import WpButton from "./components/WpButton.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 
@@ -19,7 +18,7 @@ import ScrollToTop from "./utils/ScrollToTop.jsx";
 
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import "./App.css";
@@ -38,10 +37,10 @@ function AppContent() {
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route exact path="/productos" element={<ProductosPage />} />
+          {/* La Caja de herramientas se eliminó: los links viejos van al catálogo */}
           <Route
-            exact
             path="/caja-herramientas"
-            element={<CajaHerramientas />}
+            element={<Navigate to="/productos" replace />}
           />
           <Route exact path="/contacto" element={<Contacto />} />
           <Route exact path="/nosotros" element={<Nosotros />} />

@@ -53,7 +53,6 @@ const CartDetail = () => {
     cart,
     getCartById,
     updateProductQuantity,
-    error: cartError,
   } = useCart();
 
   const [loading, setLoading] = useState(true);

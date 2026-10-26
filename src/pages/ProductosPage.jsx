@@ -43,7 +43,10 @@ const ProductosPage = () => {
       .then((response) => {
         setProductos(response.data.products);
         setPagination(response.data.pagination);
-        setLoading(false);
+      })
+      .catch(() => {
+        setProductos([]);
+        setError("No pudimos cargar los productos. Probá de nuevo en unos segundos.");
       })
       .finally(() => setLoading(false));
   }, [filters]);
@@ -202,7 +205,9 @@ const ProductosPage = () => {
               </div>
             )}
 
-            {!loading && productos?.length === 0 && (
+            {!loading && error && <p role="alert">{error}</p>}
+
+            {!loading && !error && productos?.length === 0 && (
               <p>No hay productos disponibles.</p>
             )}
             {!loading && (

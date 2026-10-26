@@ -10,24 +10,7 @@ export function getCartWeight(cart) {
   }, 0);
 }
 
-export function getCartPaquetes(cart) {
+export function getCartPaquetes() {
   // Simplificación: un solo bulto con dimensiones default.
   return DEFAULT_PAQUETE;
-}
-
-// Array de objetos {alto, ancho, largo, peso} para crearEnvio()
-export function getCartPaquetesEnvio(cart) {
-  if (!cart?.products?.length) return [];
-
-  const [alto, ancho, largo] = DEFAULT_PAQUETE.split("x").map(Number);
-  const peso = getCartWeight(cart);
-
-  return [
-    {
-      alto,
-      ancho,
-      largo,
-      peso,
-    },
-  ];
 }

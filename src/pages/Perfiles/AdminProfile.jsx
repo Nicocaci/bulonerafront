@@ -3,7 +3,6 @@ import { AuthContext } from "../../context/AuthContext.jsx";
 import Swal from "sweetalert2";
 import UserList from "./Admin/UserList.jsx";
 import NewProduct from "./Admin/NewProduct.jsx";
-import OrderList from "./Admin/OrderList.jsx";
 import AdminVentas from "./Admin/ventas/AdminVentas.jsx";
 
 const AdminProfile = ({ user }) => {

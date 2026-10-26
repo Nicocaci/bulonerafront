@@ -6,7 +6,3 @@ export const getShippingOptions = ({ provincia, codigo_postal, localidad, peso, 
         withCredentials: true,
     })
     .then((r) => r.data);
-
-export const shipOrder = (orderId, shippingOption) =>
-    axiosInstance.post(`api/shipping/orders/${orderId}/ship`, shippingOption, { withCredentials: true})
-    .then((r) => r.data);
