@@ -169,24 +169,6 @@
 .remove-file-btn:hover {
   color: #ff4d4f;
 }
-
-.archivo-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  background: #f0f4f8;
-  border-radius: 6px;
-  font-size: 13px;
-}
-
-.archivo-item button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #999;
-  font-size: 14px;
-}
 .form-group div {
   display: flex;
   flex-direction: column;
@@ -262,12 +244,6 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-}
-.titulo-bulonera {
-  font-size: 2rem;
-  color: var(--text-color);
-  margin-bottom: 10px;
-  font-weight: 700;
 }
 .horario-atencion {
   font-size: 1.1rem;
@@ -434,9 +410,6 @@
   }
   .horario-atencion {
     font-size: 13px;
-  }
-  .titulo-bulonera {
-    font-size: 18px;
   }
   .btn-form {
     padding: 5px 15px;

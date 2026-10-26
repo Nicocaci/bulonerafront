@@ -1,13 +1,3 @@
-.titulo-productos {
-  background-color: #000000;
-  padding: 10px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(67, 135, 150, 0.3);
-  width: 65%;
-  color: #ffffff;
-  margin: auto;
-}
-
 .product-section {
   padding: 100px 20px;
   background-color:var(--prodContainer-bg);
@@ -246,7 +236,7 @@
 }
 
 .product-oferta-badge {
-  background-color: #e53935;
+  background-color: var(--color-oferta);
   color: white;
   font-size: 0.75rem;
   font-weight: bold;
@@ -389,4 +379,13 @@
   opacity: 0.55;
   transition: opacity 0.2s ease;
   pointer-events: none;
+}
+
+/* Separadores del panel de filtros */
+.filtros-separador {
+  margin: 12px 0;
+}
+
+.filter-label--separada {
+  margin-top: 8px;
 }

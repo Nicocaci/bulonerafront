@@ -12,21 +12,8 @@
     background 0.3s ease,
     backdrop-filter 0.3s ease;
 }
-.nav-hidden {
-  transform: translateY(-100%);
-}
-
-.nav-visible {
-  transform: translateY(0);
-}
 
 /* efecto blur/oscuro al scrollear */
-.nav-scrolled {
-  background: rgba(15, 15, 15, 0.88) !important;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-}
 
 /* TOP (logo + hamburguesa) */
 .mxh-nav-sep {
@@ -148,11 +135,6 @@
   color: #ccc !important;
   text-decoration: underline;
 }
-.mobile-search-wrapper {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
 
 .input-search-container {
   width: 100%;
@@ -172,24 +154,6 @@
 }
 
 /* DROPDOWN */
-.products-dropdown {
-  position: absolute;
-  top: 30px;
-  left: 0;
-  background: var(--cartDropdown-bg);
-  padding: 15px;
-  width: 50dvw;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: row;
-  gap: 40px;
-}
-
-.li-products-dropdown {
-  display: flex;
-  flex-direction: column;
-  font-size: 12px;
-}
 .probando-drop {
   border-radius: 10px;
   display: flex;
@@ -216,11 +180,10 @@
   color: var(--text-color);
 }
 .marca-prod-navbar {
-  color: #f45d22;
+  color: var(--color-marca);
   font-size: 10px;
   font-weight: 800;
 }
-
 
 /* ACTIONS (carrito, user, logout) */
 
@@ -242,20 +205,6 @@
   color: white;
   cursor: pointer;
   font-size: 18px;
-}
-
-.navbar-cart-wrapper {
-  position: relative;
-}
-
-.navbar-cart-wrapper span {
-  position: absolute;
-  top: -5px;
-  right: -10px;
-  background: red;
-  font-size: 12px;
-  padding: 2px 6px;
-  border-radius: 50%;
 }
 .input-search-container {
   position: relative;
@@ -395,10 +344,6 @@
     width: 100%;
   }
 
-  .mobile-search-wrapper {
-    justify-content: flex-end;
-  }
-
   .input-search-container.mobile-search-closed {
     display: none;
   }
@@ -484,14 +429,6 @@
   }
 
   /* dropdown en mobile */
-  .products-dropdown {
-    flex-direction: column;
-    position: static;
-    background: #1a1a1a;
-    width: 100%;
-    margin-top: 10px;
-    gap: 10px;
-  }
   .nombre-prod-navbar {
     font-size: 12px;
   }

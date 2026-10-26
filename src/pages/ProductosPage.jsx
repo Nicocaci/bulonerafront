@@ -111,7 +111,7 @@ const ProductosPage = () => {
               className="product-search-input"
             />
 
-            <hr style={{ margin: "12px 0" }} />
+            <hr className="filtros-separador" />
 
             <label className="filter-label">Categoría</label>
             <select
@@ -140,7 +140,7 @@ const ProductosPage = () => {
               ))}
             </select>
 
-            <label className="filter-label" style={{ marginTop: 8 }}>
+            <label className="filter-label filter-label--separada">
               Subcategoría
             </label>
             <select
@@ -156,7 +156,7 @@ const ProductosPage = () => {
               ))}
             </select>
 
-            <label className="filter-label" style={{ marginTop: 8 }}>
+            <label className="filter-label filter-label--separada">
               Ordenar por
             </label>
             <select
@@ -214,21 +214,12 @@ const ProductosPage = () => {
                           <MdVerified className="verified-icon" />
                         </div>
                         <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            width: "100%",
-                            gap: 4,
-                          }}
+                          className="precio-fila"
                         >
                           {p.ofertaVigente ? (
                             <>
                               <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                }}
+                                className="precio-columna"
                               >
                                 <p className="product-price-tachado">
                                   ${p.precioConIva.toLocaleString('es-AR')}
@@ -238,11 +229,7 @@ const ProductosPage = () => {
                                 </p>
                               </div>
                               <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  alignItems: "flex-end",
-                                }}
+                                className="precio-columna precio-columna--derecha"
                               >
                                 <span className="product-oferta-badge">
                                   -{p.oferta.descuento}%

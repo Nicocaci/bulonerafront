@@ -1,23 +1,4 @@
-.status-message {
-  margin-bottom: 15px;
-  font-size: 16px;
-  color: var(--text-color);
-}
-
 /* Dashboard Layout */
-.dashboard-container {
-  padding: 40px;
-  background: #f5f7fb;
-  min-height: 100vh;
-  font-family: "Inter", sans-serif;
-}
-
-.dashboard-title {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 30px;
-  color: #1f2937;
-}
 
 /* Stats Cards */
 
@@ -58,28 +39,7 @@
 
 /* Chart Container */
 
-.chart-container {
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  margin-bottom: 40px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-}
-
-.chart-title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 20px;
-}
-
 /* Orders Table */
-
-.table-container {
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-}
 
 .orders-table {
   width: 100%;
@@ -104,7 +64,6 @@
   font-size: 14px;
   color: var(--text-color);
 }
-
 
 /* Status Badges */
 

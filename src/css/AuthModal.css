@@ -61,11 +61,6 @@
   font-size: 15px;
 }
 
-.auth-modal__error {
-  color: #d14343;
-  font-size: 0.85rem;
-}
-
 .auth-modal__submit {
   margin-top: 8px;
   padding: 5px;

@@ -119,7 +119,7 @@
   color: #181818;
 }
 .menu-categorias:hover {
-  border-left: 8px solid #f45d22;
+  border-left: 8px solid var(--color-marca);
 }
 
 .menu-categorias-container {
@@ -168,7 +168,7 @@
 
 .submenu-categorias a:hover {
   background-color: var(--menuCatHover-bg);
-  border-left: 8px solid #f45d22;
+  border-left: 8px solid var(--color-marca);
 }
 
 .submenu-back {

@@ -51,7 +51,7 @@
 .profile-form input:focus,
 .profile-form textarea:focus {
   outline: none;
-  border-color: #438796;
+  border-color: var(--color-acento);
   box-shadow: 0 0 0 2px rgba(67, 135, 150, 0.1);
 }
 
@@ -73,7 +73,7 @@
   padding: 10px;
   border-radius: 8px;
   border: none;
-  background: #438796;
+  background: var(--color-acento);
   color: white;
   font-weight: 500;
   cursor: pointer;
@@ -83,7 +83,7 @@
 }
 
 .profile-form button:hover {
-  background: #356d79;
+  background: var(--color-acento-oscuro);
 }
 
 .profile-form button:disabled {
@@ -166,12 +166,12 @@ table button {
 
 /* Editar */
 table button:first-child {
-  background: #438796;
+  background: var(--color-acento);
   color: white;
 }
 
 table button:first-child:hover {
-  background: #356d79;
+  background: var(--color-acento-oscuro);
 }
 
 /* Eliminar */
@@ -197,14 +197,14 @@ table button:last-child:hover {
   padding: 8px 14px;
   border-radius: 6px;
   border: none;
-  background: #438796;
+  background: var(--color-acento);
   color: white;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .pagination button:hover {
-  background: #356d79;
+  background: var(--color-acento-oscuro);
 }
 
 .pagination button:disabled {

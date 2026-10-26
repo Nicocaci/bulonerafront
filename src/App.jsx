@@ -21,6 +21,7 @@ import { CartProvider } from "./context/CartContext.jsx";
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+import "./css/tokens.css";
 import "./App.css";
 
 // Un reintento ante errores (el default de 3 hacía esperar mucho antes de mostrar el error)

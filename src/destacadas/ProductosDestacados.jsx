@@ -122,21 +122,12 @@ const ProductosDestacados = ({
                       <MdVerified className="verified-icon" />
                     </div>
                     <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        width: "100%",
-                        gap: 4,
-                      }}
+                      className="precio-fila"
                     >
                       {producto.ofertaVigente ? (
                         <>
                           <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                            }}
+                            className="precio-columna"
                           >
                             <p className="product-price-tachado">
                               ${producto.precioConIva.toLocaleString("es-AR")}
@@ -146,11 +137,7 @@ const ProductosDestacados = ({
                             </p>
                           </div>
                           <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "flex-end",
-                            }}
+                            className="precio-columna precio-columna--derecha"
                           >
                             <span className="product-oferta-badge">
                               -{producto.oferta.descuento}%
