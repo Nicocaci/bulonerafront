@@ -1,6 +1,14 @@
 import axios from 'axios';
 
-const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+// En desarrollo, si falta VITE_API_URL se usa el backend local.
+// En el build de producción tiene que estar definida: si falta, se avisa en la consola.
+const apiUrl =
+  import.meta.env.VITE_API_URL ??
+  (import.meta.env.DEV ? 'http://localhost:3000' : '');
+
+if (!apiUrl) {
+  console.error('Falta VITE_API_URL: el sitio no puede comunicarse con el backend.');
+}
 
 const axiosInstance = axios.create({
   baseURL: apiUrl,
@@ -60,6 +68,18 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+// Mensaje para mostrarle al usuario a partir de un error de axios:
+// el del backend si lo hay; si no, uno según el tipo de falla.
+export const getErrorMessage = (error, fallback = 'Ocurrió un error. Probá de nuevo.') => {
+  const delServidor = error?.response?.data?.message;
+  if (typeof delServidor === 'string' && delServidor.trim()) return delServidor;
+  if (error?.response) return fallback;
+  if (error?.request) {
+    return 'No pudimos conectarnos con el servidor. Revisá tu conexión e intentá de nuevo.';
+  }
+  return fallback;
+};
 
 export default axiosInstance;
 export { apiUrl };

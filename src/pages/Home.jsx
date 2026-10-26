@@ -46,7 +46,7 @@ const Home = () => {
         <ProductosDestacados
           id="ronix"
           titulo="RONIX"
-          limit={50}
+          limit={12}
           filtros={{ marca: "Ronix" }}
           subtitulo="Toda la linea Ronix en un solo lugar."
           linkVerTodos="/productos?page=1&marca=Ronix"
@@ -54,7 +54,7 @@ const Home = () => {
         <ProductosDestacados
           id="herramientas-electricas"
           titulo="HERRAMIENTAS ELÉCTRICAS"
-          limit={50}
+          limit={12}
           filtros={{ category: "Herramientas Electricas" }}
           subtitulo="Descubre nuestra selección de herramientas más populares"
           linkVerTodos="/productos?categoria=Herramientas%20Electricas"
@@ -62,7 +62,7 @@ const Home = () => {
         <ProductosDestacados
           id="soldadura"
           titulo="SOLDADURA"
-          limit={50}
+          limit={12}
           filtros={{ category: "Soldadura" }}
           subtitulo="Descubre nuestra selección de herramientas más populares"
           linkVerTodos="/productos?categoria=Soldadura"
@@ -70,7 +70,7 @@ const Home = () => {
         <ProductosDestacados
           id="herramientas-manuales"
           titulo="HERRAMIENTAS MANUALES"
-          limit={50}
+          limit={12}
           filtros={{ category: "Herramientas Manuales" }}
           subtitulo="Descubre nuestra selección de herramientas más populares"
           linkVerTodos="/productos?categoria=Herramientas+Manuales"

@@ -383,3 +383,10 @@
     width: 150px;
   }
 }
+
+/* Mientras llega la página nueva se muestran los productos anteriores, atenuados */
+.cards-container.is-updating {
+  opacity: 0.55;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}

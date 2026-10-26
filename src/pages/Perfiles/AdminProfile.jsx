@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import Swal from "sweetalert2";
+import { getErrorMessage } from "../../utils/axiosConfig.js";
 import UserList from "./Admin/UserList.jsx";
 import NewProduct from "./Admin/NewProduct.jsx";
 import AdminVentas from "./Admin/ventas/AdminVentas.jsx";
@@ -28,7 +29,7 @@ const AdminProfile = ({ user }) => {
                 Swal.fire({
                     icon: "error",
                     title: "Error",
-                    text: error.message || "No se pudieron cargar los datos",
+                    text: getErrorMessage(error, "No se pudieron cargar los datos"),
                     confirmButtonColor: "#d33",
                 });
             } finally {

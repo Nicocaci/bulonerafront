@@ -23,7 +23,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import "./App.css";
 
-const queryClient = new QueryClient();
+// Un reintento ante errores (el default de 3 hacía esperar mucho antes de mostrar el error)
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { retry: 1, refetchOnWindowFocus: false },
+  },
+});
 
 function AppContent() {
   const location = useLocation();

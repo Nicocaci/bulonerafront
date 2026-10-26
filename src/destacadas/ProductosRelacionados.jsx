@@ -25,7 +25,7 @@ const ProductosRelacionados = ({ producto }) => {
   const { _id, categoria, subcategoria, marca } = producto;
 
   const { data: relacionados = [] } = useQuery({
-    queryKey: ["productos-relacionados", _id],
+    queryKey: ["catalogo", "relacionados", _id],
     queryFn: async () => {
       const [mismaSubcategoria, mismaMarca] = await Promise.all([
         subcategoria

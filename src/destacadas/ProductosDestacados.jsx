@@ -54,7 +54,7 @@ const ProductosDestacados = ({
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["productos-destacados", filtros, limit],
+    queryKey: ["catalogo", "destacados", filtros, limit],
     queryFn: async () => {
       const { data } = await axiosInstance.get("/api/products", {
         params: { ...filtros, limit },

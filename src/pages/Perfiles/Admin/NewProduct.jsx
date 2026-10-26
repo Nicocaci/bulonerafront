@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useProducts } from "../../../hooks/useProducts.js";
+import { catalogoKeys } from "../../../hooks/useCatalogo.js";
 import ProductForm from "./products/ProductForm.jsx";
 import ProductTable from "./products/ProductTable.jsx";
 import Pagination from "../../../components/Pagination.jsx";
@@ -31,9 +33,13 @@ const ProductsPage = () => {
     setEditingProduct(product);
   }, []);
 
+  // Después de crear, editar o borrar: se actualiza la tabla del admin y se descarta
+  // la caché del catálogo (home, productos, detalle) para que muestre los datos nuevos.
+  const queryClient = useQueryClient();
   const handleRefetch = useCallback(() => {
     refetch();
-  }, [refetch]);
+    queryClient.invalidateQueries({ queryKey: catalogoKeys.todo });
+  }, [refetch, queryClient]);
 
   return (
     <div className="admin-section">
@@ -42,7 +48,7 @@ const ProductsPage = () => {
       <ProductForm
         editingProduct={editingProduct}
         setEditingProduct={setEditingProduct}
-        refetch={refetch}
+        refetch={handleRefetch}
       />
 
       <p className="titulo-admin-section">Lista de Productos</p>

@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import Swal from "sweetalert2";
+import { getErrorMessage } from "../../utils/axiosConfig";
 
 
 
@@ -33,7 +34,7 @@ const UserProfile = () => {
                 Swal.fire({
                     icon: "error",
                     title: "Error",
-                    text: error.message || "No se pudo cargar el perfil",
+                    text: getErrorMessage(error, "No se pudo cargar el perfil"),
                     confirmButtonColor: "#3085d6",
                 });
             } finally {
@@ -70,7 +71,7 @@ const UserProfile = () => {
             Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: error.message || "No se pudo actualizar el perfil",
+                text: getErrorMessage(error, "No se pudo actualizar el perfil"),
                 confirmButtonColor: "#d33",
             });
         }

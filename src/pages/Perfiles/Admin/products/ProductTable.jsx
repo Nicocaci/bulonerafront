@@ -1,5 +1,5 @@
 import React from "react";
-import axiosInstance from "../../../../utils/axiosConfig.js";
+import axiosInstance, { getErrorMessage } from "../../../../utils/axiosConfig.js";
 import { getImageUrl } from "../../../../utils/imageUtils.js";
 import Swal from "sweetalert2";
 import { memo } from "react";
@@ -18,9 +18,12 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Sí, eliminarlo",
     }).then(async (result) => {
-      if (result.isConfirmed) {
+      if (!result.isConfirmed) return;
+      try {
         await axiosInstance.delete(`/api/products/${id}`);
         refetch();
+      } catch (err) {
+        Swal.fire("Error", getErrorMessage(err, "No se pudo eliminar el producto"), "error");
       }
     });
   };

@@ -1,8 +1,8 @@
-import axiosInstance from '../utils/axiosConfig.js';
+import axiosInstance from './axiosConfig.js';
 
 export const getShippingOptions = ({ provincia, codigo_postal, localidad, peso, paquetes }) =>
-    axiosInstance.get(`api/shipping/options`, {
-        params: { provincia, codigo_postal, localidad, peso, paquetes },
-        withCredentials: true,
-    })
-    .then((r) => r.data);
+    axiosInstance
+        .get('/api/shipping/options', {
+            params: { provincia, codigo_postal, localidad, peso, paquetes },
+        })
+        .then((r) => r.data);

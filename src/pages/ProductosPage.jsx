@@ -1,27 +1,17 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { MarcasLogos } from "../components/MarcasLogos";
 import "../css/ProductosPage.css";
 import { useSearchParams } from "react-router-dom";
 import { getImageUrl } from "../utils/imageUtils.js";
-import axiosInstance from "../utils/axiosConfig.js";
+import { useCategorias, useProductos, useSubcategorias } from "../hooks/useCatalogo.js";
 import { IoFilter } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { MdVerified } from "react-icons/md";
 import Pagination from "../components/Pagination.jsx";
 
 const ProductosPage = () => {
-  const [productos, setProductos] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [categories, setCategories] = useState([]);
-  const [subcategories, setSubcategories] = useState([]);
   const [filtersOpen, setFiltersOpen] = useState(false);
-
-  const [pagination, setPagination] = useState({
-    page: 1,
-    totalPages: 1,
-  });
   const filters = useMemo(() => {
     return {
       search: searchParams.get("search") || "",
@@ -35,37 +25,21 @@ const ProductosPage = () => {
     };
   }, [searchParams]);
 
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
-    axiosInstance
-      .get("/api/products", { params: filters })
-      .then((response) => {
-        setProductos(response.data.products);
-        setPagination(response.data.pagination);
-      })
-      .catch(() => {
-        setProductos([]);
-        setError("No pudimos cargar los productos. Probá de nuevo en unos segundos.");
-      })
-      .finally(() => setLoading(false));
-  }, [filters]);
+  const {
+    data: resultado,
+    isLoading: loading,
+    isError,
+    isPlaceholderData: actualizando,
+  } = useProductos(filters);
+  const productos = resultado?.products ?? [];
+  const pagination = resultado?.pagination ?? { page: 1, totalPages: 1 };
+  const error = isError
+    ? "No pudimos cargar los productos. Probá de nuevo en unos segundos."
+    : null;
 
-  useEffect(() => {
-    axiosInstance.get("/api/products/categorias").then((response) => {
-      setCategories(response.data);
-    });
-  }, []);
-  useEffect(() => {
-    if (!filters.category) {
-      setSubcategories([]);
-      return;
-    }
-
-    axiosInstance
-      .get(`/api/products/subcategorias/${filters.category}`)
-      .then((res) => setSubcategories(res.data));
-  }, [filters.category]);
+  const { data: categories = [] } = useCategorias();
+  const { data: subcategoriasData = [] } = useSubcategorias(filters.category);
+  const subcategories = filters.category ? subcategoriasData : [];
 
   const updateParams = (key, value, resetPage = true) => {
     setSearchParams((prev) => {
@@ -210,8 +184,11 @@ const ProductosPage = () => {
             {!loading && !error && productos?.length === 0 && (
               <p>No hay productos disponibles.</p>
             )}
-            {!loading && (
-              <div className="cards-container">
+            {!loading && !error && (
+              <div
+                className={`cards-container ${actualizando ? "is-updating" : ""}`}
+                aria-busy={actualizando}
+              >
                 {productos?.map((p) => (
                   <Link
                     className="link-none"

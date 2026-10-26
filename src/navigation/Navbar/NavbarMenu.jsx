@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../../css/NavbarMenu.css";
-import axiosInstance from "../../utils/axiosConfig.js";
+import { useQueryClient } from "@tanstack/react-query";
+import { subcategoriasQuery, useCategorias } from "../../hooks/useCatalogo.js";
 
 const NavbarMenu = ({ onClose, isOpen, onSelectCategory }) => {
-  const [categorias, setCategorias] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const queryClient = useQueryClient();
+  const { data: categorias = [], isLoading: loading, isError } = useCategorias();
+  const error = isError ? "No se pudieron cargar las categorías" : "";
 
   const [categoriaAbierta, setCategoriaAbierta] = useState(null);
   const [subcategoriasMap, setSubcategoriasMap] = useState({});
@@ -25,50 +26,17 @@ const NavbarMenu = ({ onClose, isOpen, onSelectCategory }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
 
-  useEffect(() => {
-    const fetchCategorias = async () => {
-      try {
-        setLoading(true);
-        setError("");
-        const response = await axiosInstance.get("/api/products/categorias");
-        const data =
-          response?.data?.categorias ??
-          response?.data?.data ??
-          response?.data ??
-          [];
-        setCategorias(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error("Error fetching categorias:", error);
-        setError("No se pudieron cargar las categorías");
-        setCategorias([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCategorias();
-  }, []);
-
-  // 👇 esta era la función que faltaba
+  // Subcategorías: se piden al pasar el mouse y quedan en la caché de React Query
   const fetchSubcategorias = async (categoria) => {
-    if (subcategoriasMap[categoria]) return; // ya cacheada, no vuelvo a pedir
+    if (subcategoriasMap[categoria]) return;
 
     try {
       setLoadingSub(categoria);
-      const response = await axiosInstance.get(
-        `/api/products/subcategorias/${encodeURIComponent(categoria)}`,
-      );
-      const data = response?.data?.subcategorias ?? response?.data ?? [];
-
-      setSubcategoriasMap((prev) => ({
-        ...prev,
-        [categoria]: Array.isArray(data) ? data : [],
-      }));
-    } catch (error) {
-      console.error("Error fetching subcategorias:", error);
-      setSubcategoriasMap((prev) => ({
-        ...prev,
-        [categoria]: [],
-      }));
+      const data = await queryClient.fetchQuery(subcategoriasQuery(categoria));
+      setSubcategoriasMap((prev) => ({ ...prev, [categoria]: data }));
+    } catch (err) {
+      console.error("Error al cargar subcategorías:", err);
+      setSubcategoriasMap((prev) => ({ ...prev, [categoria]: [] }));
     } finally {
       setLoadingSub(null);
     }

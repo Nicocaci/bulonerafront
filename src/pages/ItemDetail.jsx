@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance from "../utils/axiosConfig";
+import { useProducto } from "../hooks/useCatalogo.js";
 import { useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import Swal from "sweetalert2";
@@ -16,9 +16,10 @@ import { getPrecioUnitario, formatearPrecio } from "../utils/precio.js";
 
 const ItemDetail = () => {
   const { prodId } = useParams();
-  const [producto, setProducto] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data: producto, isLoading: loading, error: errorConsulta } = useProducto(prodId);
+  const error = errorConsulta
+    ? errorConsulta.response?.data?.message || "Error al cargar el producto"
+    : null;
   const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
   const [imagenPrincipalValida, setImagenPrincipalValida] = useState(null);
   const [indiceSeleccionado, setIndiceSeleccionado] = useState(0);
@@ -61,50 +62,15 @@ const ItemDetail = () => {
     };
   }, [imagenSeleccionada, producto]);
 
+  // Al llegar un producto (o cambiar de producto) se muestra su primera imagen
+  const productoId = producto?._id;
   useEffect(() => {
-    const fetchProducto = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await axiosInstance.get(`/api/products/${prodId}`);
-
-        // Normalizar las imágenes que vienen del backend:
-        // - Puede venir como `imagen` (string o array)
-        // - O como `imagenes` (array)
-        let imagenesNormalizadas = [];
-
-        if (
-          Array.isArray(response.data.imagenes) &&
-          response.data.imagenes.length > 0
-        ) {
-          imagenesNormalizadas = response.data.imagenes;
-        } else if (Array.isArray(response.data.imagen)) {
-          imagenesNormalizadas = response.data.imagen;
-        } else if (response.data.imagen) {
-          imagenesNormalizadas = [response.data.imagen];
-        }
-
-        // Guardamos el producto con el array normalizado en `imagenes`
-        setProducto({
-          ...response.data,
-          imagenes: imagenesNormalizadas,
-        });
-
-        // Establecer la imagen inicial (la primera del array normalizado)
-        const primeraImagen = imagenesNormalizadas[0];
-        setImagenSeleccionada(
-          primeraImagen ? getImageUrl(primeraImagen) : null,
-        );
-      } catch (error) {
-        setError(
-          error.response?.data?.message || "Error al cargar el producto",
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducto();
-  }, [prodId]);
+    if (!productoId) return;
+    const primeraImagen = producto.imagenes[0];
+    setImagenSeleccionada(primeraImagen ? getImageUrl(primeraImagen) : null);
+    setIndiceSeleccionado(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productoId]);
 
   const handleAddToCart = async (productId) => {
     if (agregando) return; // 🔒 bloquea clicks repetidos mientras hay una request en curso
@@ -366,4 +332,11 @@ const ItemDetail = () => {
   );
 };
 
-export default ItemDetail;
+// Se monta de nuevo al cambiar de producto (por ejemplo, desde "relacionados"):
+// así la imagen elegida, el zoom y la cantidad arrancan de cero para cada producto.
+const ItemDetailPage = () => {
+  const { prodId } = useParams();
+  return <ItemDetail key={prodId} />;
+};
+
+export default ItemDetailPage;
