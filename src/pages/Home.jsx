@@ -32,6 +32,7 @@ const Home = () => {
               alt: "Armá tu setup",
               href: "/contacto",
             },
+            // Esta imagen se precarga desde index.html: si se cambia, cambiarla también allá
             center: {
               src: "https://res.cloudinary.com/dn4lt8fhc/image/upload/v1790002161/promo-1.png",
               alt: "Banner Obrero",

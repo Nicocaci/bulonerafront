@@ -54,6 +54,30 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Fotos de productos y banners (Cloudinary): la conexión se abre antes de necesitarla -->
+    <link rel="preconnect" href="https://res.cloudinary.com" />
+
+    <!-- Home: la imagen principal del banner es lo más grande que se ve al entrar. Se pide
+         apenas llega el HTML, sin esperar a que baje y arranque el JS. Solo en la Home, para
+         que las otras páginas no la descarguen.
+         IMPORTANTE: tiene que ser la misma imagen, srcset y sizes que arma MosaicBanner con la
+         imagen "center" de Home.jsx. Si se cambia esa imagen, cambiarla también acá (si no
+         coinciden, el navegador baja las dos). -->
+    <script>
+      if (location.pathname === "/") {
+        var base = "https://res.cloudinary.com/dn4lt8fhc/image/upload/f_auto,q_auto,c_limit,";
+        var foto = "/v1790002161/promo-1.png";
+        var precarga = document.createElement("link");
+        precarga.rel = "preload";
+        precarga.as = "image";
+        precarga.href = base + "w_800" + foto;
+        precarga.setAttribute("imagesrcset", base + "w_800" + foto + " 800w, " + base + "w_1600" + foto + " 1600w");
+        precarga.setAttribute("imagesizes", "(max-width: 768px) 100vw, 640px");
+        precarga.setAttribute("fetchpriority", "high");
+        document.head.appendChild(precarga);
+      }
+    </script>
   </head>
 
   <body>
