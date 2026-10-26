@@ -102,7 +102,7 @@ const AdminProfile = ({ user }) => {
             </div>
 
             {activeSection === "usuarios" && (
-                <UserList />
+                <UserList users={users} onUsersChange={setUsers} />
             )}
             {activeSection === "productos" && (
                 <>

@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext.jsx";
 import Swal from "sweetalert2";
@@ -15,6 +15,7 @@ import { getPrecioUnitario } from "../utils/precio.js";
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const { cartId } = useParams();
   const { cart, getCart } = useCart();
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
@@ -43,7 +44,9 @@ const Checkout = () => {
     const fetchCart = async () => {
       try {
         setLoading(true);
-        await getCart();
+        // getCart no lanza errores: si falla devuelve undefined
+        const data = await getCart();
+        if (!data) throw new Error("No se pudo cargar el carrito");
 
         if (user) {
           setFormData((prev) => ({
@@ -59,14 +62,14 @@ const Checkout = () => {
           title: "Error",
           text: "No se pudo cargar el carrito",
         });
-        navigate("/carrito");
+        navigate(`/carrito/${cartId || "mi-carrito"}`);
       } finally {
         setLoading(false);
       }
     };
 
     fetchCart();
-  }, [getCart, navigate, user]);
+  }, [getCart, navigate, user, cartId]);
 
   const validateStep = (step) => {
     const newErrors = {};

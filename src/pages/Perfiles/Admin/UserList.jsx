@@ -1,39 +1,12 @@
 import React from 'react';
-import { useContext, useState, useEffect } from 'react';
+import { useContext } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 import Swal from 'sweetalert2';
-import axiosInstance from '../../../utils/axiosConfig';
-import Cookies from 'js-cookie';
-import { getImageUrl } from '../../../utils/imageUtils';
 
-const UserList = ({ user }) => {
-    const { getUsers, deleteUser, getProfile, user: authUser } = useContext(AuthContext);
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [adminData, setAdminData] = useState(null);
-
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const [usersData, adminProfile] = await Promise.all([
-                    getUsers(),
-                    getProfile(),
-                ]);
-                setUsers(usersData);
-                setAdminData(adminProfile);
-            } catch (error) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: error.message || "No se pudieron cargar los datos",
-                    confirmButtonColor: "#d33",
-                });
-            } finally {
-                setLoading(false);
-            }
-        };
-        loadData();
-    }, [getUsers, getProfile]);
+// Los usuarios los carga AdminProfile (una sola vez) y se comparten con las estadísticas.
+const UserList = ({ users = [], onUsersChange }) => {
+    const { deleteUser, user: authUser } = useContext(AuthContext);
+    const miId = String(authUser?.id ?? authUser?._id ?? "");
 
     const handleDeleteUser = async (userId, userName) => {
         const result = await Swal.fire({
@@ -55,14 +28,13 @@ const UserList = ({ user }) => {
                     title: "Usuario eliminado",
                     text: "El usuario ha sido eliminado correctamente.",
                     confirmButtonColor: "#28a745",
-                }).then(() => {
-                    window.location.reload();
                 });
+                onUsersChange?.((prev) => prev.filter((u) => String(u._id ?? u.id) !== String(userId)));
             } catch (error) {
                 Swal.fire({
                     icon: "error",
                     title: "Error",
-                    text: error.message || "No se pudo eliminar el usuario",
+                    text: error.response?.data?.message || "No se pudo eliminar el usuario",
                     confirmButtonColor: "#d33",
                 });
             }
@@ -70,14 +42,6 @@ const UserList = ({ user }) => {
     };
 
 
-    if (loading) {
-        return (
-            <div className="admin-section">
-                <p className='titulo-admin-section'>Gestión de Usuarios</p>
-                <p>Cargando usuarios...</p>
-            </div>
-        );
-    }
     return (
         <div className="admin-section">
             <p className='titulo-admin-section'>Gestión de Usuarios</p>
@@ -114,7 +78,9 @@ const UserList = ({ user }) => {
                                         </span>
                                     </td>
                                     <td>
-                                        {(u._id ?? u.id) !== (user?._id ?? user?.id) && (
+                                        {String(u._id ?? u.id) === miId ? (
+                                            <span className="role-badge">Vos</span>
+                                        ) : (
                                             <button
                                                 className="delete-btn"
                                                 onClick={() =>

@@ -147,6 +147,16 @@
   color: #856404;
 }
 
+.status-select.pagado {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.status-select.reembolsado {
+  background: #e5e7eb;
+  color: #374151;
+}
+
 .status-select.enviado {
   background: #cce5ff;
   color: #004085;

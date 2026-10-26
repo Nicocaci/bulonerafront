@@ -1,8 +1,8 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
-import axiosInstance from "../utils/axiosConfig";
+import axiosInstance, { setUnauthorizedHandler } from "../utils/axiosConfig";
 
 const TOKEN_KEY = "access_token";
 
@@ -50,6 +50,40 @@ export const AuthProvider = ({ children }) => {
     }
 
     setLoading(false);
+  }, []);
+
+  // Si el backend responde 401 a un pedido con token (sesión vencida o inválida),
+  // se cierra la sesión local y se avisa una sola vez.
+  const avisandoVencimiento = useRef(false);
+
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      Cookies.remove(TOKEN_KEY);
+      delete axiosInstance.defaults.headers.common.Authorization;
+      setUser(null);
+
+      if (avisandoVencimiento.current) return;
+      avisandoVencimiento.current = true;
+
+      Swal.fire({
+        icon: "info",
+        title: "Tu sesión venció",
+        text: "Por seguridad cerramos tu sesión. Iniciá sesión de nuevo para continuar.",
+        showCancelButton: true,
+        confirmButtonText: "Iniciar sesión",
+        cancelButtonText: "Seguir como invitado",
+        confirmButtonColor: "#3085d6",
+      })
+        .then(({ isConfirmed }) => {
+          // NavBar escucha este evento y abre el modal de login
+          if (isConfirmed) window.dispatchEvent(new Event("open-login-modal"));
+        })
+        .finally(() => {
+          avisandoVencimiento.current = false;
+        });
+    });
+
+    return () => setUnauthorizedHandler(null);
   }, []);
 
   // Función helper para construir headers con el token
@@ -107,7 +141,8 @@ export const AuthProvider = ({ children }) => {
         token,
       };
 
-      Cookies.set(TOKEN_KEY, token, { expires: 7 });
+      // La cookie vence junto con el token (no queda una sesión "muerta" guardada)
+      Cookies.set(TOKEN_KEY, token, { expires: new Date(expMs) });
       axiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
       setUser(newUser);
     } catch (error) {

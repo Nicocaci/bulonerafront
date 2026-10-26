@@ -5,6 +5,10 @@ import "../css/AuthModal.css";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 
+// Mismos límites que el backend (user-controller.js)
+const MIN_PASSWORD = 8;
+const MAX_PASSWORD = 128;
+
 const AuthModal = ({ onClose }) => {
   const { login, register } = useContext(AuthContext);
   const [formValues, setFormValues] = useState({
@@ -54,6 +58,20 @@ const AuthModal = ({ onClose }) => {
         icon: "warning",
         title: "Campos incompletos",
         text: "Completá todos los campos obligatorios.",
+        confirmButtonColor: "#3085d6",
+      });
+      return;
+    }
+
+    if (
+      isRegisterMode &&
+      (formValues.password.length < MIN_PASSWORD ||
+        formValues.password.length > MAX_PASSWORD)
+    ) {
+      Swal.fire({
+        icon: "warning",
+        title: "Contraseña muy corta",
+        text: `La contraseña debe tener al menos ${MIN_PASSWORD} caracteres.`,
         confirmButtonColor: "#3085d6",
       });
       return;
@@ -170,7 +188,7 @@ const AuthModal = ({ onClose }) => {
           {mode === "register" && (
             <>
               <label>
-                Nombre completo
+                Nombre
                 <input
                   type="text"
                   name="name"
@@ -234,7 +252,14 @@ const AuthModal = ({ onClose }) => {
               value={formValues.password}
               onChange={handleChange}
               placeholder="*******"
+              autoComplete={mode === "login" ? "current-password" : "new-password"}
+              aria-describedby={mode === "register" ? "password-hint" : undefined}
             />
+            {mode === "register" && (
+              <small id="password-hint" className="auth-modal__hint">
+                Mínimo {MIN_PASSWORD} caracteres.
+              </small>
+            )}
           </label>
 
           {mode === "register" && (

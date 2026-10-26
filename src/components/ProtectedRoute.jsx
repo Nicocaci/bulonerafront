@@ -8,7 +8,8 @@ const ProtectedRoute = ({ children }) => {
 
     useEffect(() => {
         // Mostrar mensaje solo cuando no está autenticado y ya terminó de cargar
-        if (!loading && !isAuthenticated) {
+        // Si ya hay un aviso abierto (por ejemplo "Tu sesión venció"), no se tapa con otro.
+        if (!loading && !isAuthenticated && !Swal.isVisible()) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Acceso restringido',
@@ -42,4 +43,3 @@ const ProtectedRoute = ({ children }) => {
 };
 
 export default ProtectedRoute;
-

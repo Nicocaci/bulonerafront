@@ -10,6 +10,7 @@ import {
   FaFileWord,
   FaFileExcel,
   FaFileImage,
+  FaFile,
 } from "react-icons/fa";
 import { BsFillQuestionSquareFill, BsFillSendFill } from "react-icons/bs";
 import { MdOutlineVerifiedUser } from "react-icons/md";
@@ -17,26 +18,101 @@ import { IoIosPaper } from "react-icons/io";
 import axiosInstance from "../utils/axiosConfig.js";
 import Swal from "sweetalert2";
 
+// Mismos límites que el backend (config/multerConfig.js)
+const MAX_ARCHIVOS = 5;
+const MAX_MB = 7;
+const EXTENSIONES_DOC = ["pdf", "doc", "docx", "xls", "xlsx"];
+
+const extensionDe = (nombre = "") => nombre.split(".").pop().toLowerCase();
+
+const esArchivoPermitido = (file) =>
+  file.type.startsWith("image/") || EXTENSIONES_DOC.includes(extensionDe(file.name));
+
+const escaparHtml = (texto) =>
+  String(texto).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
+const FORM_VACIO = {
+  nombre: "",
+  email: "",
+  empresa: "",
+  telefono: "",
+  mensaje: "",
+};
+
 const Contacto = () => {
   const phoneNumber = "5491151544062";
   const message = "Hola! Quiero hacer una consulta sobre sus productos";
-  const [formData, setFormData] = useState({
-    nombre: "",
-    email: "",
-    empresa: "",
-    telefono: "",
-    mensaje: "",
-  });
+  const [formData, setFormData] = useState(FORM_VACIO);
   const [archivos, setArchivos] = useState([]);
+  const [arrastrando, setArrastrando] = useState(false);
+  const [enviando, setEnviando] = useState(false);
 
   const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Valida y agrega archivos (desde el selector o arrastrados)
+  const agregarArchivos = (lista) => {
+    const nuevos = Array.from(lista || []);
+    if (!nuevos.length) return;
+
+    const rechazados = [];
+    const aceptados = [];
+
+    nuevos.forEach((file) => {
+      if (!esArchivoPermitido(file)) {
+        rechazados.push(`${file.name}: formato no permitido`);
+      } else if (file.size > MAX_MB * 1024 * 1024) {
+        rechazados.push(`${file.name}: supera los ${MAX_MB} MB`);
+      } else {
+        aceptados.push(file);
+      }
+    });
+
+    const sinRepetir = aceptados.filter(
+      (f) => !archivos.some((p) => p.name === f.name && p.size === f.size),
+    );
+    const lugar = Math.max(MAX_ARCHIVOS - archivos.length, 0);
+    if (sinRepetir.length > lugar) {
+      rechazados.push(`Podés adjuntar hasta ${MAX_ARCHIVOS} archivos en total`);
+    }
+    const aAgregar = sinRepetir.slice(0, lugar);
+    if (aAgregar.length) setArchivos([...archivos, ...aAgregar]);
+
+    if (rechazados.length) {
+      Swal.fire({
+        icon: "warning",
+        title: "Algunos archivos no se agregaron",
+        html: rechazados.map((r) => `<div>${escaparHtml(r)}</div>`).join(""),
+        confirmButtonColor: "#000",
+      });
+    }
+  };
+
   const handleFileChange = (e) => {
-    const nuevosArchivos = Array.from(e.target.files);
-    setArchivos((prev) => [...prev, ...nuevosArchivos]);
+    agregarArchivos(e.target.files);
+    // Permite volver a elegir el mismo archivo después de quitarlo
+    e.target.value = "";
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
+    if (!arrastrando) setArrastrando(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    // Ignora el dragleave que se dispara al pasar sobre elementos hijos
+    if (e.currentTarget.contains(e.relatedTarget)) return;
+    setArrastrando(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setArrastrando(false);
+    agregarArchivos(e.dataTransfer.files);
   };
 
   const removeArchivo = (index) => {
@@ -45,6 +121,8 @@ const Contacto = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (enviando) return;
+    setEnviando(true);
     try {
       const data = new FormData();
       Object.entries(formData).forEach(([key, value]) =>
@@ -61,27 +139,29 @@ const Contacto = () => {
         confirmButtonColor: "#000",
       });
 
-      setFormData({
-        nombre: "",
-        email: "",
-        empresa: "",
-        telefono: "",
-        mensaje: "",
-      });
+      setFormData(FORM_VACIO);
       setArchivos([]);
     } catch (error) {
+      let texto = error.response?.data?.message;
+      if (!texto) {
+        texto = error.response
+          ? "No pudimos enviar tu consulta. Probá de nuevo o escribinos por WhatsApp."
+          : "No pudimos conectarnos con el servidor. Revisá tu conexión o escribinos por WhatsApp.";
+      }
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: error.response?.data?.message || "Error al enviar el mensaje",
+        title: "No se pudo enviar",
+        text: texto,
         confirmButtonColor: "#000",
       });
+    } finally {
+      setEnviando(false);
     }
   };
 
   //Funcion Helper para elegir el icono del archivo seleccionado
   const getFileIcon = (fileName) => {
-    const ext = fileName.split(".").pop().toLowerCase();
+    const ext = extensionDe(fileName);
 
     switch (ext) {
       case "pdf":
@@ -95,6 +175,9 @@ const Contacto = () => {
       case "jpg":
       case "jpeg":
       case "png":
+      case "webp":
+      case "gif":
+      case "heic":
         return <FaFileImage color="#805ad5" />;
       default:
         return <FaFile color="#718096" />;
@@ -109,13 +192,13 @@ const Contacto = () => {
             <div className="banner-content">
               <div className="content-1-coti">
                 <IoIosPaper size={50} color="#07478d" />
-                <p className="titulo-contacto">Solicita una Cotización</p>
+                <p className="titulo-contacto">Solicitá una cotización</p>
               </div>
               <p className="subtitulo-contacto">
-                Tenés una lista de materiales, un plano o una foto?
+                ¿Tenés una lista de materiales, un plano o una foto?
               </p>
               <p className="subtitulo-contacto">
-                Enviános lo que tengas y te respondemos con una cotización
+                Envianos lo que tengas y te respondemos con una cotización
               </p>
               <a
                 className="a-none"
@@ -140,7 +223,7 @@ const Contacto = () => {
             <div className="form-container-coti">
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                  <p className="titulo-form">Que necesitas?</p>
+                  <p className="titulo-form">¿Qué necesitás?</p>
                   <p className="subtitulo-form">
                     Contanos con el mayor detalle posible para poder ayudarte
                   </p>
@@ -155,19 +238,27 @@ const Contacto = () => {
                     className="text-area"
                   ></textarea>
                   <div>
-                    <p className="titulo-form">Ajuntar archivos (opcional)</p>
+                    <p className="titulo-form">Adjuntar archivos (opcional)</p>
                     <p className="subtitulo-form">
-                      Pódes subir planos, lista de materiales, fotos o cualquier
+                      Podés subir planos, lista de materiales, fotos o cualquier
                       documento que nos ayude
                     </p>
                     <div className="file-upload">
-                      <label htmlFor="archivos" className="file-upload-label">
-                        <div className="file-upload-box">
+                      <label
+                        htmlFor="archivos"
+                        className="file-upload-label"
+                        onDragOver={handleDragOver}
+                        onDragEnter={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                      >
+                        <div className={`file-upload-box ${arrastrando ? "dragover" : ""}`}>
                           <svg
                             className="upload-icon"
                             viewBox="0 0 24 24"
                             width="40"
                             height="40"
+                            aria-hidden="true"
                           >
                             <path
                               fill="currentColor"
@@ -175,7 +266,9 @@ const Contacto = () => {
                             />
                           </svg>
                           <p>
-                            <strong>Arrastrá archivos aquí</strong>
+                            <strong>
+                              {arrastrando ? "Soltá los archivos acá" : "Arrastrá archivos acá"}
+                            </strong>
                           </p>
                           <p>o</p>
                           <span className="btn-seleccionar">
@@ -201,12 +294,12 @@ const Contacto = () => {
                         <FaFileExcel className="inline-icon" color="#217346" />{" "}
                         Excel,{" "}
                         <FaFileImage className="inline-icon" color="#805ad5" />{" "}
-                        Imágenes (JPG, PNG)
+                        Imágenes. Hasta {MAX_ARCHIVOS} archivos de {MAX_MB} MB cada uno.
                       </p>
 
                       <ul className="archivos-seleccionados">
                         {archivos.map((file, i) => (
-                          <li key={i}>
+                          <li key={`${file.name}-${file.size}`}>
                             <span className="file-icon">
                               {getFileIcon(file.name)}
                             </span>
@@ -215,6 +308,7 @@ const Contacto = () => {
                               className="remove-file-btn"
                               type="button"
                               onClick={() => removeArchivo(i)}
+                              aria-label={`Quitar ${file.name}`}
                             >
                               ✕
                             </button>
@@ -280,9 +374,9 @@ const Contacto = () => {
                   </div>
                 </div>
                 <div>
-                  <button className="btn-form" type="submit">
+                  <button className="btn-form" type="submit" disabled={enviando}>
                     <BsFillSendFill />
-                    Solicitar Cotización
+                    {enviando ? "Enviando..." : "Solicitar cotización"}
                   </button>
                 </div>
               </form>
@@ -298,7 +392,7 @@ const Contacto = () => {
                 <div className="text-content-coti">
                   <p>No hay problema.</p>
                   <p>
-                    Pódes enviarme una foto, un plano, una muestra o una lista
+                    Podés enviarnos una foto, un plano, una muestra o una lista
                     de materiales. Nosotros te ayudamos a identificar el
                     producto
                   </p>
@@ -318,11 +412,11 @@ const Contacto = () => {
               <div className="cotizacion-border">
                 <div className="content-1-coti">
                   <MdOutlineVerifiedUser size={40} color="#07478D" />
-                  <p className="titulo-detalle">Asesoriamiento experto</p>
+                  <p className="titulo-detalle">Asesoramiento experto</p>
                 </div>
                 <div className="text-content-coti">
                   <p>
-                    Te ayudamos a encontrar el producto correcto, inculso si no
+                    Te ayudamos a encontrar el producto correcto, incluso si no
                     conocés el código o la medida.
                   </p>
                 </div>

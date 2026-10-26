@@ -4,8 +4,8 @@ import Swal from "sweetalert2";
 export default function PrintLabelButton({ envioId }) {
   const handlePrint = async () => {
     try {
-      const response = await axiosInstance.get(`/api/shipping/shipments/${envioId}/label`, {
-        responseType: "blob", // 👈 importante también del lado del navegador
+      const response = await axiosInstance.get(`/api/shipping/${envioId}/etiqueta`, {
+        responseType: "blob",
       });
 
       const url = window.URL.createObjectURL(new Blob([response.data], { type: "application/pdf" }));

@@ -41,9 +41,16 @@ function DetalleVentas({ refresh }) {
       </div>
 
       <div className="stat-card">
-        <h3>Pendientes</h3>
-        <p>{stats.ordersByStatus.pendiente}</p>
+        <h3>Pagados (a preparar)</h3>
+        <p>{stats.ordersByStatus.pagado ?? 0}</p>
       </div>
+
+      {stats.ordersByStatus.pendiente > 0 && (
+        <div className="stat-card">
+          <h3>Pendientes (anteriores)</h3>
+          <p>{stats.ordersByStatus.pendiente}</p>
+        </div>
+      )}
 
       <div className="stat-card">
         <h3>Enviados</h3>
@@ -58,6 +65,11 @@ function DetalleVentas({ refresh }) {
       <div className="stat-card">
         <h3>Cancelados</h3>
         <p>{stats.ordersByStatus.cancelado}</p>
+      </div>
+
+      <div className="stat-card">
+        <h3>Reembolsados</h3>
+        <p>{stats.ordersByStatus.reembolsado ?? 0}</p>
       </div>
     </div>
   );
