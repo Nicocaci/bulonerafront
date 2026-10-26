@@ -39,6 +39,7 @@
 
 .logo-navbar {
   height: 90px;
+  width: auto;
   border-radius: 10px;
 }
 .logo-navbar:hover {

@@ -256,3 +256,8 @@
     font-size: 14px;
   }
 }
+
+/* Lugar reservado para el carrusel mientras carga (evita que la página salte) */
+.ofertas-loading {
+  min-height: 355px;
+}

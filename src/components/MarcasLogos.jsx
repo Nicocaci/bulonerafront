@@ -10,9 +10,9 @@ export const MarcasLogos = () => {
     "logo-bahco.svg",
     "logo-bremen.svg",
     "logo-bosch.svg",
-    "logo-skil.png",
+    "logo-skil.webp",
     "logo-fischer.webp",
-    "logo-venturo.jpg",
+    "logo-venturo.webp",
   ];
 
   const getBrandDisplayNameFromFilename = (filename) => {

@@ -1,6 +1,6 @@
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 import React, { useEffect, useMemo, useState } from "react";
-import { getImageUrl } from "../../utils/imageUtils";
+import { ANCHO_MINIATURA, getImageUrl } from "../../utils/imageUtils";
 import axiosInstance from "../../utils/axiosConfig.js";
 import {
   getPrecioUnitario,
@@ -200,7 +200,7 @@ const Confirmar = ({
                 return (
                   <div key={productId} className="checkout-product-item">
                     <img
-                      src={getImageUrl(imagen)}
+                      src={getImageUrl(imagen, ANCHO_MINIATURA)}
                       alt={name}
                       className="checkout-product-image"
                     />

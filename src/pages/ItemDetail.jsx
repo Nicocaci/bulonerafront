@@ -3,7 +3,12 @@ import { useProducto } from "../hooks/useCatalogo.js";
 import { useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import Swal from "sweetalert2";
-import { getImageUrl, PLACEHOLDER_PRODUCTO, usarPlaceholder } from "../utils/imageUtils";
+import {
+  ANCHO_DETALLE,
+  getImageUrl,
+  PLACEHOLDER_PRODUCTO,
+  usarPlaceholder,
+} from "../utils/imageUtils";
 import "../css/ItemDetail.css";
 import { BsTruck } from "react-icons/bs";
 import { MdOutlineVerified, MdOutlineVerifiedUser } from "react-icons/md";
@@ -25,7 +30,7 @@ const ItemDetail = () => {
 
   // URLs resueltas de todas las imágenes del producto, para el slider mobile.
   const imagenesUrls = (producto?.imagenes || []).map((img) =>
-    getImageUrl(img),
+    getImageUrl(img, ANCHO_DETALLE),
   );
   const { addProductToCart } = useCart();
   const [cantidad, setCantidad] = useState(1);
@@ -47,7 +52,7 @@ const ItemDetail = () => {
     const urlCandidata =
       imagenSeleccionada ||
       (producto
-        ? getImageUrl(producto.imagenes?.[0] || producto.imagen)
+        ? getImageUrl(producto.imagenes?.[0] || producto.imagen, ANCHO_DETALLE)
         : null);
 
     if (!urlCandidata) {
@@ -75,7 +80,9 @@ const ItemDetail = () => {
   useEffect(() => {
     if (!productoId) return;
     const primeraImagen = producto.imagenes[0];
-    setImagenSeleccionada(primeraImagen ? getImageUrl(primeraImagen) : null);
+    setImagenSeleccionada(
+      primeraImagen ? getImageUrl(primeraImagen, ANCHO_DETALLE) : null,
+    );
     setIndiceSeleccionado(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productoId]);
@@ -117,7 +124,7 @@ const ItemDetail = () => {
   const descripcionFormateada = producto?.descripcion?.replace(/\\n/g, "\n");
 
   if (loading) {
-    return <div>Cargando...</div>;
+    return <div className="item-cargando">Cargando...</div>;
   }
 
   if (error) {
@@ -158,7 +165,7 @@ const ItemDetail = () => {
             />
             <div className="thumbnails-container">
               {(producto.imagenes || []).map((imagen, index) => {
-                const imagenUrl = getImageUrl(imagen);
+                const imagenUrl = getImageUrl(imagen, ANCHO_DETALLE);
                 return (
                   <img
                     key={index}

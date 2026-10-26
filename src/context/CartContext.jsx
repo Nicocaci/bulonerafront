@@ -8,7 +8,7 @@ import {
 } from "react";
 import { AuthContext } from "./AuthContext.jsx";
 import axiosInstance from "../utils/axiosConfig.js";
-import swal from "sweetalert2";
+import swal from "../utils/alertas.js";
 
 
 const LOCAL_CART_KEY = "guest_cart";

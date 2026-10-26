@@ -2,7 +2,13 @@ import React, { useState, useMemo } from "react";
 import { MarcasLogos } from "../components/MarcasLogos";
 import "../css/ProductosPage.css";
 import { useSearchParams } from "react-router-dom";
-import { getImageUrl, usarPlaceholder } from "../utils/imageUtils.js";
+import {
+  ANCHO_TARJETA,
+  SIZES_TARJETA,
+  cldSrcSet,
+  getImageUrl,
+  usarPlaceholder,
+} from "../utils/imageUtils.js";
 import { useCategorias, useProductos, useSubcategorias } from "../hooks/useCatalogo.js";
 import { IoFilter } from "react-icons/io5";
 import { Link } from "react-router-dom";
@@ -200,11 +206,18 @@ const ProductosPage = () => {
                         <img
                           src={getImageUrl(
                             Array.isArray(p.imagen) ? p.imagen[0] : p.imagen,
+                            ANCHO_TARJETA,
                           )}
-                          alt={p.name}
+                          srcSet={cldSrcSet(
+                            getImageUrl(Array.isArray(p.imagen) ? p.imagen[0] : p.imagen),
+                            ANCHO_TARJETA,
+                          )}
+                          sizes={SIZES_TARJETA}
+                          alt={p.item}
                           className="product-card-imagen"
                           onError={usarPlaceholder}
                           loading="lazy"
+                          decoding="async"
                         />
                       </div>
                       <div className="product-card-description">

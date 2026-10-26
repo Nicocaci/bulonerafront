@@ -72,7 +72,13 @@ const NavbarMenu = ({ onClose, isOpen, onSelectCategory }) => {
       />
       <div ref={menuRef} className={`navbarmenu ${isOpen ? "open" : "closed"}`}>
         <div className="header-menu">
-          <img className="logo-menu" src="/logo-fondo-negro.png" alt="logo" />
+          <img
+            className="logo-menu"
+            src="/logo-texto-blanco.svg"
+            width={120}
+            height={60}
+            alt="Bulonera El Triángulo"
+          />
           <p className="back-menu" onClick={onClose}>
             ⬅
           </p>

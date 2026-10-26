@@ -73,3 +73,26 @@ body {
 .precio-columna--derecha {
   align-items: flex-end;
 }
+
+/* Lugar reservado mientras se descarga una página */
+.ruta-cargando {
+  min-height: 100vh;
+}
+
+/* Aviso cuando una página no se pudo cargar */
+.error-carga {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 20px;
+  text-align: center;
+}
+.error-carga button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--color-marca);
+  color: #ffffff;
+  cursor: pointer;
+}

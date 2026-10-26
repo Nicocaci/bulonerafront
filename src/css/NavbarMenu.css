@@ -89,6 +89,7 @@
 }
 .logo-menu {
   height: 60px;
+  width: auto;
   background-color: #181818;
   display: flex;
   justify-content: center;

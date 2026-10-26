@@ -2,8 +2,8 @@ import React, { useRef, useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import "../css/CartDropdown.css";
 import { Link } from "react-router-dom";
-import { getImageUrl, usarPlaceholder } from "../utils/imageUtils";
-import Swal from "sweetalert2";
+import { ANCHO_MINIATURA, getImageUrl, usarPlaceholder } from "../utils/imageUtils";
+import Swal from "../utils/alertas.js";
 import { GoArrowRight } from "react-icons/go";
 import { getPrecioUnitario } from "../utils/precio.js";
 
@@ -152,6 +152,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
                         : Array.isArray(product.imagenes)
                           ? product.imagenes[0]
                           : product.imagen,
+                      ANCHO_MINIATURA,
                     )}
                     alt={product.item || "Producto"}
                     className="cart-dropdown-image"

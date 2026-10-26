@@ -7,7 +7,13 @@ const Footer = () => {
   return (
     <div className="footer-container">
       <div>
-        <img className="logo-footer" src={theme === "dark" ? "/logo-fondo-negro.png" : "/logo-fondo-blanco.png"} alt="logo" />
+        <img
+          className="logo-footer"
+          src={theme === "dark" ? "/logo-texto-blanco.svg" : "/logo-texto-negro.svg"}
+          width={120}
+          height={60}
+          alt="Bulonera El Triángulo"
+        />
       </div>
       <div>
         <p className="titulo-footer">BULONERA EL TRIANGULO </p>

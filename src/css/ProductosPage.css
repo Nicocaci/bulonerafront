@@ -389,3 +389,9 @@
 .filter-label--separada {
   margin-top: 8px;
 }
+
+/* Mientras cargan los productos se reserva lugar para la grilla: si no, el footer aparece
+   arriba y salta hacia abajo cuando llegan (era el mayor salto de la página) */
+.spinner-container {
+  min-height: 70vh;
+}

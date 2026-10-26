@@ -41,8 +41,10 @@ const Nosotros = () => {
 
             {/* Imagen: aparece después de que el overlay terminó */}
             <motion.img
-              src="/foto-bulonera.png"
-              alt="foto-bulonera-frente"
+              src="/foto-bulonera.webp"
+              width={400}
+              height={600}
+              alt="Frente del local de Bulonera El Triángulo"
               className="img-bulonera"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -133,8 +135,11 @@ const Nosotros = () => {
             <img
               className="img-bulonera"
               style={{ boxShadow: "0 8px 8px rgba(255, 255, 255, 0.15)" }}
-              src="/foto-interior.png"
-              alt="foto-interior"
+              src="/foto-interior.webp"
+              width={500}
+              height={300}
+              loading="lazy"
+              alt="Mostrador e interior del local con herramientas en exhibición"
             />
           </div>
         </div>
@@ -160,8 +165,11 @@ const Nosotros = () => {
           <div className="nosotros-image">
             <img
               className="img-bulonera"
-              src="/foto-logistica.png"
-              alt="foto-logistica"
+              src="/foto-logistica.webp"
+              width={500}
+              height={300}
+              loading="lazy"
+              alt="Carga de pedidos en una camioneta de reparto"
             />
           </div>
           <div className="nosotros-text">

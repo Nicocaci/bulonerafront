@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import Swal from "sweetalert2";
+import Swal from "../utils/alertas.js";
 
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated, loading } = useContext(AuthContext);

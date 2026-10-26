@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
-import Swal from "sweetalert2";
+import Swal from "../utils/alertas.js";
 import axiosInstance, { setUnauthorizedHandler } from "../utils/axiosConfig";
 
 const TOKEN_KEY = "access_token";

@@ -1,8 +1,18 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import "../css/Home.css";
 import BrandSlider from "../utils/BrandSlider.jsx";
 import MosaicBanner from "../components/MosaicBanner.jsx";
-import ProductosDestacados from "../destacadas/ProductosDestacados.jsx";
+
+// Los carruseles usan Swiper (~95 KB): se descargan aparte para que el banner aparezca antes.
+// Mientras tanto, cada uno reserva su lugar (la misma caja de "cargando" de siempre).
+const ProductosDestacadosLazy = lazy(() =>
+  import("../destacadas/ProductosDestacados.jsx"),
+);
+const ProductosDestacados = (props) => (
+  <Suspense fallback={<div className="ofertas-loading" />}>
+    <ProductosDestacadosLazy {...props} />
+  </Suspense>
+);
 
 const Home = () => {
   return (

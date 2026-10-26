@@ -59,6 +59,10 @@
 .image-wrapper {
   position: relative;
   overflow: hidden;
+  /* ancho de la foto del frente: reserva su lugar antes de que cargue (antes medía 0
+     y todo lo de abajo saltaba al aparecer la foto) */
+  width: 400px;
+  max-width: 100%;
 }
 
 .image-reveal {
@@ -72,6 +76,7 @@
 
 .img-bulonera {
   width: 100%;
+  height: auto;
   display: block;
   position: relative;
   z-index: 1;

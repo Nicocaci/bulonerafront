@@ -3,7 +3,7 @@ import "../css/NavBar.css";
 import { AuthContext } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getImageUrl } from "../utils/imageUtils";
+import { ANCHO_MINIATURA, getImageUrl } from "../utils/imageUtils";
 import { FiAlignJustify } from "react-icons/fi";
 import { FaPercent } from "react-icons/fa";
 import { useTheme } from "../context/ThemeContext.jsx";
@@ -201,8 +201,10 @@ const NavBar = () => {
       <div className="hamburger-container">
         <img
           className="logo-navbar logo-navbar-mobile"
-          src="/logo-fondo-negro.png"
-          alt="logo"
+          src="/logo-texto-blanco.svg"
+          width={180}
+          height={90}
+          alt="Bulonera El Triángulo"
           onClick={goHome}
         />
         <div className="div-navbar-2 navbar-actions-mobile">
@@ -236,8 +238,10 @@ const NavBar = () => {
           <div className="div-navbar-1">
             <img
               className="logo-navbar"
-              src="/logo-fondo-negro.png"
-              alt="logo"
+              src="/logo-texto-blanco.svg"
+              width={180}
+              height={90}
+              alt="Bulonera El Triángulo"
               onClick={goHome}
             />
           </div>
@@ -289,7 +293,7 @@ const NavBar = () => {
                         <div className="dropdown-navbar-container">
                           <img
                             className="img-navbar-dropwdown"
-                            src={getImageUrl(product.imagen?.[0])}
+                            src={getImageUrl(product.imagen?.[0], ANCHO_MINIATURA)}
                             alt={product.item}
                           />
                           <div>

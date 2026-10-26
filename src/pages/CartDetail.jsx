@@ -3,7 +3,7 @@ import "../css/CartDetail.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
-import { getImageUrl, usarPlaceholder } from "../utils/imageUtils";
+import { ANCHO_MINIATURA, getImageUrl, usarPlaceholder } from "../utils/imageUtils";
 import Swal from "sweetalert2";
 import { getPrecioUnitario } from "../utils/precio.js";
 
@@ -183,6 +183,7 @@ const CartDetail = () => {
                       : Array.isArray(product.imagenes)
                         ? product.imagenes[0]
                         : product.imagen,
+                    ANCHO_MINIATURA,
                   )}
                   alt={product.item || "Producto"}
                   className="cart-detail-image"

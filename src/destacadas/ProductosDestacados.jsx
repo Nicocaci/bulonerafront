@@ -1,7 +1,12 @@
 import axiosInstance from "../utils/axiosConfig.js";
 import "../css/OfertasDestacadas.css";
 import { Link } from "react-router-dom";
-import { getImageUrl } from "../utils/imageUtils.js";
+import {
+  ANCHO_TARJETA,
+  SIZES_TARJETA,
+  cldSrcSet,
+  getImageUrl,
+} from "../utils/imageUtils.js";
 import { useQuery } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
@@ -110,9 +115,12 @@ const ProductosDestacados = ({
                   <div className="img-container">
                     <img
                       className="oferta-image"
-                      src={getImageUrl(producto.imagen?.[0])}
+                      src={getImageUrl(producto.imagen?.[0], ANCHO_TARJETA)}
+                      srcSet={cldSrcSet(getImageUrl(producto.imagen?.[0]), ANCHO_TARJETA)}
+                      sizes={SIZES_TARJETA}
                       alt={producto.item}
                       loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div className="product-card-description">

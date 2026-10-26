@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import axiosInstance from "../utils/axiosConfig";
 import { AuthContext } from "../context/AuthContext";
 import "../css/AuthModal.css";
-import Swal from "sweetalert2";
+import Swal from "../utils/alertas.js";
 import "sweetalert2/dist/sweetalert2.min.css";
 
 // Mismos límites que el backend (user-controller.js)
