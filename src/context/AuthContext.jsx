@@ -100,13 +100,7 @@ export const AuthProvider = ({ children }) => {
       const token = data?.token;
       if (!token) throw new Error("No token recibido");
 
-      // 2️⃣ Marcar que llegó un registro con carrito de invitado
-      const guestCart = JSON.parse(localStorage.getItem("guest_cart"));
-
-      if (guestCart?.products?.length) {
-        localStorage.setItem("justRegistered", "true");
-      }
-
+      // El carrito de invitado se pasa a la cuenta en CartContext al detectar la sesión
       // 3️⃣ Logear automáticamente
       await login(data);
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext.jsx";
@@ -16,7 +16,8 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { cartId } = useParams();
   const { cart, getCart } = useCart();
-  const { user } = useContext(AuthContext);
+  const { user, getProfile } = useContext(AuthContext);
+  const userId = user?.id;
   const [loading, setLoading] = useState(true);
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -46,15 +47,6 @@ const Checkout = () => {
         // getCart no lanza errores: si falla devuelve undefined
         const data = await getCart();
         if (!data) throw new Error("No se pudo cargar el carrito");
-
-        if (user) {
-          setFormData((prev) => ({
-            ...prev,
-            email: user.email || prev.email,
-            nombre: user.nombre || user.name || prev.nombre,
-            apellido: user.apellido || prev.apellido,
-          }));
-        }
       } catch {
         Swal.fire({
           icon: "error",
@@ -68,7 +60,32 @@ const Checkout = () => {
     };
 
     fetchCart();
-  }, [getCart, navigate, user, cartId]);
+  }, [getCart, navigate, cartId]);
+
+  // Con sesión iniciada, se completan nombre, apellido y email con los datos de la cuenta
+  // (antes se leían del token, que no los trae, y quedaban vacíos). No pisa lo ya escrito.
+  useEffect(() => {
+    if (!userId) return;
+    let cancelado = false;
+    getProfile()
+      .then((perfil) => {
+        if (cancelado || !perfil) return;
+        setFormData((prev) => ({
+          ...prev,
+          nombre: prev.nombre || perfil.nombre || "",
+          apellido: prev.apellido || perfil.apellido || "",
+          email: prev.email || perfil.email || "",
+        }));
+      })
+      .catch(() => {
+        // Si falla, el cliente completa los datos a mano como siempre
+      });
+    return () => {
+      cancelado = true;
+    };
+    // getProfile se recrea en cada render del contexto: alcanza con el id del usuario
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
 
   const validateStep = (step) => {
     const newErrors = {};
@@ -155,12 +172,10 @@ if (step === 3) {
     return productsTotal + shippingCost;
   };
 
-  const handleSelectShipping = (option) => {
+  const handleSelectShipping = useCallback((option) => {
     setFormData((prev) => ({ ...prev, shippingChoice: option }));
-    if (errors.shippingChoice) {
-      setErrors((prev) => ({ ...prev, shippingChoice: "" }));
-    }
-  };
+    setErrors((prev) => (prev.shippingChoice ? { ...prev, shippingChoice: "" } : prev));
+  }, []);
 
   if (loading) {
     return (

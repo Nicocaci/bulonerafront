@@ -4,6 +4,7 @@ import { Zoom, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/zoom";
 import "swiper/css/pagination";
+import { usarPlaceholder } from "../utils/imageUtils.js";
 
 /**
  * Hook simple para detectar si estamos en viewport mobile.
@@ -134,9 +135,7 @@ const MobileGallery = ({ images, initialIndex = 0, onIndexChange, alt, className
                 className={className}
                 src={img}
                 alt={`${alt} - ${i + 1}`}
-                onError={(e) => {
-                  e.target.src = "/vite.svg";
-                }}
+                onError={usarPlaceholder}
               />
             </div>
           </SwiperSlide>

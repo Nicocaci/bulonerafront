@@ -34,7 +34,10 @@ body,
   height: 100%;
 }
 
-#root {
+/* #root es el contenedor de index.html; .app-layout, el de la app (antes también se llamaba
+   #root y quedaban dos elementos con el mismo id) */
+#root,
+.app-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;

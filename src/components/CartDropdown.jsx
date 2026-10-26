@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import "../css/CartDropdown.css";
 import { Link } from "react-router-dom";
-import { getImageUrl } from "../utils/imageUtils";
+import { getImageUrl, usarPlaceholder } from "../utils/imageUtils";
 import Swal from "sweetalert2";
 import { GoArrowRight } from "react-icons/go";
 import { getPrecioUnitario } from "../utils/precio.js";
@@ -14,11 +14,13 @@ const CartDropdown = ({ onClose, isOpen }) => {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
+    if (!isOpen) return;
+
     const handleClickOutside = (event) => {
       // Verificar si el clic fue fuera del dropdown
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         // Verificar si el clic NO fue en el botón del carrito ni en su wrapper
-        const cartButton = event.target.closest(".navbar-cart-wrapper");
+        const cartButton = event.target.closest(".cart-btn-container");
         if (!cartButton) {
           onClose();
         }
@@ -29,7 +31,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [onClose]);
+  }, [isOpen, onClose]);
 
   const total = products.reduce((acc, item) => {
     const price = getPrecioUnitario(item.product || item);
@@ -153,18 +155,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
                     )}
                     alt={product.item || "Producto"}
                     className="cart-dropdown-image"
-                    onError={(e) => {
-                      const attemptedUrl = e.target.src;
-                      console.error("❌ Error cargando imagen del producto:", {
-                        producto: product.item,
-                        rutaOriginal: product.imagen,
-                        urlIntentada: attemptedUrl,
-                        apiUrl:
-                          import.meta.env.VITE_API_URL ||
-                          "http://localhost:3000",
-                      });
-                      e.target.src = "/vite.svg";
-                    }}
+                    onError={usarPlaceholder}
                   />
                   <div className="cart-dropdown-info">
                     <p className="cart-dropdown-marca">{marca}</p>
@@ -247,7 +238,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
             <div className="cart-dropdown-footer-buttons">
               <Link
                 className="link-none"
-                to={`/carrito/${cart._id}`}
+                to={`/carrito/${cart?._id ?? "mi-carrito"}`}
                 onClick={onClose}
               >
                 <p className="cart-dropdown-checkout">IR A PAGAR</p>

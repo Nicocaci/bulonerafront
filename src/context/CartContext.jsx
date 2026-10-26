@@ -13,6 +13,9 @@ import swal from "sweetalert2";
 
 const LOCAL_CART_KEY = "guest_cart";
 
+const escaparHtml = (texto) =>
+  String(texto).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
 export const CartContext = createContext();
 
 export const useCart = () => {
@@ -68,7 +71,9 @@ export const CartProvider = ({ children }) => {
       const message =
         err.response?.data?.message || err.message || "Error en carrito";
       setError(message);
-      throw new Error(message);
+      const error = new Error(message);
+      error.status = err.response?.status; // para distinguir errores definitivos (4xx) de fallas de red
+      throw error;
     }
   }, []);
 
@@ -307,54 +312,76 @@ const clearCart = useCallback(async () => {
   // 🔥 SYNC GUEST → BACKEND
   // =============================
 
+  // Al iniciar sesión (o registrarse) con productos en el carrito de invitado,
+  // se pasan al carrito de la cuenta de a uno (en paralelo competían por el mismo
+  // documento y se podían pisar). Antes solo se hacía al registrarse: al iniciar
+  // sesión, los productos del invitado quedaban ocultos en el navegador.
   const syncGuestCartWithBackend = useCallback(async () => {
     if (!user?.token) return;
 
     const guestCart = getLocalCart();
     if (!guestCart.products.length) return;
 
-    try {
-      await Promise.all(
-        guestCart.products.map((p) =>
-          request("POST", `/api/cart/me/products/${p._id}`, {
-            quantity: p.quantity,
-          }),
-        ),
-      );
+    const pendientes = []; // fallas de red o del servidor: se reintentan la próxima vez
+    const noAgregados = []; // rechazos definitivos (sin stock, producto borrado)
 
+    for (const item of guestCart.products) {
+      try {
+        await request("POST", `/api/cart/me/products/${item._id}`, {
+          quantity: item.quantity,
+        });
+      } catch (err) {
+        // 401 = la sesión venció en el medio: se conserva para la próxima vez
+        if (err.status && err.status < 500 && err.status !== 401) {
+          noAgregados.push(`${item.product?.item || "Un producto"}: ${err.message}`);
+        } else {
+          pendientes.push(item);
+        }
+      }
+    }
+
+    if (pendientes.length) {
+      localStorage.setItem(
+        LOCAL_CART_KEY,
+        JSON.stringify({ ...guestCart, products: pendientes }),
+      );
+    } else {
       localStorage.removeItem(LOCAL_CART_KEY);
-    } catch (err) {
-      console.error("sync error:", err);
+    }
+
+    if (noAgregados.length) {
+      swal.fire({
+        icon: "info",
+        title: "Revisá tu carrito",
+        html:
+          "Pasamos tu carrito a tu cuenta, pero algunos productos no se pudieron agregar:<br>" +
+          noAgregados.map((t) => `• ${escaparHtml(t)}`).join("<br>"),
+        confirmButtonColor: "#3085d6",
+      });
     }
   }, [user?.token, getLocalCart, request]);
 
   // =============================
-  // 🚀 INIT CORRECTO
+  // 🚀 CARGA DEL CARRITO
   // =============================
 
-  // 🔹 SIEMPRE cargar carrito
+  // Al montar y cada vez que cambia la sesión: si hay sesión y quedó un carrito de
+  // invitado, primero se sincroniza; después se carga el carrito que corresponde.
   useEffect(() => {
-    getCart();
-  }, []);
+    let cancelado = false;
 
-  // 🔹 Recargar carrito cuando cambia el estado de autenticación
-  useEffect(() => {
-    if (localStorage.getItem("justRegistered")) {
-      syncGuestCartWithBackend().then(() => {
-        localStorage.removeItem("justRegistered");
-        getCart();
-      });
-    } else {
-      getCart();
-    }
-  }, [user?.token, getCart, syncGuestCartWithBackend]);
+    const cargar = async () => {
+      if (user?.token && getLocalCart().products.length) {
+        await syncGuestCartWithBackend();
+      }
+      if (!cancelado) await getCart();
+    };
 
-  // // 🔹 Cuando aparece user → sync + reload
-  // useEffect(() => {
-  //   if (user?.token) {
-  //     syncGuestCartWithBackend().then(getCart);
-  //   }
-  // }, [user?.token, syncGuestCartWithBackend, getCart]);
+    cargar();
+    return () => {
+      cancelado = true;
+    };
+  }, [user?.token, getCart, getLocalCart, syncGuestCartWithBackend]);
 
   // =============================
   // 🧠 MEMO

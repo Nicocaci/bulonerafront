@@ -35,7 +35,7 @@ function AppContent() {
   const isHome = location.pathname === "/";
 
   return (
-    <div style={{ paddingTop: isHome ? 0 : 80 }} id="root">
+    <div style={{ paddingTop: isHome ? 0 : 80 }} className="app-layout">
       <NavBar />
       <main>
         <ScrollToTop />

@@ -3,10 +3,9 @@ import { useProducto } from "../hooks/useCatalogo.js";
 import { useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import Swal from "sweetalert2";
-import { getImageUrl } from "../utils/imageUtils";
+import { getImageUrl, PLACEHOLDER_PRODUCTO, usarPlaceholder } from "../utils/imageUtils";
 import "../css/ItemDetail.css";
 import { BsTruck } from "react-icons/bs";
-import { CiHeart } from "react-icons/ci";
 import { MdOutlineVerified, MdOutlineVerifiedUser } from "react-icons/md";
 import { PiHeadsetDuotone } from "react-icons/pi";
 import Breadcrumb from "../components/Breadcrumb.jsx";
@@ -30,6 +29,16 @@ const ItemDetail = () => {
   );
   const { addProductToCart } = useCart();
   const [cantidad, setCantidad] = useState(1);
+  // Lo que se ve en el campo: puede quedar vacío mientras se escribe
+  // (antes no se podía borrar el número para escribir otro).
+  const [cantidadTexto, setCantidadTexto] = useState("1");
+
+  const fijarCantidad = (valor) => {
+    const tope = Math.max(1, producto?.stock ?? 1);
+    const normalizada = Math.min(Math.max(1, valor), tope);
+    setCantidad(normalizada);
+    setCantidadTexto(String(normalizada));
+  };
   const [agregando, setAgregando] = useState(false);
 
   // Valida que la imagen principal cargue correctamente antes de pasarla
@@ -52,8 +61,7 @@ const ItemDetail = () => {
       if (!cancelado) setImagenPrincipalValida(urlCandidata);
     };
     img.onerror = () => {
-      console.error("❌ Error cargando imagen principal:", urlCandidata);
-      if (!cancelado) setImagenPrincipalValida("/vite.svg");
+      if (!cancelado) setImagenPrincipalValida(PLACEHOLDER_PRODUCTO);
     };
     img.src = urlCandidata;
 
@@ -74,7 +82,7 @@ const ItemDetail = () => {
 
   const handleAddToCart = async (productId) => {
     if (agregando) return; // 🔒 bloquea clicks repetidos mientras hay una request en curso
-    if (!cantidad || cantidad < 1) {
+    if (!cantidadTexto || !cantidad || cantidad < 1) {
       Swal.fire({
         icon: "warning",
         title: "Elegí una cantidad",
@@ -161,16 +169,7 @@ const ItemDetail = () => {
                       setImagenSeleccionada(imagenUrl);
                       setIndiceSeleccionado(index);
                     }}
-                    onError={(e) => {
-                      console.error(
-                        `❌ Error cargando thumbnail ${index + 1}:`,
-                        {
-                          rutaOriginal: imagen,
-                          urlIntentada: e.target.src,
-                        },
-                      );
-                      e.target.src = "/vite.svg";
-                    }}
+                    onError={usarPlaceholder}
                   />
                 );
               })}
@@ -234,9 +233,9 @@ const ItemDetail = () => {
                       <div className="cantidad-container">
                         <button
                           className="cantidad-btn"
-                          onClick={() =>
-                            setCantidad((prev) => Math.max(1, prev - 1))
-                          }
+                          type="button"
+                          aria-label="Restar una unidad"
+                          onClick={() => fijarCantidad(cantidad - 1)}
                           disabled={cantidad <= 1}
                         >
                           −
@@ -245,24 +244,27 @@ const ItemDetail = () => {
                         <input
                           className="cantidad-input"
                           type="number"
-                          value={cantidad}
+                          inputMode="numeric"
+                          aria-label="Cantidad"
+                          value={cantidadTexto}
                           min={1}
                           max={producto.stock}
                           onChange={(e) => {
-                            const val = parseInt(e.target.value);
+                            const texto = e.target.value.replace(/\D/g, "");
+                            setCantidadTexto(texto);
+                            const val = parseInt(texto, 10);
                             if (!isNaN(val) && val >= 1) {
-                              setCantidad(Math.min(val, producto.stock));
+                              setCantidad(Math.min(val, Math.max(1, producto.stock)));
                             }
                           }}
+                          onBlur={() => fijarCantidad(parseInt(cantidadTexto, 10) || 1)}
                         />
                         <div className="cantidad-divider" />
                         <button
                           className="cantidad-btn"
-                          onClick={() =>
-                            setCantidad((prev) =>
-                              Math.min(producto.stock, prev + 1),
-                            )
-                          }
+                          type="button"
+                          aria-label="Sumar una unidad"
+                          onClick={() => fijarCantidad(cantidad + 1)}
                           disabled={cantidad >= producto.stock}
                         >
                           +
@@ -281,9 +283,6 @@ const ItemDetail = () => {
                             ? "Sin stock"
                             : "Agregar al carrito"}
                       </button>
-                    </div>
-                    <div>
-                      <CiHeart />
                     </div>
                   </div>
                 </div>

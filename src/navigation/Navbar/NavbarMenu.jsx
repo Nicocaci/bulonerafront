@@ -16,7 +16,10 @@ const NavbarMenu = ({ onClose, isOpen, onSelectCategory }) => {
   const menuRef = useRef(null);
   const closeTimeoutRef = useRef(null);
 
+  // Cerrar al clickear afuera: el listener existe solo mientras el menú está abierto
   useEffect(() => {
+    if (!isOpen) return;
+
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         onClose();
@@ -24,7 +27,7 @@ const NavbarMenu = ({ onClose, isOpen, onSelectCategory }) => {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [onClose]);
+  }, [isOpen, onClose]);
 
   // Subcategorías: se piden al pasar el mouse y quedan en la caché de React Query
   const fetchSubcategorias = async (categoria) => {

@@ -3,7 +3,7 @@ import "../css/CartDetail.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
-import { getImageUrl } from "../utils/imageUtils";
+import { getImageUrl, usarPlaceholder } from "../utils/imageUtils";
 import Swal from "sweetalert2";
 import { getPrecioUnitario } from "../utils/precio.js";
 
@@ -186,9 +186,7 @@ const CartDetail = () => {
                   )}
                   alt={product.item || "Producto"}
                   className="cart-detail-image"
-                  onError={(e) => {
-                    e.target.src = "/vite.svg";
-                  }}
+                  onError={usarPlaceholder}
                 />
                 <div className="cart-detail-info">
                   <p className="cart-detail-marca">{marca}</p>

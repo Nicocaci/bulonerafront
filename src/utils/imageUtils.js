@@ -1,5 +1,17 @@
 import { apiUrl } from './axiosConfig';
 
+// Imagen que se muestra cuando un producto no tiene foto o la foto no carga
+export const PLACEHOLDER_PRODUCTO = '/placeholder-producto.svg';
+
+// Para usar en onError de un <img>: pone el placeholder una sola vez
+// (si el placeholder también fallara, no entra en un bucle).
+export const usarPlaceholder = (event) => {
+  const img = event.currentTarget;
+  if (img.dataset.placeholder) return;
+  img.dataset.placeholder = '1';
+  img.src = PLACEHOLDER_PRODUCTO;
+};
+
 /**
  * Convierte una ruta de imagen del backend en una URL completa
  * @param {string} imagePath - Ruta de la imagen (puede ser relativa o absoluta)
@@ -7,7 +19,7 @@ import { apiUrl } from './axiosConfig';
  */
 export const getImageUrl = (imagePath) => {
   if (!imagePath) {
-    return '/vite.svg';
+    return PLACEHOLDER_PRODUCTO;
   }
   
   // Limpiar espacios en blanco al inicio y final
@@ -44,4 +56,3 @@ export const getImageUrl = (imagePath) => {
   finalUrl = `${apiUrl}/uploads/${imagePath}`
   return finalUrl;
 };
-
