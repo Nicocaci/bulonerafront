@@ -2,6 +2,21 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import axiosInstance from "../../../../utils/axiosConfig.js";
 import PrintLabelButton from "./PrintLabelButton.jsx";
+import Pagination from "../../../../components/Pagination.jsx";
+
+const POR_PAGINA = 10;
+
+// "" = ventas concretadas (el backend oculta pago pendiente y rechazado si no se pide un estado)
+const FILTROS_ESTADO = [
+  { value: "", label: "Todas las ventas" },
+  { value: "pagado", label: "Pagadas (a preparar)" },
+  { value: "enviado", label: "Enviadas" },
+  { value: "entregado", label: "Entregadas" },
+  { value: "cancelado", label: "Canceladas" },
+  { value: "reembolsado", label: "Reembolsadas" },
+  { value: "pendiente_pago", label: "Pago pendiente" },
+  { value: "rechazado", label: "Pago rechazado" },
+];
 
 // Estados que el admin puede asignar a mano
 const ESTADOS_EDITABLES = [
@@ -41,16 +56,34 @@ function UltimasOrdenes({ onOrderUpdated }) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // Antes se veían solo las 5 últimas, sin forma de llegar a las anteriores
+  const [pagina, setPagina] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const [estado, setEstado] = useState("");
 
   useEffect(() => {
+    let cancelado = false;
+    setLoading(true);
+    setError(null);
     axiosInstance
-      .get("/api/orders/admin?limit=5&page=1")
-      .then((res) => setOrders(res.data.orders || []))
-      .catch((err) => {
-        setError(err.response?.data?.message || "No se pudieron cargar las órdenes");
+      .get("/api/orders/admin", {
+        params: { page: pagina, limit: POR_PAGINA, ...(estado ? { status: estado } : {}) },
       })
-      .finally(() => setLoading(false));
-  }, []);
+      .then((res) => {
+        if (cancelado) return;
+        setOrders(res.data.orders || []);
+        setTotalPaginas(res.data.pagination?.totalPages || 1);
+      })
+      .catch((err) => {
+        if (!cancelado) setError(err.response?.data?.message || "No se pudieron cargar las órdenes");
+      })
+      .finally(() => {
+        if (!cancelado) setLoading(false);
+      });
+    return () => {
+      cancelado = true;
+    };
+  }, [pagina, estado]);
 
   const updateOrderStatus = async (order, newStatus) => {
     if (newStatus === order.status) return;
@@ -90,11 +123,35 @@ function UltimasOrdenes({ onOrderUpdated }) {
     }
   };
 
-  if (loading) return <p>Cargando órdenes...</p>;
-  if (error) return <p>{error}</p>;
-  if (!orders.length) return <p>Todavía no hay órdenes.</p>;
+  const filtro = (
+    <div className="orders-filtro">
+      <label htmlFor="filtro-estado">Mostrar:</label>
+      <select
+        id="filtro-estado"
+        value={estado}
+        onChange={(e) => {
+          setEstado(e.target.value);
+          setPagina(1);
+        }}
+      >
+        {FILTROS_ESTADO.map((f) => (
+          <option key={f.value} value={f.value}>
+            {f.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+
+  if (loading) return <>{filtro}<p>Cargando órdenes...</p></>;
+  if (error) return <>{filtro}<p>{error}</p></>;
+  if (!orders.length) {
+    return <>{filtro}<p>{estado ? "No hay órdenes con ese estado." : "Todavía no hay órdenes."}</p></>;
+  }
 
   return (
+    <>
+    {filtro}
     <table className="orders-table">
       <thead>
         <tr>
@@ -165,6 +222,8 @@ function UltimasOrdenes({ onOrderUpdated }) {
         ))}
       </tbody>
     </table>
+    <Pagination currentPage={pagina} totalPages={totalPaginas} onPageChange={setPagina} />
+    </>
   );
 }
 

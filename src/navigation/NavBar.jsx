@@ -71,7 +71,7 @@ const NavBar = () => {
 
         const response = await axiosInstance.get("/api/products", {
           signal: controller.signal,
-          params: { search: searchInput.trim(), limit: 8, page: 1 },
+          params: { search: searchInput.trim(), limit: 8, page: 1, vista: "resumen" },
         });
 
         setResults(response.data?.products || []);

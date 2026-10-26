@@ -14,7 +14,7 @@ const BREAKPOINTS_DETALLE = {
 
 const fetchProductos = async (params) => {
   const { data } = await axiosInstance.get("/api/products", {
-    params: { ...params, limit: 20 },
+    params: { ...params, limit: 20, vista: "resumen" },
   });
   return data.products || [];
 };

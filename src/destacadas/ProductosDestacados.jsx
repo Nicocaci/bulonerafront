@@ -57,7 +57,7 @@ const ProductosDestacados = ({
     queryKey: ["catalogo", "destacados", filtros, limit],
     queryFn: async () => {
       const { data } = await axiosInstance.get("/api/products", {
-        params: { ...filtros, limit },
+        params: { ...filtros, limit, vista: "resumen" },
       });
       return data.products;
     },

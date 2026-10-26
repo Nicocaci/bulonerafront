@@ -135,3 +135,21 @@
     overflow: scroll;
   }
 }
+
+/* Filtro por estado del listado de órdenes */
+.orders-filtro {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: var(--text-color);
+  font-size: 14px;
+}
+
+.orders-filtro select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--borderForm-color);
+  background: var(--adminSection-bg);
+  color: var(--text-color);
+}

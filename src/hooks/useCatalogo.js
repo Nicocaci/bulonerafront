@@ -52,7 +52,9 @@ export const useProductos = (filtros) =>
   useQuery({
     queryKey: catalogoKeys.productos(filtros),
     queryFn: async () => {
-      const { data } = await axiosInstance.get("/api/products", { params: filtros });
+      const { data } = await axiosInstance.get("/api/products", {
+        params: { ...filtros, vista: "resumen" }, // sin la descripción (no se usa en las tarjetas)
+      });
       return {
         products: comoLista(data?.products),
         pagination: data?.pagination ?? { page: 1, totalPages: 1 },
