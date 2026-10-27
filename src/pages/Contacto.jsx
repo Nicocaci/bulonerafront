@@ -1,22 +1,10 @@
 import { useState } from "react";
 import "../css/Contacto.css";
 import MapaBulonera from "../utils/MapaBulonera.jsx";
-import { FcShop, FcAbout } from "react-icons/fc";
-import {
-  FaRegClock,
-  FaLock,
-  FaWhatsapp,
-  FaFilePdf,
-  FaFileWord,
-  FaFileExcel,
-  FaFileImage,
-  FaFile,
-} from "react-icons/fa";
-import { BsFillQuestionSquareFill, BsFillSendFill } from "react-icons/bs";
-import { MdOutlineVerifiedUser } from "react-icons/md";
-import { IoIosPaper } from "react-icons/io";
+import { FaFilePdf, FaFileWord, FaFileExcel, FaFileImage, FaFile } from "react-icons/fa";
 import axiosInstance from "../utils/axiosConfig.js";
 import Swal from "sweetalert2";
+import { CONTACTO, urlWhatsapp } from "../utils/contacto.js";
 
 // Mismos límites que el backend (config/multerConfig.js)
 const MAX_ARCHIVOS = 5;
@@ -39,15 +27,47 @@ const FORM_VACIO = {
   mensaje: "",
 };
 
+// Ícono según el tipo de archivo adjuntado
+const iconoArchivo = (nombre) => {
+  switch (extensionDe(nombre)) {
+    case "pdf":
+      return <FaFilePdf color="#e53e3e" />;
+    case "doc":
+    case "docx":
+      return <FaFileWord color="#2b579a" />;
+    case "xls":
+    case "xlsx":
+      return <FaFileExcel color="#217346" />;
+    case "jpg":
+    case "jpeg":
+    case "png":
+    case "webp":
+    case "gif":
+    case "heic":
+      return <FaFileImage color="#805ad5" />;
+    default:
+      return <FaFile color="#718096" />;
+  }
+};
+
+const IconoWhatsapp = ({ size = 20 }) => (
+  <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.4z" />
+  </svg>
+);
+
+const IconoDato = ({ children }) => (
+  <svg aria-hidden="true" className="contacto-dato__icono" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    {children}
+  </svg>
+);
+
 const Contacto = () => {
-  const phoneNumber = "5491151544062";
-  const message = "Hola! Quiero hacer una consulta sobre sus productos";
   const [formData, setFormData] = useState(FORM_VACIO);
   const [archivos, setArchivos] = useState([]);
   const [arrastrando, setArrastrando] = useState(false);
   const [enviando, setEnviando] = useState(false);
 
-  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -125,9 +145,7 @@ const Contacto = () => {
     setEnviando(true);
     try {
       const data = new FormData();
-      Object.entries(formData).forEach(([key, value]) =>
-        data.append(key, value),
-      );
+      Object.entries(formData).forEach(([key, value]) => data.append(key, value));
       archivos.forEach((file) => data.append("archivos", file));
 
       const response = await axiosInstance.post("/api/email/send", data);
@@ -159,308 +177,223 @@ const Contacto = () => {
     }
   };
 
-  //Funcion Helper para elegir el icono del archivo seleccionado
-  const getFileIcon = (fileName) => {
-    const ext = extensionDe(fileName);
-
-    switch (ext) {
-      case "pdf":
-        return <FaFilePdf color="#e53e3e" />;
-      case "doc":
-      case "docx":
-        return <FaFileWord color="#2b579a" />;
-      case "xls":
-      case "xlsx":
-        return <FaFileExcel color="#217346" />;
-      case "jpg":
-      case "jpeg":
-      case "png":
-      case "webp":
-      case "gif":
-      case "heic":
-        return <FaFileImage color="#805ad5" />;
-      default:
-        return <FaFile color="#718096" />;
-    }
-  };
-
   return (
-    <div className="contacto-container">
-      <div className="grid-contacto">
-        <div className="formulario-contacto">
-          <div className="header-cotizacion">
-            <div className="banner-content">
-              <div className="content-1-coti">
-                <IoIosPaper size={50} color="#07478d" />
-                <p className="titulo-contacto">Solicitá una cotización</p>
-              </div>
-              <p className="subtitulo-contacto">
-                ¿Tenés una lista de materiales, un plano o una foto?
-              </p>
-              <p className="subtitulo-contacto">
-                Envianos lo que tengas y te respondemos con una cotización
-              </p>
+    <div className="contacto">
+      <section className="contacto-hero">
+        <div className="contacto-hero__interior">
+          <div className="contacto-hero__texto">
+            <p className="contacto__eyebrow">Cotizaciones</p>
+            <h1 className="contacto-hero__titulo">Solicitá una cotización</h1>
+            <p className="contacto-hero__bajada">
+              ¿Tenés una lista de materiales, un plano o una foto? Envianos lo que tengas y te
+              respondemos con una cotización.
+            </p>
+            <div className="contacto-hero__acciones">
               <a
-                className="a-none"
-                href={url}
+                className="contacto-btn contacto-btn--whatsapp"
+                href={urlWhatsapp()}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <div className="btn-wp">
-                  <FaWhatsapp size={30} />
-                  <p>Hablar por WhatsApp</p>
-                </div>
+                <IconoWhatsapp />
+                Hablar por WhatsApp
               </a>
-
-              <div className="divider">
-                <span className="divider-line"></span>
-                <span className="divider-text">o completá el formulario ↓</span>
-                <span className="divider-line"></span>
-              </div>
+              <a className="contacto-btn contacto-btn--borde" href="#formulario">
+                Completar el formulario
+              </a>
             </div>
           </div>
-          <div className="seccion-cotizacion">
-            <div className="form-container-coti">
-              <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <p className="titulo-form">¿Qué necesitás?</p>
-                  <p className="subtitulo-form">
-                    Contanos con el mayor detalle posible para poder ayudarte
-                  </p>
-                  <textarea
-                    name="mensaje"
-                    id="mensaje"
-                    value={formData.mensaje}
-                    onChange={handleChange}
-                    rows="10"
-                    placeholder="Escribí el detalle..."
-                    required
-                    className="text-area"
-                  ></textarea>
-                  <div>
-                    <p className="titulo-form">Adjuntar archivos (opcional)</p>
-                    <p className="subtitulo-form">
-                      Podés subir planos, lista de materiales, fotos o cualquier
-                      documento que nos ayude
-                    </p>
-                    <div className="file-upload">
-                      <label
-                        htmlFor="archivos"
-                        className="file-upload-label"
-                        onDragOver={handleDragOver}
-                        onDragEnter={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onDrop={handleDrop}
-                      >
-                        <div className={`file-upload-box ${arrastrando ? "dragover" : ""}`}>
-                          <svg
-                            className="upload-icon"
-                            viewBox="0 0 24 24"
-                            width="40"
-                            height="40"
-                            aria-hidden="true"
-                          >
-                            <path
-                              fill="currentColor"
-                              d="M12 2L12 15M12 2L7 7M12 2L17 7M5 18H19V21H5V18Z"
-                            />
-                          </svg>
-                          <p>
-                            <strong>
-                              {arrastrando ? "Soltá los archivos acá" : "Arrastrá archivos acá"}
-                            </strong>
-                          </p>
-                          <p>o</p>
-                          <span className="btn-seleccionar">
-                            Seleccionar archivos
-                          </span>
-                        </div>
-                        <input
-                          type="file"
-                          id="archivos"
-                          name="archivos"
-                          accept=".pdf,.doc,.docx,.xls,.xlsx,image/*"
-                          multiple
-                          hidden
-                          onChange={handleFileChange}
-                        />
-                      </label>
-                      <p className="file-upload-hint">
-                        Formatos permitidos:{" "}
-                        <FaFilePdf className="inline-icon" color="#e53e3e" />{" "}
-                        PDF,{" "}
-                        <FaFileWord className="inline-icon" color="#2b579a" />{" "}
-                        Word,{" "}
-                        <FaFileExcel className="inline-icon" color="#217346" />{" "}
-                        Excel,{" "}
-                        <FaFileImage className="inline-icon" color="#805ad5" />{" "}
-                        Imágenes. Hasta {MAX_ARCHIVOS} archivos de {MAX_MB} MB cada uno.
-                      </p>
-
-                      <ul className="archivos-seleccionados">
-                        {archivos.map((file, i) => (
-                          <li key={`${file.name}-${file.size}`}>
-                            <span className="file-icon">
-                              {getFileIcon(file.name)}
-                            </span>
-                            {file.name}
-                            <button
-                              className="remove-file-btn"
-                              type="button"
-                              onClick={() => removeArchivo(i)}
-                              aria-label={`Quitar ${file.name}`}
-                            >
-                              ✕
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="form-group d-flex-row">
-                  <div>
-                    <label className="label-form" htmlFor="nombre">
-                      Nombre *
-                    </label>
-                    <input
-                      type="text"
-                      id="nombre"
-                      name="nombre"
-                      value={formData.nombre}
-                      onChange={handleChange}
-                      placeholder="Juan"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="empresa">Empresa/Comercio (Opcional)</label>
-                    <input
-                      type="text"
-                      id="empresa"
-                      name="empresa"
-                      value={formData.empresa}
-                      onChange={handleChange}
-                      placeholder="Mi empresa S.R.L"
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group d-flex-row">
-                  <div>
-                    <label htmlFor="email">Email *</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      placeholder="juan@miempresa.com"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="telefono">Teléfono *</label>
-                    <input
-                      type="tel"
-                      id="telefono"
-                      name="telefono"
-                      value={formData.telefono}
-                      onChange={handleChange}
-                      placeholder=""
-                      required
-                    />
-                  </div>
-                </div>
-                <div>
-                  <button className="btn-form" type="submit" disabled={enviando}>
-                    <BsFillSendFill />
-                    {enviando ? "Enviando..." : "Solicitar cotización"}
-                  </button>
-                </div>
-              </form>
-            </div>
-            <div className="cotizacion-detalle">
-              <div className="cotizacion-border">
-                <div className="content-1-coti">
-                  <BsFillQuestionSquareFill size={50} color="#07478d" />
-                  <p className="titulo-detalle">
-                    ¿No sabés exactamente lo que necesitás?
-                  </p>
-                </div>
-                <div className="text-content-coti">
-                  <p>No hay problema.</p>
-                  <p>
-                    Podés enviarnos una foto, un plano, una muestra o una lista
-                    de materiales. Nosotros te ayudamos a identificar el
-                    producto
-                  </p>
-                </div>
-              </div>
-              <div className="cotizacion-border">
-                <div className="content-1-coti">
-                  <FaRegClock size={40} color="#07478d" />
-                  <p className="titulo-detalle">Respuesta rápida</p>
-                </div>
-                <div className="text-content-coti">
-                  <p>
-                    Respondemos las solicitudes dentro del horario comercial.
-                  </p>
-                </div>
-              </div>
-              <div className="cotizacion-border">
-                <div className="content-1-coti">
-                  <MdOutlineVerifiedUser size={40} color="#07478D" />
-                  <p className="titulo-detalle">Asesoramiento experto</p>
-                </div>
-                <div className="text-content-coti">
-                  <p>
-                    Te ayudamos a encontrar el producto correcto, incluso si no
-                    conocés el código o la medida.
-                  </p>
-                </div>
-              </div>
-              <div className="cotizacion-border-none">
-                <div className="content-1-coti">
-                  <FaLock size={40} color="#07478D" />
-                  <p className="titulo-detalle">Información segura</p>
-                </div>
-                <div className="text-content-coti">
-                  <p>Tus datos y archivos están protegidos</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <div className="contacto-hero__foto" aria-hidden="true" />
         </div>
-        <div className="atencion-cliente-container">
-          <div className="atencion-cliente-titulo">
-            <p className="titulo-contacto">Atención al cliente</p>
-            <p className="subtitulo-contacto">Dispuestos a atenderte, de tu lado, con profesionalismo</p>
-          </div>
-          <div className="atencion-cliente-descripcion">
-            <div className="atencion-grid-1">
-              <FcShop size={60} />
-              <div style={{ marginLeft: "10px" }}>
-                <p className="horario-atencion">Lunes a Viernes: 8hs – 18hs</p>
-                <p className="horario-atencion">Sábados: 8hs – 13hs</p>
-              </div>
-            </div>
+      </section>
 
-            <div className="atencion-grid-2">
-              <FcAbout size={60} />
-              <div style={{ marginLeft: "10px" }}>
-                <p className="horario-atencion">
-                  eltrianguloventasonline@gmail.com
-                </p>
-              </div>
+      <div className="contacto-cuerpo">
+        <form id="formulario" className="contacto-form" onSubmit={handleSubmit}>
+          <div>
+            <h2 className="contacto-form__titulo">¿Qué necesitás?</h2>
+            <p className="contacto-form__ayuda">
+              Contanos con el mayor detalle posible para poder ayudarte.
+            </p>
+          </div>
+
+          <label htmlFor="mensaje" className="solo-lectores">
+            Detalle del pedido
+          </label>
+          <textarea
+            name="mensaje"
+            id="mensaje"
+            value={formData.mensaje}
+            onChange={handleChange}
+            rows="6"
+            placeholder='Ej.: 200 bulones hexagonales 1/2" x 2" zincados, 200 tuercas y arandelas…'
+            required
+            className="contacto-form__detalle"
+          />
+
+          <div className="contacto-adjuntos">
+            <label
+              htmlFor="archivos"
+              className={`contacto-adjuntos__zona ${arrastrando ? "contacto-adjuntos__zona--activa" : ""}`}
+              onDragOver={handleDragOver}
+              onDragEnter={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <svg aria-hidden="true" className="contacto-adjuntos__icono" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 16V4M7 9l5-5 5 5" />
+                <path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" />
+              </svg>
+              <span className="contacto-adjuntos__texto">
+                <strong>{arrastrando ? "Soltá los archivos acá" : "Adjuntá archivos (opcional)"}</strong>
+                <span>
+                  PDF, Word, Excel o imágenes · hasta {MAX_ARCHIVOS} archivos de {MAX_MB} MB
+                </span>
+              </span>
+              <span className="contacto-adjuntos__boton">Elegir archivos</span>
+              <input
+                type="file"
+                id="archivos"
+                name="archivos"
+                accept=".pdf,.doc,.docx,.xls,.xlsx,image/*"
+                multiple
+                className="solo-lectores"
+                onChange={handleFileChange}
+              />
+            </label>
+
+            {archivos.length > 0 && (
+              <ul className="contacto-adjuntos__lista">
+                {archivos.map((file, i) => (
+                  <li key={`${file.name}-${file.size}`}>
+                    <span className="contacto-adjuntos__tipo">{iconoArchivo(file.name)}</span>
+                    <span className="contacto-adjuntos__nombre">{file.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeArchivo(i)}
+                      aria-label={`Quitar ${file.name}`}
+                    >
+                      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                        <path d="M6 6l12 12M18 6L6 18" />
+                      </svg>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="contacto-form__campos">
+            <label className="contacto-campo contacto-campo--nombre">
+              Nombre *
+              <input
+                type="text"
+                name="nombre"
+                value={formData.nombre}
+                onChange={handleChange}
+                placeholder="Juan"
+                autoComplete="name"
+                required
+              />
+            </label>
+            <label className="contacto-campo contacto-campo--email">
+              Email *
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="juan@miempresa.com"
+                autoComplete="email"
+                required
+              />
+            </label>
+            <label className="contacto-campo contacto-campo--telefono">
+              Teléfono *
+              <input
+                type="tel"
+                name="telefono"
+                value={formData.telefono}
+                onChange={handleChange}
+                autoComplete="tel"
+                required
+              />
+            </label>
+            <label className="contacto-campo contacto-campo--empresa">
+              Empresa o comercio (opcional)
+              <input
+                type="text"
+                name="empresa"
+                value={formData.empresa}
+                onChange={handleChange}
+                placeholder="Mi empresa S.R.L."
+                autoComplete="organization"
+              />
+            </label>
+          </div>
+
+          <button className="contacto-form__enviar" type="submit" disabled={enviando}>
+            {enviando ? "Enviando..." : "Solicitar cotización"}
+          </button>
+          <p className="contacto-form__nota">
+            Te ayudamos aunque no sepas el código o la medida exacta.
+          </p>
+        </form>
+
+        <aside className="contacto-lateral">
+          <div className="contacto-atencion">
+            <h2 className="contacto-atencion__titulo">Atención al cliente</h2>
+            <div className="contacto-dato">
+              <IconoDato>
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3 2" />
+              </IconoDato>
+              <p>
+                {CONTACTO.horarioSemana}
+                <br />
+                {CONTACTO.horarioSabado}
+              </p>
+            </div>
+            <div className="contacto-dato">
+              <IconoDato>
+                <path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.4z" />
+              </IconoDato>
+              <p>
+                WhatsApp
+                <br />
+                <a href={urlWhatsapp()} target="_blank" rel="noopener noreferrer">
+                  {CONTACTO.telefonoVisible}
+                </a>
+              </p>
+            </div>
+            <div className="contacto-dato">
+              <IconoDato>
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="M3 7l9 6 9-6" />
+              </IconoDato>
+              <p>
+                Email
+                <br />
+                <a href={`mailto:${CONTACTO.email}`} className="contacto-dato__email">
+                  {CONTACTO.email}
+                </a>
+              </p>
+            </div>
+            <div className="contacto-dato">
+              <IconoDato>
+                <path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z" />
+                <circle cx="12" cy="9.5" r="2.5" />
+              </IconoDato>
+              <p>
+                {CONTACTO.direccion}
+                <br />
+                {CONTACTO.localidad}
+              </p>
             </div>
           </div>
-          <div className="container-mapa">
-            <p className="subtitulo-contacto">Nuestra Sucursal</p>
+          <div className="contacto-mapa">
             <MapaBulonera />
           </div>
-        </div>
+        </aside>
       </div>
     </div>
   );

@@ -1,244 +1,521 @@
-.nosotros-container {
-  padding: 24px 300px 80px 300px; /* Fase 5: el navbar ya no es flotante (va dentro de la página), así que no hace falta dejar lugar arriba */
-  display: flex;
-  flex-direction: column;
-  background: var(--prodContainer-bg);
-}
-
-.nosotros-container-2 {
-  padding: 10px 300px 80px 300px;
-  display: flex;
-  flex-direction: column;
-  background: #30303936;
-}
-
-.nosotros-header {
-  margin-top: 50px;
-}
-.nosotros-header h1 {
-  font-size: 2.5rem;
+/* Nosotros (Fase 5): presentación, datos, historia, beneficios y compromiso.
+   Animaciones solo con CSS: la cabecera entra al cargar y el resto aparece al hacer
+   scroll (hook useAparecer). Con "reducir movimiento" no se anima nada. */
+.nosotros {
+  background: var(--bg-color);
   color: var(--text-color);
-  margin-bottom: 50px;
-  font-weight: 700;
-}
-.nosotros-content-inicio {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  margin-top: 50px;
-  gap: 50px;
-}
-.nosotros-content {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  margin-top: 50px;
-  gap: 50px;
+  padding-bottom: 80px;
 }
 
-.nosotros-content-2 {
-  display: flex;
+.nosotros__eyebrow {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-marca);
+}
+
+.nosotros__eyebrow--claro {
+  color: var(--color-marca);
+}
+
+.nosotros__titulo {
+  margin: 0;
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.nosotros-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 50px;
-  background-color: #000000;
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.nosotros-content h1 {
-  font-size: 2.4rem;
-  margin-bottom: 8px;
+.nosotros-btn:focus-visible {
+  outline: 3px solid var(--texto-marca);
+  outline-offset: 2px;
+}
+
+.nosotros-btn--marca {
+  background: var(--color-marca);
+  color: #1a1a1a;
+}
+
+.nosotros-btn--marca:hover {
+  background: var(--color-marca-hover);
+  color: #1a1a1a;
+}
+
+.nosotros-btn--borde {
+  border: 1px solid var(--text-color);
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.nosotros-btn--borde:hover {
+  background: var(--superficie-suave);
   color: var(--text-color);
 }
 
-.nosotros-image {
-  width: 50%;
-  display: flex;
+/* ── Cabecera ─────────────────────────────────────────── */
+.nosotros-hero {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 64px 24px 48px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 56px;
   align-items: center;
 }
 
-.image-wrapper {
-  position: relative;
-  overflow: hidden;
-  /* ancho de la foto del frente: reserva su lugar antes de que cargue (antes medía 0
-     y todo lo de abajo saltaba al aparecer la foto) */
-  width: 400px;
-  max-width: 100%;
+.nosotros-hero__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.image-reveal {
-  position: absolute;
-  inset: 0;
-  background-color: #0f172a;
-  border-radius: 10px;
-  transform-origin: left;
-  z-index: 2;
+.nosotros-hero__titulo {
+  margin: 0;
+  font-size: 48px;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--text-color);
 }
 
-.img-bulonera {
+.nosotros-hero__bajada {
+  margin: 0;
+  max-width: 500px;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--texto-secundario);
+}
+
+.nosotros-hero__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.nosotros-hero__foto {
   width: 100%;
-  height: auto;
+  height: 420px;
+  object-fit: cover;
+  object-position: center 62%;
+  border-radius: 18px;
   display: block;
-  position: relative;
-  z-index: 1;
-  border-radius: 10px;
+  animation: nosotros-revelar 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
-.nosotros-text {
-  width: 50%;
-  padding: 60px;
+/* ── Datos ────────────────────────────────────────────── */
+.nosotros-datos {
+  max-width: 1152px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  background: var(--color-oscuro);
+  border-radius: 18px;
+  color: #ffffff;
 }
 
-.nosotros-text-2 {
-  width: 40%;
-  padding: 100px;
+/* En modo oscuro, el bloque se separa del fondo con un borde */
+[data-theme="dark"] .nosotros-datos {
+  border: 1px solid var(--borde-suave);
 }
 
-.bulonera-titulo {
-  font-size: 1.6rem;
-  font-weight: 500;
-  color: #153174;
+.nosotros-dato {
+  padding: 30px 32px;
 }
 
-.bulonera-subtitulo {
-  font-size: 2.3rem;
+.nosotros-dato + .nosotros-dato {
+  border-left: 1px solid #333333;
+}
+
+.nosotros-dato__numero {
+  margin: 0;
+  font-size: 40px;
   font-weight: 700;
-  margin-bottom: 16px;
-  color: var(--text-color);
+  color: var(--color-marca);
 }
 
-.bulonera-contenido {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--text-color);
+.nosotros-dato__texto {
+  margin: 4px 0 0;
+  font-size: 15px;
+  color: #c9c9c9;
 }
 
-.bulonera-contenido-2 {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #ffffff;
-  background-color: #0f172a;
-  padding: 40px;
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
+/* ── Historia ─────────────────────────────────────────── */
+.nosotros-historia {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 96px 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: center;
 }
 
-.nosotros-stats {
+.nosotros-historia__foto {
   width: 100%;
-  background-color: #0f172a;
-  color: #ffffff;
-  display: flex;
-  justify-content: space-around;
-  padding: 50px 80px 50px 80px;
+  height: 360px;
+  object-fit: cover;
+  border-radius: 18px;
+  display: block;
 }
 
-.nosotros-stats-2 {
-  width: 100%;
-  background-color: #0f172a;
-  color: #ffffff;
-  display: flex;
-  justify-content: center;
-  gap: 150px;
-  padding: 50px 80px 50px 80px;
-}
-
-.stats-group {
+.nosotros-historia__texto {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  font-size: 1.2rem;
+  gap: 16px;
 }
 
-.stats-group-2 {
+.nosotros-historia__texto p:not(.nosotros__eyebrow) {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--texto-secundario);
+}
+
+/* ── Beneficios ───────────────────────────────────────── */
+.nosotros-beneficios {
+  background: var(--fondo-pagina);
+}
+
+.nosotros-beneficios__interior {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+.nosotros-beneficios__grilla {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.nosotros-beneficio {
+  background: var(--superficie);
+  border: 1px solid var(--borde-suave);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nosotros-beneficio__icono {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--marca-suave);
+  color: var(--texto-marca);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
 }
 
-.stats-numero {
-  font-size: 3rem;
-  font-weight: 500;
+.nosotros-beneficio h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color);
 }
 
-@media (max-width: 468px) {
-  .nosotros-content-inicio {
-    flex-direction: column-reverse;
+.nosotros-beneficio p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--texto-secundario);
+}
+
+/* ── Compromiso ───────────────────────────────────────── */
+.nosotros-compromiso {
+  max-width: 1152px;
+  margin: 80px auto 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--color-oscuro);
+  color: #ffffff;
+}
+
+[data-theme="dark"] .nosotros-compromiso {
+  border: 1px solid var(--borde-suave);
+}
+
+.nosotros-compromiso__texto {
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.nosotros-compromiso__frase {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+.nosotros-compromiso__bajada {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.65;
+  color: #c9c9c9;
+}
+
+.nosotros-compromiso .nosotros-btn {
+  margin-top: 8px;
+}
+
+.nosotros-compromiso__foto {
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Animaciones ──────────────────────────────────────── */
+@keyframes nosotros-subir {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
-@media (max-width: 768px) {
-  .nosotros-container {
-    padding:20px;
+
+@keyframes nosotros-revelar {
+  from {
+    clip-path: inset(0 0 100% 0);
   }
-  .nosotros-content {
-    padding: 32px 20px;
-    flex-direction: column;
+  to {
+    clip-path: inset(0 0 0 0);
   }
-  .nosotros-content h1 {
-    font-size: 2rem;
-  }
-  .nosotros-content p {
-    font-size: 10px;
-  }
-  .nosotros-text {
-    width: 100%;
-    padding: 0;
-  }
-  .nosotros-header h1 {
-    font-size: 18px;
-  }
-  .bulonera-titulo {
-    font-size: 18px;
-  }
-  .bulonera-subtitulo {
-    font-size: 18px;
+}
+
+/* Cabecera y datos: entran al cargar la página */
+.nosotros-entrada {
+  animation: nosotros-subir 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Resto: aparece al llegar con el scroll. Solo se oculta cuando el hook está activo */
+.con-animacion [data-aparecer] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.con-animacion [data-aparecer].visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nosotros-entrada,
+  .nosotros-hero__foto {
+    animation: none;
   }
 
-  /* PAGE NOSOTROS -- STATS */
-  .nosotros-stats {
-    padding: 20px;
-    height: 100px;
-    justify-content: center;
-    align-items: center;
+  .con-animacion [data-aparecer] {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
-  .stats-numero {
+}
+
+/* ── Tablet y mobile ──────────────────────────────────── */
+@media (max-width: 1200px) {
+  .nosotros-datos,
+  .nosotros-compromiso {
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+}
+
+@media (max-width: 900px) {
+  .nosotros-hero,
+  .nosotros-historia,
+  .nosotros-compromiso {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .nosotros-hero {
+    gap: 28px;
+    padding-top: 40px;
+  }
+
+  .nosotros-historia {
+    padding: 64px 24px;
+    gap: 28px;
+  }
+
+  /* En una columna, el texto de la historia va antes que la foto */
+  .nosotros-historia__foto {
+    order: 2;
+  }
+
+  .nosotros-beneficios__grilla {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* En una columna, la foto del compromiso va arriba */
+  .nosotros-compromiso__foto {
+    order: -1;
+    height: 240px;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .nosotros {
+    padding-bottom: 120px; /* lugar para el botón flotante de WhatsApp */
+  }
+
+  .nosotros__eyebrow {
+    font-size: 12px;
+  }
+
+  .nosotros__titulo {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+
+  .nosotros-hero {
+    padding: 32px 18px 24px;
+    gap: 14px;
+  }
+
+  .nosotros-hero__texto {
+    gap: 14px;
+  }
+
+  .nosotros-hero__titulo {
+    font-size: 32px;
+    line-height: 1.15;
+  }
+
+  .nosotros-hero__bajada {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .nosotros-hero__acciones .nosotros-btn {
+    flex: 1;
+  }
+
+  .nosotros-hero__foto {
+    height: 260px;
+    border-radius: 16px;
+  }
+
+  .nosotros-datos {
+    margin: 0 18px;
+    border-radius: 16px;
+  }
+
+  .nosotros-dato {
+    padding: 18px 8px;
+    text-align: center;
+  }
+
+  .nosotros-dato__numero {
+    font-size: 22px;
+  }
+
+  .nosotros-dato__texto {
+    margin-top: 2px;
+    font-size: 12px;
+  }
+
+  .nosotros-historia {
+    padding: 48px 18px 40px;
+    gap: 14px;
+  }
+
+  .nosotros-historia__texto {
+    gap: 14px;
+  }
+
+  .nosotros-historia__texto p:not(.nosotros__eyebrow) {
     font-size: 15px;
   }
-  .stats-text {
-    font-size: 10px;
-  }
-  .stats-group {
-    width: 100%;
+
+  .nosotros-historia__foto {
+    height: 220px;
+    border-radius: 16px;
   }
 
-  /* Info bulonera */
-  .nosotros-content-2 {
-    flex-direction: column;
-    gap: 20px;
-  }
-  .nosotros-text-2 {
-    font-size: 10px;
-    padding: 20px;
-    width: 100%;
-  }
-  .nosotros-imagen {
-    padding: 20px;
-  }
-  .nosotros-stats-2 {
-    padding: 20px;
-    gap: 10px;
-  }
-  .stats-group-2 {
-    font-size: 10px;
-  }
-  .stats-group-2 svg {
-    height: 20px;
-    width: 50px;
+  .nosotros-beneficios__interior {
+    padding: 40px 18px;
   }
 
-  .nosotros-container-2 {
-    padding: 0px;
+  .nosotros-beneficios__grilla {
+    margin-top: 20px;
+    gap: 12px;
   }
-  .nosotros-image {
-    width: 100%;
+
+  .nosotros-beneficio {
+    padding: 18px;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    column-gap: 14px;
+    row-gap: 4px;
+  }
+
+  .nosotros-beneficio__icono {
+    grid-row: span 2;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  .nosotros-beneficio h3 {
+    font-size: 16px;
+  }
+
+  .nosotros-beneficio p {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .nosotros-compromiso {
+    margin: 40px 18px 0;
+    border-radius: 18px;
+  }
+
+  .nosotros-compromiso__foto {
+    height: 200px;
+  }
+
+  .nosotros-compromiso__texto {
+    padding: 24px 20px 26px;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .nosotros-compromiso__frase {
+    font-size: 21px;
+  }
+
+  .nosotros-compromiso__bajada {
+    font-size: 15px;
   }
 }

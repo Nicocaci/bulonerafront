@@ -1,429 +1,498 @@
-.contacto-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 24px 0px 100px 0px; /* Fase 5: el navbar ya no es flotante (va dentro de la página), así que no hace falta dejar lugar arriba */
-  background-color: var(--prodContainer-bg);
+/* Contacto (Fase 5): cabecera oscura con WhatsApp, formulario de cotización y,
+   al costado, los datos de atención y el mapa. */
+.contacto {
+  background: var(--fondo-pagina);
+  color: var(--text-color);
+  padding-bottom: 56px;
 }
-.header-cotizacion {
-  position: relative;
-  width: 100%;
-  min-height: 300px;
-  background-color: var(
-    --prodContainer-bg
-  ); /* el color de fondo de tu sección */
-  overflow: hidden;
-}
-.header-cotizacion::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 50%;
-  height: 300px;
-  background-image: url("/coti.webp");
-  background-position: right center;
-  background-repeat: no-repeat;
-  background-size: cover; /* o cover, según el recorte que quieras */
 
-  mask-image: linear-gradient(to right, transparent, black 85%);
-  -webkit-mask-image: linear-gradient(to right, transparent, black 85%);
-}
-.banner-content {
-  position: relative;
-  z-index: 1;
-  max-width: 600px;
-}
-.titulo-contacto {
-  font-size: 2.5rem;
-  color: var(--text-color);
-  font-weight: 500;
-}
-.subtitulo-contacto {
-  font-size: 18px;
-  color: var(--text-color);
-  margin-bottom: 5px;
-  font-weight: 400;
-}
-.titulo-form {
-  font-size: 20px;
+.contacto__eyebrow {
+  margin: 0;
+  font-size: 13px;
   font-weight: 600;
-  margin-top: 15px;
-}
-.btn-wp {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: 5px;
-  background-color: #1c964b;
-  width: 50%;
-  padding: 10px;
-  color: #ffffff;
-  margin-top: 10px;
-  cursor: pointer;
-}
-.btn-wp:hover {
-  background-color: #3b975e;
-  transition: ease;
-}
-.subtitulo-form {
-  font-size: 12px;
-  font-weight: 400px;
-  color: #888;
-  margin-bottom: 15px;
-}
-.seccion-cotizacion {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 10px;
-}
-.form-container-coti {
-  border: 1px solid var(--borderForm-color);
-  border-radius: 5px;
-  padding: 20px;
-}
-.file-upload-label {
-  display: block;
-  cursor: pointer;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-marca);
 }
 
-.file-upload-box {
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  padding: 40px 20px;
-  text-align: center;
+/* ── Cabecera ─────────────────────────────────────────── */
+.contacto-hero {
+  background: var(--color-oscuro);
+  color: #ffffff;
+}
+
+/* La foto llega hasta el borde derecho de la pantalla; el texto queda alineado
+   con el contenido de la página (contenedor de 1200 px) */
+.contacto-hero__interior {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.contacto-hero__texto {
+  padding: 48px 24px 48px max(24px, calc((100vw - 1200px) / 2 + 24px));
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition:
-    border-color 0.2s,
-    background-color 0.2s;
+  gap: 16px;
 }
 
-.file-upload-box:hover,
-.file-upload-box.dragover {
-  border-color: #4a90d9;
-  background-color: rgba(74, 144, 217, 0.05);
+.contacto-hero__titulo {
+  margin: 0;
+  font-size: 38px;
+  line-height: 1.15;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.upload-icon {
-  color: #888;
-  margin-bottom: 10px;
-}
-.inline-icon {
-  vertical-align: middle;
-  margin: 0 2px;
-  font-size: 14px;
+.contacto-hero__bajada {
+  margin: 0;
+  max-width: 460px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #c9c9c9;
 }
 
-.btn-seleccionar {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 8px 16px;
-  border: 1px solid #4a90d9;
-  border-radius: 6px;
-  color: #4a90d9;
-  font-size: 14px;
-}
-
-.file-upload-hint {
-  font-size: 12px;
-  color: #888;
-  margin-top: 8px;
-}
-
-.archivos-seleccionados {
-  list-style: none;
-  padding: 0;
-  margin-top: 12px;
+.contacto-hero__acciones {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
+  margin-top: 8px;
 }
 
-.archivos-seleccionados li {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  border: 1px solid var(--borderForm-color);
-  font-size: 10px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  cursor: default;
-}
-.file-icon {
-  margin-right: 6px;
-  vertical-align: middle;
-}
-.remove-file-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #999;
-  font-size: 14px;
-}
-.remove-file-btn:hover {
-  color: #ff4d4f;
-}
-.form-group div {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-.container-mapa {
-  width: 100%;
-  height: 50dvh;
-  margin-bottom: 50px;
-}
-.grid-contacto {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-  width: 60%;
-  padding: 10px;
-  margin: auto;
-}
-.atencion-cliente-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.atencion-cliente-descripcion {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 30px 0 30px 0;
-  margin-bottom: 10px;
-  background-color: #111827;
-  border-radius: 10px;
-}
-.formulario-contacto {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-.atencion-grid-1 {
-  display: flex;
-  align-items: center;
-  width: 50%;
-  padding: 10px;
-}
-
-.atencion-grid-2 {
-  width: 50%;
-  display: flex;
-  align-items: center;
-  padding: 10px;
-}
-.text-area {
-  background-color: var(--cards-bg);
-  padding: 12px;
-  border: 1px solid var(--borderForm-color);
-  border-radius: 6px;
-  font-size: 1rem;
-  font-family: inherit;
-  resize: vertical;
-  transition: border-color 0.3s ease;
-}
-.btn-form {
-  background-color: #07418a;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-top: 10px;
-  width: 98%;
-  display: flex;
+.contacto-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
-.horario-atencion {
-  font-size: 1.1rem;
+
+.contacto-btn:focus-visible {
+  outline: 3px solid var(--color-marca);
+  outline-offset: 2px;
+}
+
+.contacto-btn--whatsapp {
+  background: #25d366;
+  color: #0b2e17;
+}
+
+.contacto-btn--whatsapp:hover {
+  background: #1ebe5a;
+  color: #0b2e17;
+}
+
+.contacto-btn--borde {
+  border: 1px solid #5a5a5a;
   color: #ffffff;
-  margin-top: 5px;
+  font-weight: 500;
 }
-.cotizacion-detalle {
-  border: 1px solid var(--borderForm-color);
-  padding: 20px;
-  border-radius: 5px;
+
+.contacto-btn--borde:hover {
+  border-color: #8a8a8a;
+  color: #ffffff;
+}
+
+.contacto-hero__foto {
+  min-height: 300px;
+  background: url("/coti.webp") center / cover no-repeat;
+}
+
+/* ── Cuerpo: formulario + datos ───────────────────────── */
+.contacto-cuerpo {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px 24px 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 28px;
+  align-items: start;
+}
+
+.contacto-form {
+  scroll-margin-top: 150px; /* el header queda pegado arriba al bajar */
+  background: var(--superficie);
+  border: 1px solid var(--borde-suave);
+  border-radius: 16px;
+  padding: 28px;
   display: flex;
   flex-direction: column;
-  gap: 70px;
-  background-color: var(--cards-bg);
+  gap: 18px;
 }
-.cotizacion-border {
-  border-bottom: 1px solid var(--borderForm-color);
-  padding: 5px;
-}
-.cotizacion-border-none {
-  padding: 5px;
-}
-.content-1-coti {
-  display: flex;
 
-  gap: 10px;
-}
-.titulo-detalle {
+.contacto-form__titulo {
+  margin: 0;
   font-size: 20px;
   font-weight: 600;
+  color: var(--text-color);
 }
-.text-content-coti {
+
+.contacto-form__ayuda {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--texto-secundario);
+}
+
+.contacto-form__detalle,
+.contacto-campo input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--borde-control);
+  border-radius: 10px;
+  background: var(--superficie);
+  color: var(--text-color);
+  font: inherit;
+  font-size: 15px;
+}
+
+.contacto-form__detalle {
+  min-height: 130px;
+  padding: 12px 14px;
+  resize: vertical;
+}
+
+.contacto-form__detalle::placeholder,
+.contacto-campo input::placeholder {
+  color: var(--texto-secundario);
+}
+
+.contacto-form__detalle:focus,
+.contacto-campo input:focus {
+  outline: none;
+  border-color: var(--texto-marca);
+  box-shadow: 0 0 0 3px var(--marca-suave);
+}
+
+/* Adjuntos */
+.contacto-adjuntos__zona {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1.5px dashed var(--borde-control);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.contacto-adjuntos__zona:hover,
+.contacto-adjuntos__zona--activa {
+  border-color: var(--texto-marca);
+  background: var(--marca-suave);
+}
+
+.contacto-adjuntos__zona:focus-within {
+  outline: 3px solid var(--texto-marca);
+  outline-offset: 2px;
+}
+
+.contacto-adjuntos__icono {
+  flex-shrink: 0;
+  color: var(--texto-secundario);
+}
+
+.contacto-adjuntos__texto {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  padding: 20px 20px 20px 50px;
   font-size: 14px;
 }
-.divider {
+
+.contacto-adjuntos__texto strong {
+  font-weight: 600;
+}
+
+.contacto-adjuntos__texto span {
+  font-size: 13px;
+  color: var(--texto-secundario);
+}
+
+.contacto-adjuntos__boton {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--text-color);
+  border-radius: 8px;
+  background: var(--superficie);
+  font-size: 14px;
+}
+
+.contacto-adjuntos__lista {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
   display: flex;
-  align-items: flex-end;
-  gap: 16px;
-  margin: 24px 0;
-  height: 100px;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.divider-line {
-  flex: 1;
-  height: 1px;
-  background-color: var(--borderForm-color); /* color de la línea */
-}
-
-.divider-text {
-  white-space: nowrap;
+.contacto-adjuntos__lista li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 4px 4px 12px;
+  border-radius: 8px;
+  background: var(--superficie-suave);
   font-size: 14px;
-  color: #666;
 }
 
-@media (max-width: 1500px) {
-  .grid-contacto {
-    width: 85%;
-  }
+.contacto-adjuntos__tipo {
+  display: flex;
+  flex-shrink: 0;
 }
-@media (max-width: 1200px) {
-  .grid-contacto {
-    width: 90%;
-  }
+
+.contacto-adjuntos__nombre {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
+.contacto-adjuntos__lista button {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.contacto-adjuntos__lista button:hover {
+  background: var(--borde-suave);
+}
+
+/* Datos personales: Nombre | Empresa / Email | Teléfono en desktop */
+.contacto-form__campos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    "nombre empresa"
+    "email telefono";
+  gap: 14px;
+}
+
+.contacto-campo--nombre { grid-area: nombre; }
+.contacto-campo--empresa { grid-area: empresa; }
+.contacto-campo--email { grid-area: email; }
+.contacto-campo--telefono { grid-area: telefono; }
+
+.contacto-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.contacto-campo input {
+  height: 44px;
+  padding: 0 12px;
+}
+
+.contacto-form__enviar {
+  height: 50px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--color-marca);
+  color: #1a1a1a;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.contacto-form__enviar:hover:not(:disabled) {
+  background: var(--color-marca-hover);
+}
+
+.contacto-form__enviar:focus-visible {
+  outline: 3px solid var(--texto-marca);
+  outline-offset: 2px;
+}
+
+.contacto-form__enviar:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.contacto-form__nota {
+  margin: 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--texto-secundario);
+}
+
+/* Columna lateral */
+.contacto-lateral {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contacto-atencion {
+  background: var(--superficie);
+  border: 1px solid var(--borde-suave);
+  border-radius: 16px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contacto-atencion__titulo {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.contacto-dato {
+  display: flex;
+  gap: 12px;
+}
+
+.contacto-dato__icono {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--texto-marca);
+}
+
+.contacto-dato p {
+  margin: 0;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.contacto-dato a {
+  color: var(--texto-marca);
+  text-decoration: none;
+}
+
+.contacto-dato a:hover {
+  text-decoration: underline;
+}
+
+.contacto-dato__email {
+  overflow-wrap: anywhere;
+}
+
+.contacto-mapa {
+  height: 260px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--superficie-suave);
+}
+
+/* ── Tablet y mobile ──────────────────────────────────── */
 @media (max-width: 900px) {
-  .contacto-container {
-    padding: 16px 20px 120px;
+  .contacto-hero__interior {
+    grid-template-columns: minmax(0, 1fr);
   }
-  .grid-contacto {
-    width: 100%;
-    padding: 0;
+
+  .contacto-hero__foto {
+    display: none;
   }
-  .titulo-detalle {
+
+  .contacto-cuerpo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .contacto {
+    padding-bottom: 120px; /* lugar para el botón flotante de WhatsApp */
+  }
+
+  .contacto-hero__texto {
+    padding: 24px 18px 28px 18px;
+    gap: 12px;
+  }
+
+  .contacto__eyebrow {
+    font-size: 12px;
+  }
+
+  .contacto-hero__titulo {
+    font-size: 28px;
+    line-height: 1.2;
+  }
+
+  .contacto-hero__bajada {
     font-size: 15px;
+    line-height: 1.55;
   }
-  .text-content-coti {
-    font-size: 10px;
-  }
-}
-@media (max-width: 768px) {
-  .contacto-container {
-    padding: 80px 20px;
-  }
-  .seccion-cotizacion {
-    display: flex;
+
+  .contacto-hero__acciones {
     flex-direction: column;
   }
-  .cotizacion-detalle {
-    flex-direction:row;
-    gap: 5px;
-    background-color: transparent;
-    border: none;
-    padding: 0;
+
+  .contacto-btn {
+    min-height: 50px;
+    border-radius: 12px;
   }
-  .cotizacion-border {
-    border: 1px solid var(--borderForm-color);
-    padding: 5px;
-    border-radius:5px;
-    background-color: var(--cards-bg);
+
+  .contacto-cuerpo {
+    padding: 16px 14px 0;
+    gap: 16px;
   }
-  .cotizacion-border-none {
-    border: 1px solid var(--borderForm-color);
-    padding: 5px;
-    border-radius:5px;
-    background-color: var(--cards-bg);
+
+  .contacto-form {
+    padding: 20px 16px;
+    gap: 16px;
   }
-  .content-1-coti {
-    align-items: center;
+
+  .contacto-form__titulo {
+    font-size: 18px;
   }
-  .grid-contacto {
-    width: 100%;
-    padding: 0;
+
+  .contacto-adjuntos__zona {
+    flex-wrap: wrap;
+    padding: 14px;
   }
-  .titulo-detalle {
-    font-size: 12px;
-  }
-  .text-content-coti {
-    font-size: 10px;
-    padding: 10px 10px 10px 20px;
-  }
-  .btn-wp {
-    font-size: 10px;
-  }
-}
-@media (max-width:600px) {
-  .cotizacion-detalle {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-}
-@media (max-width: 480px) {
-  .titulo-contacto {
-    font-size: 20px;
-  }
-  .subtitulo-contacto {
-    font-size: 12px;
-  }
-  .grid-contacto {
-    display: flex;
-    flex-direction: column;
-  }
-  .atencion-cliente-descripcion {
-    display: flex;
-    flex-direction: column;
-  }
-  .atencion-grid-1 {
+
+  .contacto-adjuntos__boton {
     width: 100%;
     justify-content: center;
   }
-  .atencion-grid-1 svg {
-    height: 40px;
-    width: 40px;
-  }
-  .atencion-grid-2 {
-    width: 100%;
-    justify-content: center;
-  }
-  .atencion-grid-2 svg {
-    height: 40px;
-    width: 40px;
-  }
-  .horario-atencion {
-    font-size: 13px;
-  }
-  .btn-form {
-    padding: 5px 15px;
-  }
-}
-@media (max-width: 400px) {
-  .text-content-coti {
-    font-size: 8px;
-    padding: 10px 10px 10px 40px;
+
+  .contacto-form__campos {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "nombre"
+      "email"
+      "telefono"
+      "empresa";
   }
 
-}
+  .contacto-campo input {
+    height: 46px;
+  }
 
-.btn-form:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+  .contacto-form__enviar {
+    height: 52px;
+  }
+
+  .contacto-atencion {
+    padding: 18px 16px;
+  }
+
+  .contacto-mapa {
+    height: 220px;
+  }
 }

@@ -23,8 +23,7 @@ export default defineConfig([
       },
     },
     rules: {
-      // `motion` se usa como <motion.div>: la regla base no ve el uso dentro de JSX
-      'no-unused-vars': ['error', { varsIgnorePattern: '^([A-Z_]|motion$)' }],
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
   },
 ])
