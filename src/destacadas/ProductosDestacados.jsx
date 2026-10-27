@@ -1,16 +1,10 @@
 import axiosInstance from "../utils/axiosConfig.js";
 import "../css/OfertasDestacadas.css";
 import { Link } from "react-router-dom";
-import {
-  ANCHO_TARJETA,
-  SIZES_TARJETA,
-  cldSrcSet,
-  getImageUrl,
-} from "../utils/imageUtils.js";
+import TarjetaProducto from "../components/TarjetaProducto.jsx";
 import { useQuery } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import { MdVerified } from "react-icons/md";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -110,61 +104,7 @@ const ProductosDestacados = ({
         >
           {productos.map((producto) => (
             <SwiperSlide key={producto._id}>
-              <Link to={`/producto/${producto._id}`} className="link-none">
-                <div className="oferta-card">
-                  <div className="img-container">
-                    <img
-                      className="oferta-image"
-                      src={getImageUrl(producto.imagen?.[0], ANCHO_TARJETA)}
-                      srcSet={cldSrcSet(getImageUrl(producto.imagen?.[0]), ANCHO_TARJETA)}
-                      sizes={SIZES_TARJETA}
-                      alt={producto.item}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                  <div className="product-card-description">
-                    <p className="product-card-text">{producto.item}</p>
-                    <div className="product-marca-container">
-                      <p className="product-marca">{producto.marca}</p>
-                      <MdVerified className="verified-icon" />
-                    </div>
-                    <div
-                      className="precio-fila"
-                    >
-                      {producto.ofertaVigente ? (
-                        <>
-                          <div
-                            className="precio-columna"
-                          >
-                            <p className="product-price-tachado">
-                              ${producto.precioConIva.toLocaleString("es-AR")}
-                            </p>
-                            <p className="product-price">
-                              ${producto.precioFinal.toLocaleString("es-AR")}
-                            </p>
-                          </div>
-                          <div
-                            className="precio-columna precio-columna--derecha"
-                          >
-                            <span className="product-oferta-badge">
-                              -{producto.oferta.descuento}%
-                            </span>
-                            <p className="product-iva">IVA inc.</p>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <p className="product-price">
-                            ${producto.precioConIva.toLocaleString("es-AR")}
-                          </p>
-                          <p className="product-iva">IVA inc.</p>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </Link>
+              <TarjetaProducto producto={producto} />
             </SwiperSlide>
           ))}
 

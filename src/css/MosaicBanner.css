@@ -4,7 +4,7 @@
   margin: 0 auto;
   padding: 0 16px;
   box-sizing: border-box;
-  padding-top: 190px;
+  padding-top: 24px; /* Fase 5: el navbar ya no es flotante (va dentro de la página), así que no hace falta dejar lugar arriba */
 }
 
 .mosaicGrid {
@@ -101,7 +101,7 @@
 @media (max-width: 768px) {
   .mosaicBanner {
     width: 100%;
-    padding-top: 160px;
+    padding-top: 16px;
   }
   .mosaicGrid {
     grid-template-columns: 1fr 1fr;

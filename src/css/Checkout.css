@@ -1,6 +1,6 @@
 .checkout-container {
   max-width: 900px;
-  margin: 120px auto 100px;
+  margin: 24px auto 100px; /* Fase 5: el navbar ya no es flotante (va dentro de la página), así que no hace falta dejar lugar arriba */
   padding: 40px;
   background-color: #afafaf56;
   border-radius: 12px;
@@ -546,7 +546,7 @@
 
 @media (max-width: 1024px) {
   .checkout-container {
-    margin: 110px 30px 60px;
+    margin: 16px 30px 60px;
     padding: 30px;
   }
 

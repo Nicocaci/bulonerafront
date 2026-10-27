@@ -1,68 +1,155 @@
-.footer-container {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    padding: 50px 200px 50px 200px;
-    background-color: var(--footer-bg);
-    justify-items: center;
-    border-top: 1px solid #0000004a;
+/* Footer (Fase 5): oscuro en los dos temas, como el navbar */
+.footer {
+  background: var(--color-oscuro);
+  color: #d4d4d4;
+  font-size: 14px;
 }
-.titulo-footer{
-    font-size: 18px;
-    font-weight: 500;
-    color: var(--text-color);
-    margin-bottom: 10px;
+
+.footer a {
+  color: #d4d4d4;
+  text-decoration: none;
 }
-.li-footer {
-    list-style: none;
-    color: var(--text-color);
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-bottom: 10px;
-    font-size: 13px;
+
+.footer a:hover {
+  color: var(--color-marca);
 }
-.container-iconos {
-    display: flex;
-    gap: 50px;
-    cursor: pointer;
+
+.footer a:focus-visible {
+  outline: 2px solid var(--color-marca);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
-.logo-footer{
+
+.footer__contenedor {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 56px 24px 36px;
+  display: grid;
+  /* La columna de contacto es más ancha para que el email entre en una línea */
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.8fr) minmax(0, 0.9fr) minmax(0, 1.3fr);
+  gap: 40px;
+}
+
+.footer__marca {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footer__logo {
+  width: 140px;
+  height: auto;
+  display: block;
+}
+
+.footer__lema {
+  margin: 0;
+  line-height: 1.6;
+  color: #a3a3a3;
+  max-width: 300px;
+}
+
+.footer__redes {
+  display: flex;
+  gap: 8px;
+}
+
+.footer__redes a {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid #3a3a3a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.footer__redes a:hover {
+  border-color: var(--color-marca);
+}
+
+.footer__columna {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  line-height: 1.5;
+}
+
+.footer__columna > a,
+.footer__columna > span {
+  padding: 6px 0;
+}
+
+.footer__titulo {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.footer__email {
+  overflow-wrap: anywhere; /* solo se corta si de verdad no entra */
+}
+
+.footer__horario {
+  color: #a3a3a3;
+}
+
+.footer__base {
+  border-top: 1px solid #2e2e2e;
+}
+
+.footer__base-contenedor {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  font-size: 13px;
+  color: #a3a3a3;
+}
+
+.footer .footer__firma {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #a3a3a3;
+  padding: 6px 0;
+}
+
+.footer__firma img {
+  width: 96px;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .footer__contenedor {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .footer__marca {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .footer__contenedor {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    padding: 40px 20px 28px;
+  }
+  .footer__logo {
     width: 120px;
-    height: auto;
-    border-radius: 10px;
-    color: var(--text-color);
-}
-@media (max-width: 1300px) {
-    .footer-container {
-        padding: 50px 100px 50px 100px;
-    }
-}
-@media (max-width: 1000px) {
-    .footer-container {
-        padding: 50px 50px 50px 50px;
-    }
-}
-@media (max-width: 880px) {
-        .footer-container {
-        display: flex;
-        flex-direction: column;
-        padding: 20px;
-    }
-}
-@media(max-width:768px) {
-    .container-iconos {
-        justify-content: start;
-    }
-    .logo-footer{
-        width: 80px;
-    }
-    .titulo-footer{
-        font-size: 15px;
-    }
-    .li-footer{
-        font-size: 10px;
-    }
-    .icono svg {
-        width: 20px;
-    }
+  }
+  .footer__base-contenedor {
+    flex-direction: column;
+    text-align: center;
+    padding: 18px 20px 24px;
+  }
 }

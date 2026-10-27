@@ -35,6 +35,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     <div className="pagination">
       <button
         className="pagination-button nav-btn"
+        aria-label="Página anterior"
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
       >
@@ -51,6 +52,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           <button
             key={page}
             className={`pagination-button ${page === currentPage ? "active" : ""}`}
+            aria-current={page === currentPage ? "page" : undefined}
             onClick={() => onPageChange(page)}
           >
             {page}
@@ -60,6 +62,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
       <button
         className="pagination-button nav-btn"
+        aria-label="Página siguiente"
         disabled={currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
       >

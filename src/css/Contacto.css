@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  padding: 100px 0px 100px 0px;
+  padding: 24px 0px 100px 0px; /* Fase 5: el navbar ya no es flotante (va dentro de la página), así que no hace falta dejar lugar arriba */
   background-color: var(--prodContainer-bg);
 }
 .header-cotizacion {
@@ -313,7 +313,7 @@
 }
 @media (max-width: 900px) {
   .contacto-container {
-    padding: 120px 20px;
+    padding: 16px 20px 120px;
   }
   .grid-contacto {
     width: 100%;

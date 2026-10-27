@@ -1,6 +1,6 @@
 .profile-container {
     max-width: 1200px;
-    margin: 100px auto 50px;
+    margin: 24px auto 50px; /* Fase 5: el navbar ya no es flotante (va dentro de la página), así que no hace falta dejar lugar arriba */
     padding: 20px;
 }
 
@@ -273,7 +273,7 @@
 /* Responsive */
 @media (max-width: 768px) {
     .profile-container {
-        margin-top: 80px;
+        margin-top: 16px;
         padding: 15px;
     }
 

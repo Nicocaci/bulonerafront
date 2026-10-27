@@ -17,7 +17,7 @@
   padding: 3rem 1.5rem;
   font-family: var(--faq-font-body);
   background-color: #f5f5f5;
-  margin-top: 100px;
+  margin-top: 24px; /* Fase 5: el navbar ya no es flotante (va dentro de la página), así que no hace falta dejar lugar arriba */
   border-radius: var(--faq-radius);
 }
 

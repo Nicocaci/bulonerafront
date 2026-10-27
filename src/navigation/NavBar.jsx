@@ -1,35 +1,47 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useContext, useEffect, useRef, useCallback } from "react";
 import "../css/NavBar.css";
 import { AuthContext } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ANCHO_MINIATURA, getImageUrl } from "../utils/imageUtils";
-import { FiAlignJustify } from "react-icons/fi";
-import { FaPercent } from "react-icons/fa";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { ANCHO_MINIATURA, getImageUrl, usarPlaceholder } from "../utils/imageUtils";
 import { useTheme } from "../context/ThemeContext.jsx";
+import { useFacetas } from "../hooks/useCatalogo.js";
 
 import AuthModal from "../components/AuthModal";
 import NavbarActions from "./Navbar/NavbarActions.jsx";
-import axiosInstance from "../utils/axiosConfig";
 import NavbarMenu from "./Navbar/NavbarMenu.jsx";
+import MenuMobile from "./Navbar/MenuMobile.jsx";
+import axiosInstance from "../utils/axiosConfig";
+
+// Categorías con acceso directo (barra de desktop y accesos rápidos de mobile).
+// El valor es el nombre exacto de la categoría en la base.
+const CATEGORIAS_DESTACADAS = [
+  { valor: "Herramientas Manuales", texto: "Herramientas manuales", corto: "Manuales" },
+  { valor: "Herramientas Electricas", texto: "Herramientas eléctricas", corto: "Eléctricas" },
+  { valor: "Soldadura", texto: "Soldadura", corto: "Soldadura" },
+  { valor: "Automotor", texto: "Automotor", corto: "Automotor", secundaria: true },
+  { valor: "Jardin", texto: "Jardín", corto: "Jardín", secundaria: true },
+];
+
+const linkCategoria = (valor) => `/productos?categoria=${encodeURIComponent(valor)}`;
 
 const NavBar = () => {
-  const { isAuthenticated, logOut } = useContext(AuthContext);
+  const { isAuthenticated, user, logOut, getProfile } = useContext(AuthContext);
   const { theme, toggleTheme } = useTheme();
   const { cart } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
 
   // refs
-  const searchRef = useRef(null); // <form> del buscador (input + dropdown)
-  const menuRef = useRef(null); // menú mobile
-  const hamburgerRef = useRef(null); // botón hamburguesa
+  const searchRef = useRef(null); // <form> del buscador (input + resultados)
+  const menuCategoriasRef = useRef(null); // botón "Todos los productos" + panel
+  const hamburguesaRef = useRef(null);
 
   // estados de UI
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showNavbarMenu, setShowNavbarMenu] = useState(false);
+  const [menuMobileAbierto, setMenuMobileAbierto] = useState(false);
+  const [menuCategoriasAbierto, setMenuCategoriasAbierto] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   // estados del buscador
   const [searchInput, setSearchInput] = useState("");
@@ -38,17 +50,26 @@ const NavBar = () => {
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+  // Categorías con cantidades (la misma consulta que usa la página de productos sin filtros)
+  const { data: facetas, isLoading: cargandoCategorias } = useFacetas();
+  const categorias = [...(facetas?.categorias ?? [])].sort((a, b) => b.cantidad - a.cantidad);
+
+  // Nombre para el saludo "Hola, Nico" (una consulta por sesión, queda en caché)
+  const { data: perfil } = useQuery({
+    queryKey: ["perfil", user?.id],
+    queryFn: getProfile,
+    enabled: Boolean(isAuthenticated && user?.id),
+    staleTime: 5 * 60 * 1000,
+  });
+  const nombre = perfil?.nombre?.trim().split(/\s+/)[0] || "";
 
   const cartItemsCount =
     cart?.products?.reduce((acc, p) => acc + (p.quantity || 0), 0) || 0;
 
-  const handleUserClick = () => {
-    if (!isAuthenticated) return setShowAuthModal(true);
-    navigate("/perfil");
-  };
-
-  const goHome = () => navigate("/");
+  const cerrarMenuMobile = useCallback(() => {
+    setMenuMobileAbierto(false);
+    hamburguesaRef.current?.focus();
+  }, []);
 
   // ─────────────────────────────────────────────
   // BÚSQUEDA CON DEBOUNCE
@@ -93,60 +114,41 @@ const NavBar = () => {
   }, [searchInput]);
 
   // ─────────────────────────────────────────────
-  // CERRAR DROPDOWN DEL BUSCADOR AL CLICKEAR AFUERA
+  // CERRAR RESULTADOS DEL BUSCADOR Y MENÚ DE CATEGORÍAS AL CLICKEAR AFUERA
   // ─────────────────────────────────────────────
   useEffect(() => {
-    if (!showDropdown) return;
+    if (!showDropdown && !menuCategoriasAbierto) return;
 
-    const handleClickOutsideSearch = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
+    const alClickAfuera = (event) => {
+      if (showDropdown && !searchRef.current?.contains(event.target)) {
         setShowDropdown(false);
       }
-    };
-
-    document.addEventListener("mousedown", handleClickOutsideSearch);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutsideSearch);
-  }, [showDropdown]);
-
-  // ─────────────────────────────────────────────
-  // CERRAR MENÚ MOBILE AL CLICKEAR AFUERA
-  // (ignora el botón hamburguesa, si no se cerraba y se reabría al toque)
-  // ─────────────────────────────────────────────
-  useEffect(() => {
-    if (!isMenuOpen) return;
-
-    const handleClickOutside = (event) => {
-      const clickedInsideMenu = menuRef.current?.contains(event.target);
-      const clickedHamburger = hamburgerRef.current?.contains(event.target);
-
-      if (!clickedInsideMenu && !clickedHamburger) {
-        setIsMenuOpen(false);
+      if (menuCategoriasAbierto && !menuCategoriasRef.current?.contains(event.target)) {
+        setMenuCategoriasAbierto(false);
       }
     };
+    const alEscape = (e) => {
+      if (e.key !== "Escape") return;
+      setShowDropdown(false);
+      setMenuCategoriasAbierto(false);
+    };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isMenuOpen]);
+    document.addEventListener("mousedown", alClickAfuera);
+    document.addEventListener("keydown", alEscape);
+    return () => {
+      document.removeEventListener("mousedown", alClickAfuera);
+      document.removeEventListener("keydown", alEscape);
+    };
+  }, [showDropdown, menuCategoriasAbierto]);
 
   // ─────────────────────────────────────────────
   // AL CAMBIAR DE PÁGINA: CERRAR TODO
   // ─────────────────────────────────────────────
   useEffect(() => {
     setShowDropdown(false);
-    setIsMobileSearchOpen(false);
-    setIsMenuOpen(false);
-    setShowNavbarMenu(false);
-  }, [location.pathname]);
-
-  // ─────────────────────────────────────────────
-  // FOCUS AL ABRIR EL BUSCADOR EN MOBILE
-  // ─────────────────────────────────────────────
-  useEffect(() => {
-    if (isMobileSearchOpen) {
-      searchRef.current?.querySelector("input")?.focus();
-    }
-  }, [isMobileSearchOpen]);
+    setMenuMobileAbierto(false);
+    setMenuCategoriasAbierto(false);
+  }, [location.pathname, location.search]);
 
   // ─────────────────────────────────────────────
   // MODAL DE LOGIN ABIERTO DESDE OTROS COMPONENTES (ej: CartDetail)
@@ -171,95 +173,65 @@ const NavBar = () => {
 
     navigate(nextUrl);
     setShowDropdown(false);
-    setIsMenuOpen(false);
-    setIsMobileSearchOpen(false);
     searchRef.current?.querySelector("input")?.blur();
   };
 
   const handleProductClick = (productId) => {
     setSearchInput(""); // limpia el input → el effect no vuelve a buscar
     setShowDropdown(false);
-    setIsMobileSearchOpen(false);
     navigate(`/producto/${productId}`);
   };
 
-  const handleMobileSearchToggle = () => {
-    setIsMobileSearchOpen((prev) => !prev);
-    setShowDropdown(false);
-  };
-
-  const closeAllMobileMenus = () => {
-    setShowNavbarMenu(false);
-    setIsMenuOpen(false);
-  };
-
-  const closeMenuOnLink = () => setIsMenuOpen(false);
+  // La barra de categorías marca como activa la categoría que se está viendo
+  const categoriaActual =
+    location.pathname === "/productos"
+      ? new URLSearchParams(location.search).get("categoria")
+      : null;
+  const enOfertas =
+    location.pathname === "/productos" &&
+    new URLSearchParams(location.search).get("ofertas") === "true";
 
   return (
-    <div className="navbar-container">
-      {/* ───────── BARRA MOBILE (logo + acciones + hamburguesa) ───────── */}
-      <div className="hamburger-container">
-        <img
-          className="logo-navbar logo-navbar-mobile"
-          src="/logo-texto-blanco.svg"
-          width={180}
-          height={90}
-          alt="Bulonera El Triángulo"
-          onClick={goHome}
-        />
-        <div className="div-navbar-2 navbar-actions-mobile">
-          <NavbarActions
-            isAuthenticated={isAuthenticated}
-            logOut={logOut}
-            onUserClick={handleUserClick}
-            cartItemsCount={cartItemsCount}
-            onSearchClick={handleMobileSearchToggle}
-          />
-        </div>
+    <>
+      <header className="nav">
+        <div className="nav-top">
+          <div className="nav-top__contenedor">
+            <button
+              type="button"
+              ref={hamburguesaRef}
+              className="nav-hamburguesa"
+              onClick={() => setMenuMobileAbierto(true)}
+              aria-label="Abrir menú"
+              aria-expanded={menuMobileAbierto}
+              aria-controls="menu-mobile"
+            >
+              <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
 
-        <button
-          type="button"
-          ref={hamburgerRef}
-          className="hamburger-btn"
-          onClick={toggleMenu}
-          aria-label="Abrir menú"
-        >
-          {isMenuOpen ? "\u2715" : "\u2630"}
-        </button>
-      </div>
+            <Link to="/" className="nav-logo" aria-label="Bulonera El Triángulo, inicio">
+              <img src="/logo-texto-blanco.svg" width={120} height={60} alt="Bulonera El Triángulo" />
+            </Link>
 
-      {/* ───────── TOP (logo + buscador + acciones desktop) ───────── */}
-      <div
-        className={`navbar-top-container ${
-          isMobileSearchOpen ? "search-open" : "search-closed"
-        }`}
-      >
-        <div className="navbar-top">
-          <div className="div-navbar-1">
-            <img
-              className="logo-navbar"
-              src="/logo-texto-blanco.svg"
-              width={180}
-              height={90}
-              alt="Bulonera El Triángulo"
-              onClick={goHome}
-            />
-          </div>
-
-          <div className="div-navbar">
             <form
               ref={searchRef}
-              className={`input-search-container ${
-                isMobileSearchOpen
-                  ? "mobile-search-open"
-                  : "mobile-search-closed"
-              }`}
+              className="nav-buscador"
+              role="search"
               onSubmit={handleSearchSubmit}
             >
+              <label htmlFor="buscador-navbar" className="solo-lectores">
+                Buscar productos
+              </label>
+              <svg className="nav-buscador__lupa" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <circle cx="11" cy="11" r="7" />
+                <path d="M20 20l-3.5-3.5" />
+              </svg>
               <input
-                placeholder="🔎 Buscar productos..."
+                id="buscador-navbar"
+                placeholder="Buscá por nombre, marca o código"
                 type="search"
-                className="input-search"
+                autoComplete="off"
                 value={searchInput}
                 onChange={(e) => {
                   setSearchInput(e.target.value);
@@ -268,161 +240,157 @@ const NavBar = () => {
                 onFocus={() => {
                   if (searchInput.trim()) setShowDropdown(true);
                 }}
-                onKeyDown={(e) => {
-                  if (e.key === "Escape") setShowDropdown(false);
-                }}
               />
+              <button type="submit" className="nav-buscador__boton">
+                Buscar
+              </button>
 
               {showDropdown && searchInput.trim() && (
-                <ul className="search-dropdown">
-                  {loading && <li style={{ color: "#000000" }}>Cargando...</li>}
+                <ul className="nav-resultados" aria-live="polite">
+                  {loading && <li className="nav-resultados__estado">Buscando…</li>}
 
                   {!loading && hasSearched && results.length === 0 && (
-                    <li style={{ color: "#000000" }}>
-                      No se encontraron productos
-                    </li>
+                    <li className="nav-resultados__estado">No se encontraron productos</li>
                   )}
 
                   {!loading &&
                     results.map((product) => (
-                      <li
-                        key={product._id}
-                        onClick={() => handleProductClick(product._id)}
-                        className="probando-drop"
-                      >
-                        <div className="dropdown-navbar-container">
+                      <li key={product._id}>
+                        <button
+                          type="button"
+                          className="nav-resultados__item"
+                          onClick={() => handleProductClick(product._id)}
+                        >
                           <img
-                            className="img-navbar-dropwdown"
                             src={getImageUrl(product.imagen?.[0], ANCHO_MINIATURA)}
-                            alt={product.item}
+                            alt=""
+                            width={56}
+                            height={56}
+                            onError={usarPlaceholder}
                           />
-                          <div>
-                            <p className="marca-prod-navbar">{product.marca}</p>
-                            <p className="nombre-prod-navbar">{product.item}</p>
-                          </div>
-                        </div>
+                          <span>
+                            <span className="nav-resultados__marca">{product.marca}</span>
+                            <span className="nav-resultados__nombre">{product.item}</span>
+                          </span>
+                        </button>
                       </li>
                     ))}
+
+                  {!loading && results.length > 0 && (
+                    <li>
+                      <button type="submit" className="nav-resultados__todos">
+                        Ver todos los resultados
+                      </button>
+                    </li>
+                  )}
                 </ul>
               )}
             </form>
-          </div>
 
-          <div className="div-navbar-2 navbar-actions-desktop">
             <NavbarActions
               isAuthenticated={isAuthenticated}
+              nombre={nombre}
               logOut={logOut}
-              onUserClick={handleUserClick}
+              onLoginClick={() => setShowAuthModal(true)}
               cartItemsCount={cartItemsCount}
+              theme={theme}
+              toggleTheme={toggleTheme}
             />
           </div>
         </div>
-      </div>
 
-      {/* ───────── MENÚ ───────── */}
-      <div className="navbar-menu-container">
-        <div
-          className={`navbar-menu ${isMenuOpen ? "open" : ""}`}
-          ref={menuRef}
-        >
-          <button type="button" className="close-btn" onClick={toggleMenu}>
-            X
-          </button>
+        <div className="nav-barra">
+          <nav className="nav-barra__contenedor" aria-label="Principal">
+            <div className="nav-barra__productos" ref={menuCategoriasRef}>
+              <button
+                type="button"
+                className={`nav-barra__todos ${menuCategoriasAbierto ? "abierto" : ""}`}
+                aria-expanded={menuCategoriasAbierto}
+                aria-controls="menu-categorias"
+                onClick={() => setMenuCategoriasAbierto((v) => !v)}
+              >
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                Todos los productos
+                <svg className="nav-barra__flecha" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </button>
+              {menuCategoriasAbierto && (
+                <NavbarMenu
+                  id="menu-categorias"
+                  categorias={categorias}
+                  cargando={cargandoCategorias}
+                  onElegir={() => setMenuCategoriasAbierto(false)}
+                />
+              )}
+            </div>
 
-          <button
-            type="button"
-            className="btn-navbar"
-            onClick={() => setShowNavbarMenu((prev) => !prev)}
-          >
-            <FiAlignJustify />
-            Productos
-          </button>
+            <Link
+              to="/productos?ofertas=true"
+              className="nav-barra__ofertas"
+              aria-current={enOfertas ? "page" : undefined}
+            >
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+                <path d="M19 5L5 19" />
+                <circle cx="7" cy="7" r="2.5" />
+                <circle cx="17" cy="17" r="2.5" />
+              </svg>
+              Ofertas
+            </Link>
 
-          <NavbarMenu
-            isOpen={showNavbarMenu}
-            onClose={() => setShowNavbarMenu(false)}
-            onSelectCategory={closeAllMobileMenus}
-          />
+            <span className="nav-barra__separador" aria-hidden="true" />
 
-          <ul className="li-navbar">
-            <li>
+            {CATEGORIAS_DESTACADAS.map((c) => (
               <Link
-                to="/productos?ofertas=true"
-                onClick={closeMenuOnLink}
-                className="ofertas-link"
+                key={c.valor}
+                to={linkCategoria(c.valor)}
+                className={`nav-barra__link ${c.secundaria ? "nav-barra__link--secundaria" : ""}`}
+                aria-current={categoriaActual === c.valor ? "page" : undefined}
               >
-                <FaPercent size={10} className="icono-ofertas" /> OFERTAS
+                {c.texto}
               </Link>
-            </li>
-            <div className="mxh-nav-sep"></div>
-            <li>
-              <Link
-                to="/productos?categoria=Herramientas+Manuales"
-                onClick={closeMenuOnLink}
-              >
-                He. Manuales
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/productos?categoria=Herramientas+Electricas"
-                onClick={closeMenuOnLink}
-              >
-                He. Eléctricas
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/productos?categoria=Soldadura"
-                onClick={closeMenuOnLink}
-              >
-                Soldadura
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/productos?categoria=Automotor"
-                onClick={closeMenuOnLink}
-              >
-                Automotor
-              </Link>
-            </li>
-            <li>
-              <Link to="/productos?categoria=Jardin" onClick={closeMenuOnLink}>
-                Jardín
-              </Link>
-            </li>
-            <div className="mxh-nav-sep"></div>
-            <li>
-              <Link to="/contacto" onClick={closeMenuOnLink}>
-                CONTACTO
-              </Link>
-            </li>
-            <li>
-              <Link to="/nosotros" onClick={closeMenuOnLink}>
-                NOSOTROS
-              </Link>
-            </li>
-          </ul>
+            ))}
 
-          <button
-            type="button"
-            className={`theme-toggle ${theme === "light" ? "light" : ""}`}
-            onClick={toggleTheme}
-            aria-label="Cambiar tema"
-          >
-            <span className="toggle-track">
-              <span className="toggle-thumb">
-                {theme === "light" ? "☀️" : "🌙"}
-              </span>
-            </span>
-          </button>
+            <span className="nav-barra__espacio" />
+
+            <NavLink to="/contacto" className="nav-barra__link nav-barra__link--info">
+              Contacto
+            </NavLink>
+            <NavLink to="/nosotros" className="nav-barra__link nav-barra__link--info">
+              Nosotros
+            </NavLink>
+          </nav>
         </div>
-      </div>
+      </header>
 
-      {/* Un único AuthModal (antes se renderizaba dos veces) */}
+      {/* Mobile: accesos rápidos debajo del header (no quedan fijos al bajar) */}
+      <nav className="nav-rapido" aria-label="Accesos rápidos">
+        <Link to="/productos?ofertas=true" className="nav-rapido__ofertas">
+          Ofertas
+        </Link>
+        {CATEGORIAS_DESTACADAS.map((c) => (
+          <Link key={c.valor} to={linkCategoria(c.valor)}>
+            {c.corto}
+          </Link>
+        ))}
+      </nav>
+
+      <MenuMobile
+        abierto={menuMobileAbierto}
+        onCerrar={cerrarMenuMobile}
+        categorias={categorias}
+        isAuthenticated={isAuthenticated}
+        nombre={nombre}
+        onLogin={() => setShowAuthModal(true)}
+        logOut={logOut}
+        theme={theme}
+        toggleTheme={toggleTheme}
+      />
+
       {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
-    </div>
+    </>
   );
 };
 

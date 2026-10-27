@@ -1,78 +1,96 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "../css/Footer.css";
-import { useTheme } from "../context/ThemeContext.jsx";
+import { CONTACTO, urlWhatsapp } from "../utils/contacto.js";
 
+// Footer oscuro en los dos temas (como el navbar). Abajo, la firma de quien hizo el sitio.
 const Footer = () => {
-  const {theme} = useTheme();
+  const anio = new Date().getFullYear();
+
   return (
-    <div className="footer-container">
-      <div>
-        <img
-          className="logo-footer"
-          src={theme === "dark" ? "/logo-texto-blanco.svg" : "/logo-texto-negro.svg"}
-          width={120}
-          height={60}
-          alt="Bulonera El Triángulo"
-        />
-      </div>
-      <div>
-        <p className="titulo-footer">BULONERA EL TRIANGULO </p>
-        <ul className="li-footer">
-          <a className="link-none" href="/productos">
-            <li>Productos</li>
-          </a>
-          <a className="link-none" href="/faq">
-            <li>Preguntas Frecuentes</li>
-          </a>
-          <a className="link-none" href="/nosotros">
-            <li>Nosotros</li>
-          </a>
-          <a className="link-none" href="/perfil">
-            <li>Perfil</li>
-          </a>
-        </ul>
-      </div>
-      <div>
-        <p className="titulo-footer">Contacto</p>
-        <ul className="li-footer">
-          <li>eltrianguloventasonline@gmail.com</li>
-          <li>+54 9 115154-4062</li>
-        </ul>
-        <p className="titulo-footer">Redes Sociales</p>
-        <div className="container-iconos">
-          <div className="icono">
-            <a
-              href="https://www.instagram.com/buloneraeltriangulo/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="25"
-                height="25"
-                fill="black"
-                className="bi bi-instagram"
-                viewBox="0 0 16 16"
-              >
-                <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334" />
+    <footer className="footer">
+      <div className="footer__contenedor">
+        <div className="footer__marca">
+          <Link to="/" aria-label="Bulonera El Triángulo, inicio">
+            <img
+              src="/logo-texto-blanco.svg"
+              width={140}
+              height={70}
+              alt="Bulonera El Triángulo"
+              className="footer__logo"
+            />
+          </Link>
+          <p className="footer__lema">
+            Bulones, herramientas y seguridad industrial. Envíos a todo el país o retiro en el local.
+          </p>
+          <div className="footer__redes">
+            <a href={CONTACTO.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" />
+              </svg>
+            </a>
+            <a href={urlWhatsapp()} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.4z" />
               </svg>
             </a>
           </div>
-          <div className="icono">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="25"
-              height="25"
-              fill="black"
-              className="bi bi-tiktok"
-              viewBox="0 0 16 16"
-            >
-              <path d="M9 0h1.98c.144.715.54 1.617 1.235 2.512C12.895 3.389 13.797 4 15 4v2c-1.753 0-3.07-.814-4-1.829V11a5 5 0 1 1-5-5v2a3 3 0 1 0 3 3z" />
-            </svg>
-          </div>
+        </div>
+
+        <nav className="footer__columna" aria-label="Tienda">
+          <h2 className="footer__titulo">Tienda</h2>
+          <Link to="/productos?todos=true">Todos los productos</Link>
+          <Link to="/productos?ofertas=true">Ofertas</Link>
+          <Link to="/perfil">Mi cuenta</Link>
+          <Link to="/faq">Preguntas frecuentes</Link>
+        </nav>
+
+        <nav className="footer__columna" aria-label="Empresa">
+          <h2 className="footer__titulo">Empresa</h2>
+          <Link to="/nosotros">Nosotros</Link>
+          <Link to="/contacto">Contacto y cotizaciones</Link>
+        </nav>
+
+        <div className="footer__columna">
+          <h2 className="footer__titulo">Contacto</h2>
+          <span>
+            {CONTACTO.direccion}
+            <br />
+            {CONTACTO.localidad}
+          </span>
+          <a href={urlWhatsapp()} target="_blank" rel="noopener noreferrer">
+            {CONTACTO.telefonoVisible}
+          </a>
+          <a href={`mailto:${CONTACTO.email}`} className="footer__email">
+            {CONTACTO.email}
+          </a>
+          <span className="footer__horario">
+            {CONTACTO.horarioSemana}
+            <br />
+            {CONTACTO.horarioSabado}
+          </span>
         </div>
       </div>
-    </div>
+
+      <div className="footer__base">
+        <div className="footer__base-contenedor">
+          <span>
+            © {anio} Bulonera El Triángulo S.R.L. · Pagos seguros con Mercado Pago
+          </span>
+          <a
+            href="https://codelabs.com.ar"
+            target="_blank"
+            rel="noopener"
+            className="footer__firma"
+          >
+            Hecho por
+            <img src="/codelabs-logo.webp" width={96} height={22} alt="Codelabs" />
+          </a>
+        </div>
+      </div>
+    </footer>
   );
 };
 

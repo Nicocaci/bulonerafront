@@ -1,174 +1,40 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import "../../css/NavbarMenu.css";
-import { useQueryClient } from "@tanstack/react-query";
-import { subcategoriasQuery, useCategorias } from "../../hooks/useCatalogo.js";
 
-const NavbarMenu = ({ onClose, isOpen, onSelectCategory }) => {
-  const queryClient = useQueryClient();
-  const { data: categorias = [], isLoading: loading, isError } = useCategorias();
-  const error = isError ? "No se pudieron cargar las categorías" : "";
-
-  const [categoriaAbierta, setCategoriaAbierta] = useState(null);
-  const [subcategoriasMap, setSubcategoriasMap] = useState({});
-  const [loadingSub, setLoadingSub] = useState(null);
-
-  const menuRef = useRef(null);
-  const closeTimeoutRef = useRef(null);
-
-  // Cerrar al clickear afuera: el listener existe solo mientras el menú está abierto
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen, onClose]);
-
-  // Subcategorías: se piden al pasar el mouse y quedan en la caché de React Query
-  const fetchSubcategorias = async (categoria) => {
-    if (subcategoriasMap[categoria]) return;
-
-    try {
-      setLoadingSub(categoria);
-      const data = await queryClient.fetchQuery(subcategoriasQuery(categoria));
-      setSubcategoriasMap((prev) => ({ ...prev, [categoria]: data }));
-    } catch (err) {
-      console.error("Error al cargar subcategorías:", err);
-      setSubcategoriasMap((prev) => ({ ...prev, [categoria]: [] }));
-    } finally {
-      setLoadingSub(null);
-    }
-  };
-
-  const handleMouseEnter = (categoria) => {
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current);
-      closeTimeoutRef.current = null;
-    }
-    setCategoriaAbierta(categoria);
-    fetchSubcategorias(categoria);
-  };
-
-  const handleMouseLeave = () => {
-    closeTimeoutRef.current = setTimeout(() => {
-      setCategoriaAbierta(null);
-    }, 150);
-  };
-
-  const handleCategorySelect = () => {
-    onSelectCategory?.();
-  };
-
-  return (
-    <>
-      <div
-        className={`menu-overlay ${isOpen ? "open" : ""}`}
-        onClick={onClose}
-      />
-      <div ref={menuRef} className={`navbarmenu ${isOpen ? "open" : "closed"}`}>
-        <div className="header-menu">
-          <img
-            className="logo-menu"
-            src="/logo-texto-blanco.svg"
-            width={120}
-            height={60}
-            alt="Bulonera El Triángulo"
-          />
-          <p className="back-menu" onClick={onClose}>
-            ⬅
-          </p>
-        </div>
-        <ul>
-          {loading && <li>Cargando categorías...</li>}
-          {!loading && error && <li>{error}</li>}
-          {!loading && !error && categorias.length === 0 && (
-            <li>No hay categorías disponibles</li>
-          )}
-          {!loading &&
-            !error &&
-            categorias.map((categoria, index) => {
-              const estaAbierta = categoriaAbierta === categoria;
-              const subcats = subcategoriasMap[categoria] ?? [];
-
-              return (
-                <div
-                  className="menu-categorias-container"
-                  key={index}
-                  onMouseEnter={() => handleMouseEnter(categoria)}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <li className="menu-categorias">
-                    <div className="d-flex-between">
-                      <Link
-                        className="menu-categorias-link"
-                        to={`/productos?categoria=${encodeURIComponent(categoria)}`}
-                        onClick={handleCategorySelect}
-                      >
-                        {categoria}
-                      </Link>
-                      <span className={`arrow ${estaAbierta ? "open" : ""}`}>
-                        ➡
-                      </span>
-                    </div>
-                  </li>
-
-                  {estaAbierta && (
-                    <ul className="submenu-categorias">
-                      <li
-                        className="submenu-back"
-                        onClick={() => setCategoriaAbierta(null)}
-                      >
-                        {categoria}
-                      </li>
-
-                      {loadingSub === categoria && (
-                        <li>Cargando subcategorías...</li>
-                      )}
-
-                      {loadingSub !== categoria && subcats.length === 0 && (
-                        <li>No hay subcategorías</li>
-                      )}
-
-                      {loadingSub !== categoria &&
-                        subcats.map((sub, subIndex) => (
-                          <li key={subIndex} className="submenu-item">
-                            <Link
-                              to={`/productos?categoria=${encodeURIComponent(
-                                categoria,
-                              )}&subcategoria=${encodeURIComponent(sub)}`}
-                              onClick={handleCategorySelect}
-                            >
-                              {sub}
-                            </Link>
-                          </li>
-                        ))}
-                    </ul>
-                  )}
-                </div>
-              );
-            })}
-        </ul>
-        <div className="menu-categorias-container">
-          <li className="menu-categorias">
-            <div className="d-flex-between">
-              <Link
-                className="menu-categorias-link"
-                to={`/productos?todos=true`}
-                onClick={handleCategorySelect}
-              >
-                Todos los Productos
-              </Link>
-            </div>
+// Panel "Todos los productos" del navbar de desktop: las categorías con la cantidad de
+// productos de cada una (vienen de /api/products/facetas) y un acceso a las ofertas.
+const NavbarMenu = ({ id, categorias, cargando, onElegir }) => (
+  <div id={id} className="menu-categorias" role="region" aria-label="Categorías">
+    <div className="menu-categorias__lista">
+      <p className="menu-categorias__titulo">Categorías</p>
+      {cargando && <p className="menu-categorias__estado">Cargando categorías…</p>}
+      {!cargando && categorias.length === 0 && (
+        <p className="menu-categorias__estado">No hay categorías disponibles.</p>
+      )}
+      <ul>
+        {categorias.map((c) => (
+          <li key={c.valor}>
+            <Link to={`/productos?categoria=${encodeURIComponent(c.valor)}`} onClick={onElegir}>
+              <span>{c.valor}</span>
+              <span className="menu-categorias__cantidad">{c.cantidad}</span>
+            </Link>
           </li>
-        </div>
-      </div>
-    </>
-  );
-};
+        ))}
+      </ul>
+    </div>
+    <div className="menu-categorias__destacado">
+      <p className="menu-categorias__eyebrow">Ofertas</p>
+      <p className="menu-categorias__frase">Productos con descuento</p>
+      <p className="menu-categorias__texto">Precios rebajados por tiempo limitado.</p>
+      <Link to="/productos?ofertas=true" className="menu-categorias__boton" onClick={onElegir}>
+        Ver ofertas
+      </Link>
+      <Link to="/productos?todos=true" className="menu-categorias__boton menu-categorias__boton--borde" onClick={onElegir}>
+        Ver todos los productos
+      </Link>
+    </div>
+  </div>
+);
 
 export default NavbarMenu;

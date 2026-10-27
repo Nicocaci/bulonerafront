@@ -13,13 +13,6 @@
   text-decoration: none;
   color: #ffffff;
 }
-.d-flex-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 3px;
-}
 .d-flex-row{
   display: flex;
   flex-direction: row;
@@ -43,6 +36,18 @@ body,
   min-height: 100vh;
 }
 
+/* El contenedor de la app crece con el contenido (no se achica al alto de la pantalla):
+   así el navbar "sticky" queda pegado arriba en toda la página y los bloques del header
+   no se aplastan */
+.app-layout {
+  flex: 1 0 auto;
+}
+
+.app-layout > header,
+.app-layout > nav {
+  flex-shrink: 0;
+}
+
 main {
   flex: 1; /* Empuja el footer al fondo */
 }
@@ -54,24 +59,6 @@ body {
     color 0.3s ease;
 }
 @media (max-width: 768px) {
-}
-
-/* Precio de las tarjetas de producto (listado y carruseles) */
-.precio-fila {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  gap: 4px;
-}
-
-.precio-columna {
-  display: flex;
-  flex-direction: column;
-}
-
-.precio-columna--derecha {
-  align-items: flex-end;
 }
 
 /* Lugar reservado mientras se descarga una página */
@@ -93,6 +80,7 @@ body {
   border: none;
   border-radius: 6px;
   background-color: var(--color-marca);
-  color: #ffffff;
+  color: #1a1a1a;
+  font-weight: 600;
   cursor: pointer;
 }

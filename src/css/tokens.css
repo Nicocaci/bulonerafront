@@ -7,14 +7,27 @@
 :root {
   --color-marca: #f45d22;        /* naranja: botones principales, precios, links activos */
   --color-marca-hover: #d34810;  /* naranja al pasar el mouse */
-  --color-acento: #438796;       /* verde azulado: panel admin y perfil */
-  --color-acento-oscuro: #356d79;
+  /* Acento único del sitio (Fase 5): naranja de marca.
+     Sobre fondos claros, los textos y botones con texto blanco usan el naranja oscuro,
+     porque el texto blanco sobre #f45d22 no se lee bien (contraste 3,3 a 1). */
+  --color-acento: #c2410c;       /* botones con texto blanco (panel admin y perfil) */
+  --color-acento-oscuro: #9a3412;
+  --color-oscuro: #181818;       /* navbar, footer y bloques destacados */
   --color-exito: #108202;        /* verde: pasos completos del checkout */
-  --color-oferta: #e53935;       /* rojo: descuentos y ofertas */
+  --color-oferta: #d32f2f;       /* rojo: descuentos y ofertas (texto blanco encima: 5 a 1) */
 }
 
 /* Tema claro */
 :root {
+  --texto-marca: #c2410c;        /* links y textos naranjas sobre fondo claro */
+  --texto-secundario: #5f5f5f;
+  --fondo-pagina: #f6f6f6;
+  --superficie: #ffffff;         /* tarjetas y paneles */
+  --superficie-suave: #f2f2f2;
+  --borde-suave: #e6e6e6;
+  --borde-control: #d0d0d0;      /* inputs, selects y botones con borde */
+  --marca-suave: #fff4ee;        /* fondo de filtros y opciones elegidas */
+  --marca-suave-borde: #f3c3ad;
   --bg-color: #ffffff;
   --text-color: #1a1a1a;
   --card-bg: #f5f5f5;
@@ -42,6 +55,15 @@
 
 /* Tema oscuro */
 [data-theme="dark"] {
+  --texto-marca: #f47b4b;
+  --texto-secundario: #b0b0b0;
+  --fondo-pagina: #202324;
+  --superficie: #2a2d2e;
+  --superficie-suave: #333536;
+  --borde-suave: #3a3d3f;
+  --borde-control: #4a4d50;
+  --marca-suave: #3a2a22;
+  --marca-suave-borde: #6b3a24;
   --bg-color: #202324;
   --text-color: #e8e8e8;
   --card-bg: #1e1e1e;

@@ -38,10 +38,9 @@ const queryClient = new QueryClient({
 
 function AppContent() {
   const location = useLocation();
-  const isHome = location.pathname === "/";
 
   return (
-    <div style={{ paddingTop: isHome ? 0 : 80 }} className="app-layout">
+    <div className="app-layout">
       <NavBar />
       <main>
         <ScrollToTop />

@@ -10,41 +10,12 @@ const MINUTO = 60 * 1000;
 
 export const catalogoKeys = {
   todo: ["catalogo"],
-  categorias: () => ["catalogo", "categorias"],
-  subcategorias: (categoria) => ["catalogo", "subcategorias", categoria],
   productos: (filtros) => ["catalogo", "productos", filtros],
+  facetas: (filtros) => ["catalogo", "facetas", filtros],
   producto: (id) => ["catalogo", "producto", id],
 };
 
 const comoLista = (data) => (Array.isArray(data) ? data : []);
-
-// Opciones reutilizables (el menú del navbar las usa con queryClient.fetchQuery)
-export const subcategoriasQuery = (categoria) => ({
-  queryKey: catalogoKeys.subcategorias(categoria),
-  queryFn: async () => {
-    const { data } = await axiosInstance.get(
-      `/api/products/subcategorias/${encodeURIComponent(categoria)}`,
-    );
-    return comoLista(data);
-  },
-  staleTime: 10 * MINUTO,
-});
-
-export const useCategorias = () =>
-  useQuery({
-    queryKey: catalogoKeys.categorias(),
-    queryFn: async () => {
-      const { data } = await axiosInstance.get("/api/products/categorias");
-      return comoLista(data);
-    },
-    staleTime: 10 * MINUTO,
-  });
-
-export const useSubcategorias = (categoria) =>
-  useQuery({
-    ...subcategoriasQuery(categoria),
-    enabled: Boolean(categoria),
-  });
 
 // Listado paginado. Mientras carga una página nueva se siguen mostrando los
 // productos anteriores (placeholderData), así la grilla no "salta".
@@ -63,6 +34,32 @@ export const useProductos = (filtros) =>
     placeholderData: keepPreviousData,
     staleTime: MINUTO,
   });
+
+// Cantidades por categoría, subcategoría y marca para el filtro de Productos y el menú
+// del navbar (GET /api/products/facetas). Cada grupo se calcula sin su propio filtro:
+// con "Eléctricas" elegida, las otras categorías siguen apareciendo con su cantidad.
+const VACIAS = { total: 0, categorias: [], subcategorias: [], marcas: [], enOferta: 0, conStock: 0 };
+
+export const useFacetas = ({ category = "", subcategory = "", marca = "", search = "", soloOfertas = false } = {}) => {
+  // Solo se mandan los filtros con valor: así la clave de caché es la misma para
+  // el menú del navbar y para la página de productos sin filtros.
+  const params = {};
+  if (category) params.category = category;
+  if (subcategory) params.subcategory = subcategory;
+  if (marca) params.marca = marca;
+  if (search) params.search = search;
+  if (soloOfertas) params.soloOfertas = "true";
+
+  return useQuery({
+    queryKey: catalogoKeys.facetas(params),
+    queryFn: async () => {
+      const { data } = await axiosInstance.get("/api/products/facetas", { params });
+      return { ...VACIAS, ...data };
+    },
+    placeholderData: keepPreviousData,
+    staleTime: MINUTO,
+  });
+};
 
 // El backend puede mandar las imágenes como `imagen` (string o array) o `imagenes`:
 // se normalizan siempre a `imagenes` (array).

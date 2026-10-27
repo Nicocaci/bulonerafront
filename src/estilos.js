@@ -7,6 +7,7 @@ import "./css/Home.css";
 import "./css/BrandSlider.css";
 import "./css/MosaicBanner.css";
 import "./css/OfertasDestacadas.css";
+import "./css/TarjetaProducto.css";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";

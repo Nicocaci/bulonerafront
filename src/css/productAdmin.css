@@ -184,38 +184,7 @@ table button:last-child:hover {
   background: #c0392b;
 }
 
-/* ===== PAGINACIÓN ===== */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 14px;
-  margin-top: 20px;
-}
-
-.pagination button {
-  padding: 8px 14px;
-  border-radius: 6px;
-  border: none;
-  background: var(--color-acento);
-  color: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.pagination button:hover {
-  background: var(--color-acento-oscuro);
-}
-
-.pagination button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.pagination span {
-  font-size: 0.9rem;
-  color: #555;
-}
+/* Paginación: usa el estilo único de ProductosPage.css (componente Pagination) */
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {

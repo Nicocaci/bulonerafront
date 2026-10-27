@@ -6,7 +6,7 @@
   padding: 20px;
   width: 60%;
   margin: auto;
-  margin-top: 100px;
+  margin-top: 24px; /* Fase 5: el navbar ya no es flotante (va dentro de la página), así que no hace falta dejar lugar arriba */
   margin-bottom: 100px;
 }
 .cart-detail-grid {
