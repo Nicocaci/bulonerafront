@@ -1,0 +1,942 @@
+/* Panel de administración (Fase 5D): menú lateral oscuro en desktop y pestañas arriba
+   en pantallas chicas; Resumen con tarjetas, "Para hacer hoy", órdenes por estado y
+   últimas órdenes. Acento naranja (tokens.css). */
+
+.admin-panel {
+  --admin-radio: 14px;
+  --admin-preparar-fondo: var(--marca-suave);
+  --admin-preparar-borde: var(--marca-suave-borde);
+  --admin-preparar-texto: #9a3412;
+  --admin-atencion-fondo: #fef3f2;
+  --admin-atencion-borde: #f6cdc9;
+  --admin-atencion-texto: #b42318;
+
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  min-height: 70vh;
+  background: var(--fondo-pagina);
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .admin-panel {
+  --admin-preparar-texto: #f6a77f;
+  --admin-atencion-fondo: #3a2424;
+  --admin-atencion-borde: #6e3330;
+  --admin-atencion-texto: #f4a29b;
+}
+
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ─── Menú lateral ─────────────────────────────────────────── */
+.admin-menu {
+  background: var(--color-oscuro);
+  color: #ffffff;
+  padding: 24px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-menu__titulo {
+  margin: 0 0 6px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #a3a3a3;
+}
+
+.admin-menu__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-menu__link,
+.admin-menu__volver {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  color: #e0e0e0;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.admin-menu__link:hover,
+.admin-menu__volver:hover {
+  background: #242424;
+  color: #ffffff;
+}
+
+.admin-menu__link[aria-current="page"] {
+  background: #2a2a2a;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--color-marca);
+}
+
+.admin-menu__link:focus-visible,
+.admin-menu__volver:focus-visible {
+  outline: 2px solid var(--color-marca);
+  outline-offset: 2px;
+}
+
+.admin-menu__contador {
+  margin-left: auto;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  border-radius: 11px;
+  background: var(--color-marca);
+  color: #1a1a1a;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-menu__volver {
+  margin-top: auto;
+  padding-top: 0;
+  font-size: 13px;
+  color: #c9c9c9;
+}
+
+/* ─── Contenido ─────────────────────────────────────────────── */
+.admin-contenido {
+  min-width: 0;
+  padding: 28px 32px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-encabezado h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.admin-encabezado p {
+  margin: 2px 0 8px;
+  font-size: 14px;
+  color: var(--texto-secundario);
+}
+
+.admin-mensaje {
+  margin: 0;
+  padding: 20px;
+  font-size: 14px;
+  color: var(--texto-secundario);
+}
+
+.admin-mensaje--error {
+  color: var(--admin-atencion-texto);
+}
+
+.admin-texto-suave {
+  color: var(--texto-secundario);
+  font-size: 13px;
+}
+
+.admin-link {
+  color: var(--texto-marca);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.admin-link:hover {
+  text-decoration: underline;
+}
+
+/* Botón con aspecto de link (Imprimir etiqueta) */
+.admin-boton-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--texto-marca);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-boton-link:hover {
+  text-decoration: underline;
+}
+
+.admin-boton-secundario {
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--borde-control);
+  background: var(--superficie);
+  color: var(--text-color);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.admin-boton-secundario:hover:not(:disabled) {
+  border-color: var(--texto-marca);
+}
+
+.admin-boton-secundario:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* Cajas (tarjetas grandes) */
+.admin-caja,
+.admin-section {
+  background: var(--superficie);
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--admin-radio);
+  padding: 18px 20px;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.admin-caja__titulo,
+.titulo-admin-section {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.admin-caja__encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+.admin-caja__encabezado .admin-caja__titulo {
+  margin: 0;
+}
+
+/* Caja con tabla: la tabla llega a los bordes */
+.admin-caja--tabla {
+  padding: 0;
+  overflow: hidden;
+}
+
+.admin-caja--tabla .pagination {
+  margin: 16px 0 20px;
+}
+
+/* ─── Tarjetas de números ───────────────────────────────────── */
+.admin-tarjetas {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admin-tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--admin-radio);
+  padding: 18px 20px;
+  min-width: 0;
+}
+
+.admin-tarjeta--solo-mobile {
+  display: none;
+}
+
+.admin-tarjeta__titulo {
+  margin: 0;
+  font-size: 13px;
+  color: var(--texto-secundario);
+}
+
+.admin-tarjeta__valor {
+  margin: 6px 0 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-color);
+  overflow-wrap: anywhere;
+}
+
+.admin-tarjeta__detalle {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--texto-secundario);
+}
+
+/* ─── Para hacer hoy y órdenes por estado ───────────────────── */
+.admin-fila {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 14px;
+}
+
+.admin-tareas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-tarea {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--borde-suave);
+  background: var(--superficie-suave);
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.admin-tarea:hover {
+  border-color: var(--texto-marca);
+}
+
+.admin-tarea__cantidad {
+  min-width: 28px;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--texto-secundario);
+}
+
+.admin-tarea__texto {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.admin-tarea__texto strong {
+  font-weight: 600;
+}
+
+.admin-tarea__texto span {
+  font-size: 13px;
+  color: var(--texto-secundario);
+}
+
+.admin-tarea--preparar {
+  background: var(--admin-preparar-fondo);
+  border-color: var(--admin-preparar-borde);
+}
+
+.admin-tarea--preparar .admin-tarea__cantidad {
+  color: var(--admin-preparar-texto);
+}
+
+.admin-tarea--atencion {
+  background: var(--admin-atencion-fondo);
+  border-color: var(--admin-atencion-borde);
+}
+
+.admin-tarea--atencion .admin-tarea__cantidad {
+  color: var(--admin-atencion-texto);
+}
+
+.admin-estados {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.admin-estado {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  background: var(--superficie-suave);
+  color: var(--text-color);
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.admin-estado:hover {
+  border-color: var(--texto-marca);
+}
+
+.admin-estado__punto {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #a1a1aa;
+}
+
+.admin-estado__punto--pagado { background: var(--color-marca); }
+.admin-estado__punto--enviado { background: #2563eb; }
+.admin-estado__punto--entregado { background: var(--color-exito); }
+.admin-estado__punto--cancelado { background: #52525b; }
+.admin-estado__punto--reembolsado { background: #b42318; }
+
+[data-theme="dark"] .admin-estado__punto--cancelado { background: #8a8a93; }
+
+.admin-estado__nombre {
+  flex: 1;
+  font-size: 13px;
+  min-width: 0;
+}
+
+.admin-estado__cantidad {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ─── Estado de una orden (etiqueta o selector) ─────────────── */
+.estado-orden {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  background: #f4f4f5;
+  color: #3f3f46;
+}
+
+.estado-orden--pagado { background: #fff4ee; color: #9a3412; }
+.estado-orden--enviado { background: #e0ecff; color: #1e3a8a; }
+.estado-orden--entregado { background: #e3f3e1; color: #0b5c02; }
+.estado-orden--cancelado { background: #e8e8ea; color: #3f3f46; }
+.estado-orden--reembolsado,
+.estado-orden--rechazado { background: #fef3f2; color: #b42318; }
+
+.estado-orden--select {
+  border: 1px solid transparent;
+  padding: 6px 8px;
+  font-family: inherit;
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.estado-orden--select:focus-visible {
+  outline: 2px solid var(--texto-marca);
+  outline-offset: 2px;
+}
+
+.estado-orden--select option {
+  background: #ffffff;
+  color: #1a1a1a;
+}
+
+/* ─── Tabla de órdenes ──────────────────────────────────────── */
+.admin-tabla {
+  overflow-x: auto;
+}
+
+.admin-tabla table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+.admin-tabla thead th {
+  background: var(--superficie-suave);
+  color: var(--texto-secundario);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px;
+  white-space: nowrap;
+}
+
+.admin-tabla td {
+  padding: 12px 10px;
+  border-top: 1px solid var(--borde-suave);
+  vertical-align: middle;
+}
+
+.admin-tabla th:first-child,
+.admin-tabla td:first-child {
+  padding-left: 20px;
+}
+
+.admin-tabla th:last-child,
+.admin-tabla td:last-child {
+  padding-right: 20px;
+}
+
+.orden-col--numero {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.orden-col--total {
+  white-space: nowrap;
+}
+
+.orden-col--fecha {
+  color: var(--texto-secundario);
+  white-space: nowrap;
+}
+
+.orden-marca-atencion {
+  margin-left: 6px;
+  color: var(--admin-atencion-texto);
+  cursor: help;
+}
+
+/* Aviso de atención debajo de la orden */
+.admin-tabla .orden-aviso td {
+  border-top: none;
+  padding-top: 0;
+  padding-bottom: 14px;
+}
+
+.orden-aviso__caja {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--admin-atencion-fondo);
+  border: 1px solid var(--admin-atencion-borde);
+}
+
+.orden-aviso__caja p {
+  margin: 0;
+  flex: 1 1 280px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.orden-aviso__caja strong {
+  color: var(--admin-atencion-texto);
+}
+
+/* Filtros del listado */
+.admin-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 16px 20px;
+}
+
+.admin-chip {
+  flex-shrink: 0;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 18px;
+  border: 1px solid var(--borde-control);
+  background: var(--superficie);
+  color: var(--text-color);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.admin-chip:hover {
+  border-color: var(--texto-marca);
+}
+
+.admin-chip[aria-pressed="true"] {
+  background: var(--color-oscuro);
+  border-color: var(--color-oscuro);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .admin-chip[aria-pressed="true"] {
+  background: var(--color-marca);
+  border-color: var(--color-marca);
+  color: #1a1a1a;
+}
+
+.admin-chip:focus-visible {
+  outline: 2px solid var(--texto-marca);
+  outline-offset: 2px;
+}
+
+/* ─── Tablas de productos y usuarios ────────────────────────── */
+.users-table-container {
+  overflow-x: auto;
+}
+
+.admin-tabla-simple {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-color);
+}
+
+.admin-tabla-simple thead th {
+  background: var(--superficie-suave);
+  color: var(--texto-secundario);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px;
+  white-space: nowrap;
+}
+
+.admin-tabla-simple td {
+  padding: 10px;
+  border-top: 1px solid var(--borde-suave);
+  vertical-align: middle;
+}
+
+.admin-tabla-simple tbody tr:hover {
+  background: var(--superficie-suave);
+}
+
+.admin-tabla-simple img {
+  display: block;
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: #ffffff;
+}
+
+.admin-tabla-simple .no-users {
+  text-align: center;
+  padding: 40px;
+  color: var(--texto-secundario);
+}
+
+.admin-icono-boton {
+  width: 36px;
+  height: 36px;
+  margin-right: 6px;
+  border-radius: 8px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+.admin-icono-boton--editar {
+  background: var(--color-acento);
+}
+
+.admin-icono-boton--editar:hover {
+  background: var(--color-acento-oscuro);
+}
+
+.admin-icono-boton--borrar {
+  background: #c62828;
+}
+
+.admin-icono-boton--borrar:hover {
+  background: #a31f1f;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--superficie-suave);
+  color: var(--text-color);
+}
+
+.role-admin {
+  background: #fff4ee;
+  color: #9a3412;
+}
+
+.role-user {
+  background: #e8e8ea;
+  color: #3f3f46;
+}
+
+.delete-btn {
+  min-height: 36px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 8px;
+  background: #c62828;
+  color: #ffffff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #a31f1f;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+  min-height: 42px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid var(--borde-control);
+  background: var(--superficie);
+  color: var(--text-color);
+  font: inherit;
+  font-size: 14px;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--texto-marca);
+  box-shadow: 0 0 0 3px rgba(244, 93, 34, 0.15);
+}
+
+/* ─── Tablet: pestañas arriba ───────────────────────────────── */
+@media (max-width: 1024px) {
+  .admin-panel {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    min-height: 0;
+  }
+
+  .admin-menu {
+    background: var(--superficie);
+    border-bottom: 1px solid var(--borde-suave);
+    padding: 0 6px;
+    overflow-x: auto;
+  }
+
+  .admin-menu__titulo,
+  .admin-menu__volver,
+  .admin-menu__link svg {
+    display: none;
+  }
+
+  .admin-menu__lista {
+    flex-direction: row;
+    gap: 0;
+  }
+
+  .admin-menu__lista li {
+    flex: 1;
+  }
+
+  .admin-menu__link {
+    justify-content: center;
+    gap: 6px;
+    min-height: 50px;
+    padding: 0 10px;
+    border-radius: 0;
+    color: var(--texto-secundario);
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .admin-menu__link:hover {
+    background: transparent;
+    color: var(--text-color);
+  }
+
+  .admin-menu__link[aria-current="page"] {
+    background: transparent;
+    color: var(--text-color);
+    box-shadow: inset 0 -3px 0 var(--color-marca);
+  }
+
+  .admin-menu__contador {
+    margin-left: 0;
+    min-width: 18px;
+    height: 18px;
+    font-size: 11px;
+  }
+
+  .admin-contenido {
+    padding: 22px 20px 40px;
+  }
+
+  .admin-tarjetas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-fila {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ─── Mobile: tarjetas en lugar de tabla ────────────────────── */
+@media (max-width: 720px) {
+  .admin-contenido {
+    padding: 18px 14px 32px;
+    gap: 12px;
+  }
+
+  .admin-encabezado h1 {
+    font-size: 22px;
+  }
+
+  .admin-tarjetas {
+    gap: 10px;
+  }
+
+  .admin-tarjeta {
+    padding: 14px;
+    border-radius: 12px;
+  }
+
+  .admin-tarjeta__titulo {
+    font-size: 12px;
+  }
+
+  .admin-tarjeta__valor {
+    margin-top: 4px;
+    font-size: 22px;
+  }
+
+  .admin-tarjeta__detalle,
+  .admin-tarjeta--solo-desktop {
+    display: none;
+  }
+
+  .admin-tarjeta--solo-mobile {
+    display: block;
+  }
+
+  .admin-caja,
+  .admin-section {
+    padding: 14px;
+    border-radius: 12px;
+  }
+
+  .admin-estados {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .admin-estado {
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--borde-suave);
+    padding: 0 2px;
+    min-height: 44px;
+  }
+
+  .admin-estados li:last-child .admin-estado {
+    border-bottom: none;
+  }
+
+  .admin-estado__nombre {
+    font-size: 14px;
+  }
+
+  /* La caja de la tabla deja de ser caja: cada orden es su propia tarjeta */
+  .admin-caja--tabla {
+    background: transparent;
+    border: none;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .admin-caja--tabla .admin-caja__encabezado {
+    padding: 6px 0 2px;
+  }
+
+  .admin-caja--tabla .admin-mensaje {
+    padding: 14px;
+    background: var(--superficie);
+    border: 1px solid var(--borde-suave);
+    border-radius: 12px;
+  }
+
+  /* En mobile los filtros quedan en una fila que se desliza */
+  .admin-filtros {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    padding: 0 0 4px;
+  }
+
+  .admin-tabla {
+    overflow: visible;
+  }
+
+  .admin-tabla table,
+  .admin-tabla tbody,
+  .admin-tabla tr,
+  .admin-tabla td {
+    display: block;
+  }
+
+  .admin-tabla thead {
+    display: none;
+  }
+
+  .admin-tabla tbody {
+    background: var(--superficie);
+    border: 1px solid var(--borde-suave);
+    border-radius: 12px;
+    margin-top: 10px;
+  }
+
+  .admin-tabla .orden-fila {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "numero estado"
+      "cliente total"
+      "envio fecha";
+    align-items: center;
+    gap: 6px 12px;
+    padding: 14px;
+  }
+
+  .admin-tabla td,
+  .admin-tabla th:first-child,
+  .admin-tabla td:first-child,
+  .admin-tabla td:last-child {
+    padding: 0;
+    border: none;
+  }
+
+  .orden-col--numero { grid-area: numero; }
+  .orden-col--estado { grid-area: estado; justify-self: end; }
+  .orden-col--cliente { grid-area: cliente; font-size: 14px; min-width: 0; overflow-wrap: anywhere; }
+  .orden-col--total { grid-area: total; justify-self: end; font-weight: 600; }
+  .orden-col--envio { grid-area: envio; }
+  .orden-col--fecha { grid-area: fecha; justify-self: end; font-size: 13px; }
+
+  .admin-tabla .orden-aviso td {
+    padding: 0 14px 14px;
+  }
+}

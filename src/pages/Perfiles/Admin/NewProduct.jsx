@@ -42,38 +42,47 @@ const ProductsPage = () => {
   }, [refetch, queryClient]);
 
   return (
-    <div className="admin-section">
-      <p className="titulo-admin-section">Productos</p>
-
-      <ProductForm
-        editingProduct={editingProduct}
-        setEditingProduct={setEditingProduct}
-        refetch={handleRefetch}
-      />
-
-      <p className="titulo-admin-section">Lista de Productos</p>
-      <input
-        className="search-input"
-        placeholder="Buscar..."
-        value={searchNombre}
-        onChange={(e) => setSearchNombre(e.target.value)}
-      />
-
-      <div className="users-table-container">
-        <ProductTable
-          productos={data?.products || []}
-          isLoading={isLoading}
-          onEdit={handleEdit}
+    <>
+      <section className="admin-section" aria-labelledby="titulo-form-producto">
+        <h2 id="titulo-form-producto" className="titulo-admin-section">
+          {editingProduct ? `Editar: ${editingProduct.item}` : "Nuevo producto"}
+        </h2>
+        <ProductForm
+          editingProduct={editingProduct}
+          setEditingProduct={setEditingProduct}
           refetch={handleRefetch}
         />
-      </div>
+      </section>
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={data?.pagination?.totalPages || 1}
-        onPageChange={setCurrentPage}
-      />
-    </div>
+      <section className="admin-section" aria-labelledby="titulo-lista-productos">
+        <h2 id="titulo-lista-productos" className="titulo-admin-section">
+          Lista de productos
+        </h2>
+        <input
+          className="search-input"
+          type="search"
+          aria-label="Buscar productos"
+          placeholder="Buscar por nombre o SKU..."
+          value={searchNombre}
+          onChange={(e) => setSearchNombre(e.target.value)}
+        />
+
+        <div className="users-table-container">
+          <ProductTable
+            productos={data?.products || []}
+            isLoading={isLoading}
+            onEdit={handleEdit}
+            refetch={handleRefetch}
+          />
+        </div>
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={data?.pagination?.totalPages || 1}
+          onPageChange={setCurrentPage}
+        />
+      </section>
+    </>
   );
 };
 

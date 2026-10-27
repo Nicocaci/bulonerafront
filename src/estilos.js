@@ -15,7 +15,7 @@ import "./css/ProductosPage.css";
 import "./css/Contacto.css";
 import "./css/Perfil.css";
 import "./css/productAdmin.css";
-import "./css/AdminOrder.css";
+import "./css/AdminPanel.css";
 import "./css/NavBar.css";
 import "./css/AuthModal.css";
 import "sweetalert2/dist/sweetalert2.min.css";

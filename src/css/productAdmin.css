@@ -1,18 +1,5 @@
-/* ===== CONTENEDOR GENERAL ===== */
-.admin-section {
-  background: var(--adminSection-bg);
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  margin-bottom: 24px;
-}
-
-.titulo-admin-section {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 20px;
-  color: var(--text-color);
-}
+/* Formulario de productos del panel admin (las cajas y tablas del panel están en AdminPanel.css).
+   Ojo: .profile-form también lo usa el formulario de "Mi perfil". */
 
 /* ===== FORM ===== */
 .profile-form {
@@ -23,7 +10,7 @@
 }
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
   gap: 14px;
 }
 
@@ -37,6 +24,13 @@
   flex-direction: column;
   gap: 14px;
   flex: 1;
+  min-width: 0;
+}
+
+/* Un fieldset no se achica por debajo de su contenido salvo que se lo indique:
+   en pantallas de 320 a 360 px el formulario se salía del costado */
+.profile-form fieldset {
+  min-width: 0;
 }
 .profile-form input,
 .profile-form textarea {
@@ -52,7 +46,7 @@
 .profile-form textarea:focus {
   outline: none;
   border-color: var(--color-acento);
-  box-shadow: 0 0 0 2px rgba(67, 135, 150, 0.1);
+  box-shadow: 0 0 0 2px rgba(244, 93, 34, 0.15);
 }
 
 .profile-form textarea {
@@ -100,103 +94,8 @@
   background: #c0392b;
 }
 
-/* ===== INPUT SEARCH TABLE ===== */
-.search-input {
-  width: 100%;
-  max-width: 400px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--borderForm-color);
-  background-color: var(--cards-bg);
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
-}
-
-
-/* ===== TABLA ===== */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 16px;
-}
-table thead {
-  background: var(--tableHead-bg);
-}
-table thead th {
-  text-align: center;
-  padding: 14px;
-  font-size: 13px;
-  color: #6b7280;
-  font-weight: 600;
-}
-
-table tbody tr {
-  border-bottom: 1px solid var(--borderForm-color);
-  transition: background 0.2s ease;
-  cursor: pointer;
-}
-
-table tbody tr:hover {
-  background: var(--adminHover-bg);
-}
-
-table td {
-  padding: 12px;
-  font-size: 10px;
-  color: var(--text-color);
-  text-align: center;
-}
-
-/* Imagen */
-table img {
-  border-radius: 6px;
-  object-fit: cover;
-}
-
-/* ===== BOTONES TABLA ===== */
-table button {
-  margin-right: 8px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: none;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-/* Editar */
-table button:first-child {
-  background: var(--color-acento);
-  color: white;
-}
-
-table button:first-child:hover {
-  background: var(--color-acento-oscuro);
-}
-
-/* Eliminar */
-table button:last-child {
-  background: #e74c3c;
-  color: white;
-}
-
-table button:last-child:hover {
-  background: #c0392b;
-}
-
-/* Paginación: usa el estilo único de ProductosPage.css (componente Pagination) */
-
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-  .admin-section {
-    padding: 16px;
-  }
-
-  table td {
-    padding: 8px;
-    font-size: 0.8rem;
-  }
-
   .profile-form {
     gap: 10px;
   }

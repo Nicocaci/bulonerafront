@@ -1,5 +1,6 @@
 import axiosInstance from "../../../../utils/axiosConfig.js";
 import Swal from "sweetalert2";
+import { IconoImprimir } from "../IconosAdmin.jsx";
 
 export default function PrintLabelButton({ envioId }) {
   const handlePrint = async () => {
@@ -27,8 +28,9 @@ export default function PrintLabelButton({ envioId }) {
   };
 
   return (
-    <button onClick={handlePrint} className="admin-btn-secondary">
-      🖨️ Imprimir etiqueta
+    <button type="button" onClick={handlePrint} className="admin-boton-link">
+      <IconoImprimir />
+      Imprimir etiqueta
     </button>
   );
 }

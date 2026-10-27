@@ -31,7 +31,7 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
   if (isLoading) return <p>Cargando...</p>;
 
   return (
-    <table>
+    <table className="admin-tabla-simple">
       <thead>
         <tr>
           <th>Imagen</th>
@@ -49,7 +49,7 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
         {productos.map((p) => (
           <tr key={p._id}>
             <td>
-              <img src={getImageUrl(p.imagen?.[0])} width={50} />
+              <img src={getImageUrl(p.imagen?.[0])} width={50} height={50} alt="" />
             </td>
             <td>{p.item}</td>
             <td>{p.categoria}</td>
@@ -67,8 +67,24 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
                 : "No"}
             </td>
             <td >
-              <button onClick={() => onEdit(p)}><FaRegEdit/></button>
-              <button onClick={() => handleDelete(p._id)}><MdDelete /></button>
+              <button
+                type="button"
+                className="admin-icono-boton admin-icono-boton--editar"
+                aria-label={`Editar ${p.item}`}
+                title="Editar"
+                onClick={() => onEdit(p)}
+              >
+                <FaRegEdit aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                className="admin-icono-boton admin-icono-boton--borrar"
+                aria-label={`Eliminar ${p.item}`}
+                title="Eliminar"
+                onClick={() => handleDelete(p._id)}
+              >
+                <MdDelete aria-hidden="true" />
+              </button>
             </td>
           </tr>
         ))}

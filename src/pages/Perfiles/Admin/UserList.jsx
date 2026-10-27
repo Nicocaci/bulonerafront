@@ -43,10 +43,9 @@ const UserList = ({ users = [], onUsersChange }) => {
 
 
     return (
-        <div className="admin-section">
-            <p className='titulo-admin-section'>Gestión de Usuarios</p>
+        <section className="admin-section" aria-label="Usuarios">
             <div className="users-table-container">
-                <table >
+                <table className="admin-tabla-simple">
                     <thead>
                         <tr>
                             <th>Nombre</th>
@@ -100,7 +99,7 @@ const UserList = ({ users = [], onUsersChange }) => {
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
     )
 };
 
