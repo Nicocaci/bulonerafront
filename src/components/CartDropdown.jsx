@@ -1,38 +1,54 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import "../css/CartDropdown.css";
-import { Link } from "react-router-dom";
 import { ANCHO_MINIATURA, getImageUrl, usarPlaceholder } from "../utils/imageUtils";
 import Swal from "../utils/alertas.js";
-import { GoArrowRight } from "react-icons/go";
 import { getPrecioUnitario } from "../utils/precio.js";
 
+const pesos = (n) => `$${Number(n || 0).toLocaleString("es-AR")}`;
+
+const primeraImagen = (product) => {
+  if (Array.isArray(product.imagen)) return product.imagen[0];
+  if (Array.isArray(product.imagenes)) return product.imagenes[0];
+  return product.imagen;
+};
+
+/**
+ * Carrito lateral (Fase 5F): panel desde la derecha con la página atenuada atrás.
+ * Se cierra con la X, "Seguir comprando", Escape o tocando afuera; al cerrar, el foco
+ * vuelve al botón del carrito. En mobile ocupa toda la pantalla.
+ */
 const CartDropdown = ({ onClose, isOpen }) => {
   const { cart, clearCartSilently, updateProductQuantity } = useCart();
   const [updatingQuantities, setUpdatingQuantities] = useState({});
   const products = cart?.products || [];
-  const dropdownRef = useRef(null);
+  const panelRef = useRef(null);
+  const cerrarRef = useRef(null);
 
+  // Al abrir: foco en "Cerrar", la página de atrás no se desplaza y Escape cierra.
+  // Al cerrar, el foco vuelve a donde estaba (el botón del carrito).
   useEffect(() => {
     if (!isOpen) return;
-
-    const handleClickOutside = (event) => {
-      // Verificar si el clic fue fuera del dropdown
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        // Verificar si el clic NO fue en el botón del carrito ni en su wrapper
-        const cartButton = event.target.closest(".cart-btn-container");
-        if (!cartButton) {
-          onClose();
-        }
-      }
+    const previo = document.activeElement;
+    cerrarRef.current?.focus();
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const alEscape = (e) => {
+      // Si hay un aviso abierto (por ejemplo, "¿Vaciar carrito?"), Escape cierra el aviso
+      if (e.key === "Escape" && !Swal.isVisible()) onClose();
     };
-
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", alEscape);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = overflow;
+      document.removeEventListener("keydown", alEscape);
+      previo?.focus?.();
     };
   }, [isOpen, onClose]);
 
+  if (!isOpen) return null;
+
+  const unidades = products.reduce((acc, item) => acc + (item.quantity || item.cantidad || 1), 0);
   const total = products.reduce((acc, item) => {
     const price = getPrecioUnitario(item.product || item);
     const quantity = item.quantity || item.cantidad || 1;
@@ -57,6 +73,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
     setUpdatingQuantities((prev) => ({ ...prev, [productId]: true }));
 
     try {
+      // Cantidad 0 = quitar el producto
       await updateProductQuantity(productId, quantity);
     } catch (error) {
       console.error("Error al actualizar la cantidad:", error);
@@ -74,6 +91,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
       });
     }
   };
+
   const handleClearCart = async () => {
     if (products.length === 0) return;
 
@@ -107,147 +125,190 @@ const CartDropdown = ({ onClose, isOpen }) => {
       }
     }
   };
+
+  // Tab no sale del panel
+  const alTab = (e) => {
+    if (e.key !== "Tab") return;
+    const enfocables = panelRef.current?.querySelectorAll(
+      "a[href], button:not([disabled]), input:not([disabled])",
+    );
+    if (!enfocables?.length) return;
+    const primero = enfocables[0];
+    const ultimo = enfocables[enfocables.length - 1];
+    if (e.shiftKey && document.activeElement === primero) {
+      e.preventDefault();
+      ultimo.focus();
+    } else if (!e.shiftKey && document.activeElement === ultimo) {
+      e.preventDefault();
+      primero.focus();
+    }
+  };
+
   return (
-    <div className={`cart-dropdown ${isOpen ? "open" : ""}`} ref={dropdownRef}>
-      <div>
-        <GoArrowRight onClick={onClose} className="back-cart" />
-      </div>
-      <div className="cart-dropdown-header">
-        <div>
-          <p>Mi carrito</p>
-        </div>
-        <div>
-          <p className="vaciar-carrito" onClick={handleClearCart}>
-            Vaciar
-          </p>
-        </div>
-      </div>
+    <div className="carrito-lateral__fondo" onMouseDown={onClose}>
+      <aside
+        ref={panelRef}
+        className="carrito-lateral"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="carrito-lateral-titulo"
+        onMouseDown={(e) => e.stopPropagation()}
+        onKeyDown={alTab}
+      >
+        <header className="carrito-lateral__cabecera">
+          <h2 id="carrito-lateral-titulo">Tu carrito</h2>
+          {unidades > 0 && (
+            <span className="carrito-lateral__cantidad">
+              {unidades} {unidades === 1 ? "producto" : "productos"}
+            </span>
+          )}
+          <button
+            ref={cerrarRef}
+            type="button"
+            className="carrito-lateral__cerrar"
+            aria-label="Cerrar carrito"
+            onClick={onClose}
+          >
+            <svg
+              aria-hidden="true"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
+        </header>
 
-      {products.length === 0 ? (
-        <div className="cart-dropdown-empty">Tu carrito está vacío</div>
-      ) : (
-        <>
-          <div className="cart-dropdown-items">
-            {products.map((item) => {
-              const product = item.product || item;
-              const id = product._id || product.id;
-              const stock = product.stock;
-              const name =
-                product.item || product.nombre || product.name || "Producto";
-              const marca = product.marca;
-              const quantity = item.quantity || item.cantidad || 1;
-              const price = getPrecioUnitario(product);
-              const itemTotal = price * quantity;
+        {products.length === 0 ? (
+          <div className="carrito-lateral__vacio">
+            <svg
+              aria-hidden="true"
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L21 8H6" />
+              <circle cx="9" cy="20" r="1.4" />
+              <circle cx="18" cy="20" r="1.4" />
+            </svg>
+            <p>Tu carrito está vacío.</p>
+            <Link to="/productos?todos=true" className="carrito-lateral__pagar" onClick={onClose}>
+              Ver productos
+            </Link>
+          </div>
+        ) : (
+          <>
+            <ul className="carrito-lateral__lista">
+              {products.map((item) => {
+                const product = item.product || item;
+                const id = product._id || product.id;
+                const stock = product.stock;
+                const name = product.item || product.nombre || product.name || "Producto";
+                const quantity = item.quantity || item.cantidad || 1;
+                const price = getPrecioUnitario(product);
+                const ocupado = Boolean(updatingQuantities[id]);
 
-              return (
-                <div
-                  className="cart-dropdown-item"
-                  key={id || item._id || Math.random()}
-                >
-                  <img
-                    src={getImageUrl(
-                      // Usar siempre la primera imagen disponible
-                      Array.isArray(product.imagen)
-                        ? product.imagen[0]
-                        : Array.isArray(product.imagenes)
-                          ? product.imagenes[0]
-                          : product.imagen,
-                      ANCHO_MINIATURA,
-                    )}
-                    alt={product.item || "Producto"}
-                    className="cart-dropdown-image"
-                    onError={usarPlaceholder}
-                  />
-                  <div className="cart-dropdown-info">
-                    <p className="cart-dropdown-marca">{marca}</p>
-                    <p className="cart-dropdown-name">{name}</p>
-                    <p className="cart-dropdown-price">
-                      ${price.toLocaleString("es-AR")}/u
-                    </p>
-                    <div className="cart-dropdown-total-container">
-                      <div className="cart-dropdown-quantity">
-                        <label htmlFor={`quantity-${id}`}></label>
-                        <div className="cantidad-container-cart">
+                return (
+                  <li className="carrito-lateral__item" key={id || item._id}>
+                    <img
+                      src={getImageUrl(primeraImagen(product), ANCHO_MINIATURA)}
+                      alt=""
+                      width={72}
+                      height={72}
+                      className="carrito-lateral__foto"
+                      onError={usarPlaceholder}
+                    />
+                    <div className="carrito-lateral__info">
+                      {product.marca && (
+                        <span className="carrito-lateral__marca">{product.marca}</span>
+                      )}
+                      <Link
+                        to={`/producto/${id}`}
+                        className="carrito-lateral__nombre"
+                        onClick={onClose}
+                      >
+                        {name}
+                      </Link>
+                      <span className="carrito-lateral__unitario">{pesos(price)} c/u</span>
+                      <div className="carrito-lateral__acciones">
+                        <div
+                          className="carrito-lateral__cantidad-control"
+                          role="group"
+                          aria-label={`Cantidad de ${name}`}
+                        >
                           <button
                             type="button"
-                            className="cantidad-btn"
-                            onClick={() =>
-                              handleQuantityChange(
-                                id,
-                                (item.quantity || 1) - 1,
-                                stock,
-                              )
+                            aria-label={
+                              quantity === 1 ? `Quitar ${name}` : `Restar una unidad de ${name}`
                             }
-                            disabled={updatingQuantities[id]}
+                            onClick={() => handleQuantityChange(id, quantity - 1, stock)}
+                            disabled={ocupado}
                           >
                             −
                           </button>
-                          <input
-                            type="number"
-                            id={`quantity-${id}`}
-                            min="0"
-                            max={stock}
-                            value={item.quantity || 1}
-                            onChange={(e) =>
-                              handleQuantityChange(id, e.target.value, stock)
-                            }
-                            disabled={updatingQuantities[id]}
-                            className="cart-dropdown-quantity-input"
-                          />
+                          <span aria-live="polite">{quantity}</span>
                           <button
                             type="button"
-                            className="cantidad-btn"
-                            onClick={() =>
-                              handleQuantityChange(
-                                id,
-                                (item.quantity || 1) + 1,
-                                stock,
-                              )
-                            }
-                            disabled={
-                              updatingQuantities[id] ||
-                              (stock != null && item.quantity >= stock)
-                            }
+                            aria-label={`Sumar una unidad de ${name}`}
+                            onClick={() => handleQuantityChange(id, quantity + 1, stock)}
+                            disabled={ocupado || (stock != null && quantity >= stock)}
                           >
                             +
                           </button>
                         </div>
-                      </div>
-                      <div>
-                        <p className="cart-dropdown-total-item">
-                          ${itemTotal.toLocaleString("es-AR")}
-                        </p>
+                        <button
+                          type="button"
+                          className="carrito-lateral__quitar"
+                          onClick={() => handleQuantityChange(id, 0, stock)}
+                          disabled={ocupado}
+                        >
+                          Quitar
+                        </button>
+                        <span className="carrito-lateral__subtotal">{pesos(price * quantity)}</span>
                       </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  </li>
+                );
+              })}
+            </ul>
 
-          <div className="cart-dropdown-footer">
-            <div className="footer-total-container">
-              <div>
-                <p className="total-label">Total:</p>
+            <footer className="carrito-lateral__pie">
+              <div className="carrito-lateral__total">
+                <span>Subtotal</span>
+                <span>{pesos(total)}</span>
               </div>
-              <div>
-                <span className="footer-total-cart">
-                  ${total.toLocaleString("es-AR")}
-                </span>
-              </div>
-            </div>
-            <div className="cart-dropdown-footer-buttons">
+              <p className="carrito-lateral__nota">
+                El envío se calcula al finalizar la compra. IVA incluido.
+              </p>
               <Link
-                className="link-none"
                 to={`/carrito/${cart?._id ?? "mi-carrito"}`}
+                className="carrito-lateral__pagar"
                 onClick={onClose}
               >
-                <p className="cart-dropdown-checkout">IR A PAGAR</p>
+                Ir a pagar
               </Link>
-            </div>
-          </div>
-        </>
-      )}
+              <div className="carrito-lateral__secundarios">
+                <button type="button" className="carrito-lateral__seguir" onClick={onClose}>
+                  Seguir comprando
+                </button>
+                <button type="button" className="carrito-lateral__vaciar" onClick={handleClearCart}>
+                  Vaciar carrito
+                </button>
+              </div>
+            </footer>
+          </>
+        )}
+      </aside>
     </div>
   );
 };

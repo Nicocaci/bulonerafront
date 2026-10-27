@@ -12,6 +12,7 @@ import "swiper/css/pagination";
 import "./css/ProductosPage.css";
 import "./css/Contacto.css";
 import "./css/Perfil.css";
+import "./css/MiCuenta.css";
 import "./css/productAdmin.css";
 import "./css/AdminPanel.css";
 import "./css/NavBar.css";

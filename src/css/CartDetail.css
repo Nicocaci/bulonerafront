@@ -332,25 +332,6 @@
   margin-top: 6px;
 }
 
-/* ── Lo usa el carrito lateral (CartDropdown): no cambiar ── */
-.cantidad-container-cart {
-  display: inline-flex;
-  align-items: center;
-  border: 0.5px solid var(--border-color);
-  border-radius: 8px;
-  background-color: var(--prodContainer-bg);
-  overflow: hidden;
-  height: 30px;
-  transition: border-color 0.15s;
-  width: max-content;
-}
-
-@media (max-width: 990px) {
-  .cantidad-container-cart {
-    width: 100px;
-  }
-}
-
 /* ── Tablet ───────────────────────────────────────────── */
 @media (max-width: 900px) {
   .carrito__grilla {

@@ -621,39 +621,6 @@
   min-height: 100vh;
 }
 
-/* ── Lo usa el carrito lateral (CartDropdown): no cambiar ── */
-.cantidad-btn {
-  width: 44px;
-  height: 100%;
-  border: none;
-  background: var(--prodContainer-bg);
-  color: #666;
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background 0.12s,
-    color 0.12s;
-  user-select: none;
-}
-
-.cantidad-btn:hover {
-  background: var(--menuCatHover-bg);
-  color: #111;
-}
-
-.cantidad-btn:active {
-  background: var(--prodContainer-bg);
-  transform: scale(0.95);
-}
-
-.cantidad-btn:disabled {
-  cursor: not-allowed;
-  transform: none;
-}
-
 /* Pantallas medianas: el panel de zoom va debajo de la foto para no cortarse */
 @media (max-width: 1200px) {
   .magnifier-zoom-pane {
@@ -808,10 +775,6 @@
     padding: 10px 0 35px;
   }
 
-  /* Lo usa el carrito lateral: igual que antes */
-  .cantidad-btn {
-    font-size: 10px;
-  }
 }
 
 /* El botón flotante de WhatsApp sube para no tapar la barra de compra */
