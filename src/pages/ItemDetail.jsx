@@ -12,6 +12,7 @@ import {
 import "../css/ItemDetail.css";
 import Breadcrumb from "../components/Breadcrumb.jsx";
 import ImageZoomViewer from "../components/ImageZoomViewer.jsx";
+import GaleriaModal from "../components/GaleriaModal.jsx";
 import ProductosRelacionados from "../destacadas/ProductosRelacionados.jsx";
 import { getPrecioUnitario, formatearPrecio } from "../utils/precio.js";
 import { urlWhatsapp } from "../utils/contacto.js";
@@ -21,6 +22,10 @@ const Icono = ({ children, size = 20 }) => (
     {children}
   </svg>
 );
+
+// Miniaturas que entran en la columna de la galería. Si hay más fotos, la última
+// muestra "+N" (las que faltan) y abre la galería completa.
+const MAX_MINIATURAS = 5;
 
 const formatearNumero = (n) => Number(n).toLocaleString("es-AR");
 
@@ -51,11 +56,16 @@ const ItemDetail = () => {
   const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
   const [imagenPrincipalValida, setImagenPrincipalValida] = useState(null);
   const [indiceSeleccionado, setIndiceSeleccionado] = useState(0);
+  const [galeriaAbierta, setGaleriaAbierta] = useState(false);
 
   // URLs resueltas de todas las imágenes del producto, para el slider mobile.
   const imagenesUrls = (producto?.imagenes || []).map((img) =>
     getImageUrl(img, ANCHO_DETALLE),
   );
+  const elegirImagen = (index) => {
+    setIndiceSeleccionado(index);
+    setImagenSeleccionada(imagenesUrls[index]);
+  };
   const { addProductToCart } = useCart();
   const [cantidad, setCantidad] = useState(1);
   // Lo que se ve en el campo: puede quedar vacío mientras se escribe
@@ -166,6 +176,15 @@ const ItemDetail = () => {
 
   return (
     <div className={`detalle ${hayStock ? "detalle--con-barra" : ""}`}>
+      {galeriaAbierta && (
+        <GaleriaModal
+          imagenes={imagenesUrls}
+          indice={indiceSeleccionado}
+          onCambiar={elegirImagen}
+          onCerrar={() => setGaleriaAbierta(false)}
+          titulo={producto.item}
+        />
+      )}
       <div className="detalle__interior">
         <Breadcrumb
           items={[
@@ -185,20 +204,41 @@ const ItemDetail = () => {
           <div className={`detalle-galeria ${variasImagenes ? "" : "detalle-galeria--una"}`}>
             {variasImagenes && (
               <div className="detalle-galeria__miniaturas">
-                {producto.imagenes.map((imagen, index) => {
-                  const imagenUrl = getImageUrl(imagen, ANCHO_DETALLE);
+                {imagenesUrls.slice(0, MAX_MINIATURAS).map((imagenUrl, index) => {
+                  const total = imagenesUrls.length;
+                  const esUltimaConMas = total > MAX_MINIATURAS && index === MAX_MINIATURAS - 1;
+                  if (esUltimaConMas) {
+                    const restantes = total - (MAX_MINIATURAS - 1);
+                    // Activa si la foto elegida es una de las que no tienen miniatura propia
+                    const activa = indiceSeleccionado >= MAX_MINIATURAS - 1;
+                    return (
+                      <button
+                        key={index}
+                        type="button"
+                        className={`detalle-miniatura detalle-miniatura--mas ${activa ? "detalle-miniatura--activa" : ""}`}
+                        aria-label={`Ver las ${total} fotos (${restantes} más)`}
+                        aria-haspopup="dialog"
+                        onClick={() => {
+                          if (indiceSeleccionado < MAX_MINIATURAS - 1) elegirImagen(index);
+                          setGaleriaAbierta(true);
+                        }}
+                      >
+                        <img src={imagenUrl} alt="" onError={usarPlaceholder} />
+                        <span className="detalle-miniatura__mas" aria-hidden="true">
+                          +{restantes}
+                        </span>
+                      </button>
+                    );
+                  }
                   const activa = indiceSeleccionado === index;
                   return (
                     <button
                       key={index}
                       type="button"
                       className={`detalle-miniatura ${activa ? "detalle-miniatura--activa" : ""}`}
-                      aria-label={`Ver imagen ${index + 1} de ${producto.imagenes.length}`}
+                      aria-label={`Ver imagen ${index + 1} de ${total}`}
                       aria-pressed={activa}
-                      onClick={() => {
-                        setImagenSeleccionada(imagenUrl);
-                        setIndiceSeleccionado(index);
-                      }}
+                      onClick={() => elegirImagen(index)}
                     >
                       <img src={imagenUrl} alt="" onError={usarPlaceholder} />
                     </button>
@@ -211,10 +251,7 @@ const ItemDetail = () => {
                 src={imagenPrincipalValida}
                 images={imagenesUrls}
                 initialIndex={indiceSeleccionado}
-                onIndexChange={(i) => {
-                  setIndiceSeleccionado(i);
-                  setImagenSeleccionada(imagenesUrls[i]);
-                }}
+                onIndexChange={elegirImagen}
                 alt={producto.item}
                 className="img-item-detail"
               />
