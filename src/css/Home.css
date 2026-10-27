@@ -1,30 +1,854 @@
-.home-banner {
-    position: relative;
-    overflow: hidden;
-    display: block;
-    height: max-content;
-    padding-bottom: 50px;
+/* Home (Fase 5E): banner con imagen promocional y dos bloques, beneficios, categorías,
+   ofertas, Ronix, destacados por categoría y marcas. Las filas de productos se deslizan
+   con CSS (scroll-snap), sin Swiper. */
+
+.home-fondo {
+  background: var(--fondo-pagina);
 }
 
-/* Centered overlay container */
+.home {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 24px 56px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  color: var(--text-color);
+}
 
-/* Banner titles and subtitle */
+/* Textos o elementos distintos en desktop y mobile (con .home-fondo adelante para que
+   ganen a los display de cada componente) */
+.home-fondo .home-solo-mobile,
+.home-fondo .home-solo-mobile-flex {
+  display: none;
+}
 
-/* CTA button */
+/* Link con flecha ("Ver todas", "Cómo comprar") */
+.home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 0;
+  color: var(--texto-marca);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
 
-.home-destacados {
+.home-link:hover {
+  text-decoration: underline;
+}
+
+/* Botón naranja con texto oscuro */
+.home-boton {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 20px;
+  border-radius: 10px;
+  background: var(--color-marca);
+  color: #1a1a1a;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.home-boton:hover {
+  background: var(--color-marca-hover);
+}
+
+.home-link:focus-visible,
+.home-boton:focus-visible,
+.home-destacado__imagen:focus-visible,
+.home-categoria:focus-visible,
+.home-marca:focus-visible,
+.home-pestana:focus-visible,
+.fila-productos__flecha:focus-visible {
+  outline: 3px solid var(--texto-marca);
+  outline-offset: 2px;
+}
+
+/* ─── 1. Banner ─────────────────────────────────────────────── */
+.home-destacado {
+  display: grid;
+  grid-template-columns: 560px minmax(0, 1fr);
+  gap: 16px;
+}
+
+.home-destacado__imagen {
+  display: block;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Si los bloques de la derecha quedan un poco más altos que la imagen, la imagen
+   llena el alto (recorta apenas los costados) en lugar de dejar un hueco abajo */
+.home-destacado__imagen img {
+  display: block;
   width: 100%;
-  background-color: var(--prodContainer-bg);
-  padding: 30px 40px;
+  height: 100%;
+  min-height: 100%;
+  aspect-ratio: 429 / 402;
+  object-fit: cover;
+}
+
+.home-destacado__bloques {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+  min-width: 0;
+}
+
+.home-bloque {
+  border-radius: 16px;
+  padding: 26px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.home-bloque--oscuro {
+  background: var(--color-oscuro);
+  color: #ffffff;
+}
+
+.home-bloque--claro {
+  background: var(--superficie);
+  border: 1px solid var(--borde-suave);
+  flex-direction: row;
+  align-items: center;
+  gap: 28px;
+}
+
+.home-bloque__contenido {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.home-bloque__etiqueta {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-marca);
+}
+
+.home-bloque__etiqueta--marca {
+  color: var(--texto-marca);
+}
+
+.home-bloque__titulo {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.home-bloque__texto {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  max-width: 440px;
+  color: var(--texto-secundario);
+}
+
+.home-bloque--oscuro .home-bloque__texto {
+  color: #c9c9c9;
+}
+
+.home-bloque--oscuro .home-boton {
+  margin-top: 8px;
+}
+
+.home-bloque--claro .home-link {
+  align-self: flex-start;
+  font-size: 15px;
+  padding: 8px 0;
+}
+
+.home-bloque__ilustracion {
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--marca-suave);
+  color: var(--color-marca);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── 2. Beneficios ─────────────────────────────────────────── */
+.home-beneficios {
+  list-style: none;
+  margin: -24px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  background: var(--superficie);
+  border: 1px solid var(--borde-suave);
+  border-radius: 14px;
+}
+
+.home-beneficio {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px;
+  min-width: 0;
+}
+
+.home-beneficios > .home-beneficio + .home-beneficio {
+  border-left: 1px solid var(--borde-suave);
+}
+
+.home-beneficio__icono {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--texto-marca);
+}
+
+.home-beneficio__texto {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.home-beneficio__texto strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.home-beneficio__texto > span {
+  font-size: 13px;
+  color: var(--texto-secundario);
+}
+
+/* ─── Encabezado de las secciones ───────────────────────────── */
+.home-seccion__encabezado {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.home-seccion__titulo {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.home-seccion__subtitulo {
+  margin: 4px 0 0;
+  font-size: 15px;
+  color: var(--texto-secundario);
+}
+
+.home-seccion__acciones {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.home-seccion__mensaje {
+  margin: 0;
+  padding: 24px;
+  border-radius: 12px;
+  background: var(--superficie);
+  border: 1px solid var(--borde-suave);
+  color: var(--texto-secundario);
+}
+
+/* ─── 3. Categorías ─────────────────────────────────────────── */
+.home-categorias {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.home-categoria {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  background: var(--superficie);
+  border: 1px solid var(--borde-suave);
+  border-radius: 14px;
+  color: var(--text-color);
+  text-decoration: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-categoria:hover {
+  border-color: var(--marca-suave-borde);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.home-categoria--vacia {
+  min-height: 90px;
+}
+
+.home-categoria__icono {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--marca-suave);
+  color: var(--texto-marca);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-categoria__texto {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.home-categoria__nombre {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.home-categoria__cantidad {
+  font-size: 13px;
+  color: var(--texto-secundario);
+}
+
+/* ─── Filas de productos (Ofertas y Destacados) ─────────────── */
+.fila-productos {
+  --fila-columnas: 4;
+  --fila-espacio: 16px;
+  list-style: none;
+  margin: 0;
+  padding: 2px 2px 8px;
+  display: flex;
+  gap: var(--fila-espacio);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 2px;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.fila-productos::-webkit-scrollbar {
+  display: none;
+}
+
+.fila-productos__item {
+  flex: 0 0 calc((100% - (var(--fila-columnas) - 1) * var(--fila-espacio)) / var(--fila-columnas));
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+/* Lugar reservado mientras cargan los productos */
+.fila-productos__vacia {
+  height: 100%;
+  min-height: 360px;
+  border-radius: 12px;
+  background: var(--superficie);
+  border: 1px solid var(--borde-suave);
+}
+
+.fila-productos__flechas {
+  display: flex;
+  gap: 8px;
+}
+
+.fila-productos__flecha {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--borde-control);
+  background: var(--superficie);
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.fila-productos__flecha:hover:not(:disabled) {
+  border-color: var(--texto-marca);
+}
+
+.fila-productos__flecha:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* Pestañas de "Destacados por categoría" */
+.home-pestanas {
+  display: flex;
+  gap: 4px;
+  margin: -6px 0 20px;
+  border-bottom: 1px solid var(--borde-suave);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.home-pestana {
+  flex-shrink: 0;
+  height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--texto-secundario);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.home-pestana:hover {
+  color: var(--text-color);
+}
+
+.home-pestana[aria-selected="true"] {
+  border-bottom-color: var(--color-marca);
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+/* ─── 5. Ronix ──────────────────────────────────────────────── */
+.home-ronix {
+  background: var(--color-oscuro);
+  border-radius: 18px;
+  padding: 36px;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 32px;
+  align-items: center;
+}
+
+.home-ronix__texto {
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.home-ronix__logo {
+  width: 150px;
+  height: auto;
+  display: block;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 10px 14px;
   box-sizing: border-box;
 }
 
-@media (max-width:768px) {
-    .home-banner {
-        overflow: visible;
-    }
-    .home-destacados{
-        height: max-content;
-        padding: 20px 20px;
-    }
+.home-ronix__titulo {
+  margin: 6px 0 0;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.home-ronix__bajada {
+  margin: 0;
+  font-size: 15px;
+  color: #c9c9c9;
+}
+
+.home-ronix__boton {
+  margin-top: 8px;
+}
+
+.home-ronix__productos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.home-ronix__productos .fila-productos__vacia {
+  min-height: 340px;
+}
+
+/* ─── 7. Marcas ─────────────────────────────────────────────── */
+.home-marcas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* Fondo blanco también en modo oscuro: los logos son para fondo claro */
+.home-marca {
+  height: 84px;
+  box-sizing: border-box;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px solid var(--borde-suave);
+  border-radius: 12px;
+  transition: border-color 0.2s ease;
+}
+
+.home-marca:hover {
+  border-color: var(--marca-suave-borde);
+}
+
+.home-marca img {
+  display: block;
+  max-width: 100%;
+  max-height: 40px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ─── Tablet ────────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .home-destacado {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .home-bloque {
+    padding: 24px 26px;
+  }
+
+  .home-bloque__titulo {
+    font-size: 24px;
+  }
+
+  .home-bloque__ilustracion {
+    display: none;
+  }
+
+  .home-marcas {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .home-ronix {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .home {
+    padding: 16px 16px 40px;
+    gap: 36px;
+  }
+
+  .home-bloque {
+    padding: 20px 22px;
+  }
+
+  .home-bloque__titulo {
+    font-size: 21px;
+  }
+
+  .home-bloque__texto {
+    font-size: 14px;
+  }
+
+  .home-categorias {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fila-productos {
+    --fila-columnas: 3;
+  }
+}
+
+/* Tablet chica: la imagen arriba y los dos bloques abajo, uno al lado del otro */
+@media (max-width: 760px) {
+  .home-destacado {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-destacado__bloques {
+    grid-template-rows: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ─── Mobile ────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .home {
+    padding: 16px 12px 40px;
+    gap: 32px;
+  }
+
+  .home-fondo .home-solo-desktop,
+  .home-fondo .home-solo-desktop-flex {
+    display: none;
+  }
+
+  .home-fondo .home-solo-mobile {
+    display: inline;
+  }
+
+  .home-fondo .home-solo-mobile-flex {
+    display: flex;
+  }
+
+  .home-destacado {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .home-destacado__imagen {
+    border-radius: 14px;
+  }
+
+  .home-destacado__bloques {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* El bloque de envíos se resume en los beneficios */
+  .home-bloque--claro {
+    display: none;
+  }
+
+  .home-bloque {
+    padding: 20px;
+    border-radius: 14px;
+    gap: 8px;
+  }
+
+  .home-bloque__etiqueta {
+    font-size: 11px;
+  }
+
+  .home-bloque__titulo {
+    font-size: 22px;
+  }
+
+  .home-bloque__texto {
+    font-size: 14px;
+  }
+
+  .home-bloque--oscuro .home-boton {
+    align-self: stretch;
+    margin-top: 6px;
+  }
+
+  .home-beneficios {
+    margin-top: -16px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-beneficio {
+    padding: 14px 16px;
+  }
+
+  .home-beneficios > .home-beneficio + .home-beneficio {
+    border-left: none;
+    border-top: 1px solid var(--borde-suave);
+  }
+
+  .home-beneficio__texto strong {
+    font-size: 14px;
+  }
+
+  .home-beneficio__texto > span {
+    font-size: 12px;
+  }
+
+  .home-seccion__encabezado {
+    margin-bottom: 14px;
+  }
+
+  .home-seccion__titulo {
+    font-size: 20px;
+  }
+
+  .home-seccion__subtitulo {
+    font-size: 13px;
+  }
+
+  /* Seis categorías en dos columnas, ícono arriba */
+  .home-categorias {
+    gap: 10px;
+  }
+
+  .home-categorias li:nth-child(n + 7) {
+    display: none;
+  }
+
+  .home-categoria {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .home-categoria__icono {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  .home-categoria__icono svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .home-categoria__nombre {
+    font-size: 14px;
+  }
+
+  .home-categoria__cantidad {
+    font-size: 12px;
+  }
+
+  /* Las filas llegan al borde derecho de la pantalla e insinúan que hay más */
+  .fila-productos {
+    --fila-espacio: 10px;
+    margin-right: -12px;
+    padding-right: 12px;
+  }
+
+  .fila-productos__item {
+    flex-basis: 44%;
+  }
+
+  .fila-productos__flechas {
+    display: none;
+  }
+
+  .fila-productos__vacia {
+    min-height: 300px;
+  }
+
+  .home-pestanas {
+    gap: 8px;
+    margin: -2px 0 14px;
+    border-bottom: none;
+  }
+
+  .home-pestana {
+    height: 38px;
+    padding: 0 16px;
+    border: 1px solid var(--borde-control);
+    border-radius: 19px;
+    background: var(--superficie);
+    color: var(--text-color);
+    font-size: 14px;
+  }
+
+  .home-pestana[aria-selected="true"] {
+    background: var(--color-oscuro);
+    border-color: var(--color-oscuro);
+    color: #ffffff;
+  }
+
+  [data-theme="dark"] .home-pestana[aria-selected="true"] {
+    background: var(--color-marca);
+    border-color: var(--color-marca);
+    color: #1a1a1a;
+  }
+
+  .home-ronix {
+    padding: 20px 0 20px 20px;
+    border-radius: 16px;
+    gap: 14px;
+  }
+
+  .home-ronix__texto {
+    gap: 8px;
+    padding-right: 20px;
+  }
+
+  .home-ronix__logo {
+    width: 110px;
+    border-radius: 8px;
+    padding: 6px 10px;
+  }
+
+  .home-ronix__titulo {
+    font-size: 20px;
+    line-height: 1.25;
+    margin-top: 4px;
+  }
+
+  .home-ronix__bajada {
+    display: none;
+  }
+
+  /* En mobile el botón pasa a ser un link naranja */
+  .home-ronix__boton {
+    margin-top: 0;
+    min-height: 0;
+    padding: 6px 0;
+    background: none;
+    color: var(--color-marca);
+    font-size: 14px;
+  }
+
+  .home-ronix__boton:hover {
+    background: none;
+    text-decoration: underline;
+  }
+
+  .home-ronix__productos {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-right: 20px;
+  }
+
+  .home-ronix__productos::-webkit-scrollbar {
+    display: none;
+  }
+
+  .home-ronix__productos li {
+    flex: 0 0 44%;
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+
+  .home-marcas {
+    gap: 8px;
+  }
+
+  .home-marca {
+    height: 64px;
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+
+  .home-marca img {
+    max-height: 30px;
+  }
+}
+
+/* Modo oscuro: los bloques oscuros llevan borde para no confundirse con el fondo */
+[data-theme="dark"] .home-bloque--oscuro,
+[data-theme="dark"] .home-ronix {
+  border: 1px solid var(--borde-suave);
 }

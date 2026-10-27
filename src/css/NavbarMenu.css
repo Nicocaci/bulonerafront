@@ -139,3 +139,23 @@
   outline: 2px solid var(--color-marca);
   outline-offset: 2px;
 }
+
+/* Panel "Marcas" (Fase 5E): una sola columna de contenido, en tres columnas de marcas */
+.menu-marcas {
+  width: min(640px, calc(100vw - 48px));
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.menu-marcas .menu-categorias__lista {
+  max-height: min(60vh, 520px);
+  overflow-y: auto;
+}
+
+.menu-marcas .menu-categorias__lista ul {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px 12px;
+}
+
+.menu-marcas .menu-categorias__lista a {
+  font-size: 14px;
+}

@@ -12,6 +12,8 @@ export const CONTACTO = {
 };
 
 export const MENSAJE_WHATSAPP = "Hola! Quiero hacer una consulta sobre sus productos";
+// Botones "Cotizá por WhatsApp" del navbar y de la Home
+export const MENSAJE_COTIZACION = "Hola! Quiero pedir una cotización. Les paso mi lista de materiales:";
 
 export const urlWhatsapp = (mensaje = MENSAJE_WHATSAPP) =>
   `https://wa.me/${CONTACTO.whatsapp}?text=${encodeURIComponent(mensaje)}`;

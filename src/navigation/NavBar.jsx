@@ -11,17 +11,20 @@ import { useFacetas } from "../hooks/useCatalogo.js";
 import AuthModal from "../components/AuthModal";
 import NavbarActions from "./Navbar/NavbarActions.jsx";
 import NavbarMenu from "./Navbar/NavbarMenu.jsx";
+import NavbarMarcas from "./Navbar/NavbarMarcas.jsx";
 import MenuMobile from "./Navbar/MenuMobile.jsx";
 import axiosInstance from "../utils/axiosConfig";
+import { MENSAJE_COTIZACION, urlWhatsapp } from "../utils/contacto.js";
+import { IconoWhatsapp } from "../components/IconosTienda.jsx";
 
-// Categorías con acceso directo (barra de desktop y accesos rápidos de mobile).
-// El valor es el nombre exacto de la categoría en la base.
+// Categorías con acceso directo en los accesos rápidos de mobile (en desktop están en
+// "Todos los productos"). El valor es el nombre exacto de la categoría en la base.
 const CATEGORIAS_DESTACADAS = [
-  { valor: "Herramientas Manuales", texto: "Herramientas manuales", corto: "Manuales" },
-  { valor: "Herramientas Electricas", texto: "Herramientas eléctricas", corto: "Eléctricas" },
-  { valor: "Soldadura", texto: "Soldadura", corto: "Soldadura" },
-  { valor: "Automotor", texto: "Automotor", corto: "Automotor", secundaria: true },
-  { valor: "Jardin", texto: "Jardín", corto: "Jardín", secundaria: true },
+  { valor: "Herramientas Manuales", corto: "Manuales" },
+  { valor: "Herramientas Electricas", corto: "Eléctricas" },
+  { valor: "Soldadura", corto: "Soldadura" },
+  { valor: "Automotor", corto: "Automotor" },
+  { valor: "Jardin", corto: "Jardín" },
 ];
 
 const linkCategoria = (valor) => `/productos?categoria=${encodeURIComponent(valor)}`;
@@ -36,11 +39,15 @@ const NavBar = ({ reducido = false }) => {
   // refs
   const searchRef = useRef(null); // <form> del buscador (input + resultados)
   const menuCategoriasRef = useRef(null); // botón "Todos los productos" + panel
+  const menuMarcasRef = useRef(null); // botón "Marcas" + panel
   const hamburguesaRef = useRef(null);
 
   // estados de UI
   const [menuMobileAbierto, setMenuMobileAbierto] = useState(false);
-  const [menuCategoriasAbierto, setMenuCategoriasAbierto] = useState(false);
+  // Panel abierto de la barra de desktop: "categorias", "marcas" o null
+  const [panel, setPanel] = useState(null);
+  const menuCategoriasAbierto = panel === "categorias";
+  const menuMarcasAbierto = panel === "marcas";
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   // estados del buscador
@@ -53,6 +60,7 @@ const NavBar = ({ reducido = false }) => {
   // Categorías con cantidades (la misma consulta que usa la página de productos sin filtros)
   const { data: facetas, isLoading: cargandoCategorias } = useFacetas();
   const categorias = [...(facetas?.categorias ?? [])].sort((a, b) => b.cantidad - a.cantidad);
+  const marcas = [...(facetas?.marcas ?? [])].sort((a, b) => b.cantidad - a.cantidad);
 
   // Nombre para el saludo "Hola, Nico" (una consulta por sesión, queda en caché)
   const { data: perfil } = useQuery({
@@ -114,23 +122,24 @@ const NavBar = ({ reducido = false }) => {
   }, [searchInput]);
 
   // ─────────────────────────────────────────────
-  // CERRAR RESULTADOS DEL BUSCADOR Y MENÚ DE CATEGORÍAS AL CLICKEAR AFUERA
+  // CERRAR RESULTADOS DEL BUSCADOR Y PANELES DE LA BARRA AL CLICKEAR AFUERA
   // ─────────────────────────────────────────────
   useEffect(() => {
-    if (!showDropdown && !menuCategoriasAbierto) return;
+    if (!showDropdown && !panel) return;
 
     const alClickAfuera = (event) => {
       if (showDropdown && !searchRef.current?.contains(event.target)) {
         setShowDropdown(false);
       }
-      if (menuCategoriasAbierto && !menuCategoriasRef.current?.contains(event.target)) {
-        setMenuCategoriasAbierto(false);
+      const contenedor = panel === "categorias" ? menuCategoriasRef : menuMarcasRef;
+      if (panel && !contenedor.current?.contains(event.target)) {
+        setPanel(null);
       }
     };
     const alEscape = (e) => {
       if (e.key !== "Escape") return;
       setShowDropdown(false);
-      setMenuCategoriasAbierto(false);
+      setPanel(null);
     };
 
     document.addEventListener("mousedown", alClickAfuera);
@@ -139,7 +148,7 @@ const NavBar = ({ reducido = false }) => {
       document.removeEventListener("mousedown", alClickAfuera);
       document.removeEventListener("keydown", alEscape);
     };
-  }, [showDropdown, menuCategoriasAbierto]);
+  }, [showDropdown, panel]);
 
   // ─────────────────────────────────────────────
   // AL CAMBIAR DE PÁGINA: CERRAR TODO
@@ -147,7 +156,7 @@ const NavBar = ({ reducido = false }) => {
   useEffect(() => {
     setShowDropdown(false);
     setMenuMobileAbierto(false);
-    setMenuCategoriasAbierto(false);
+    setPanel(null);
   }, [location.pathname, location.search]);
 
   // ─────────────────────────────────────────────
@@ -182,11 +191,6 @@ const NavBar = ({ reducido = false }) => {
     navigate(`/producto/${productId}`);
   };
 
-  // La barra de categorías marca como activa la categoría que se está viendo
-  const categoriaActual =
-    location.pathname === "/productos"
-      ? new URLSearchParams(location.search).get("categoria")
-      : null;
   const enOfertas =
     location.pathname === "/productos" &&
     new URLSearchParams(location.search).get("ofertas") === "true";
@@ -331,7 +335,7 @@ const NavBar = ({ reducido = false }) => {
                 className={`nav-barra__todos ${menuCategoriasAbierto ? "abierto" : ""}`}
                 aria-expanded={menuCategoriasAbierto}
                 aria-controls="menu-categorias"
-                onClick={() => setMenuCategoriasAbierto((v) => !v)}
+                onClick={() => setPanel((v) => (v === "categorias" ? null : "categorias"))}
               >
                 <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <path d="M4 6h16M4 12h16M4 18h16" />
@@ -346,7 +350,7 @@ const NavBar = ({ reducido = false }) => {
                   id="menu-categorias"
                   categorias={categorias}
                   cargando={cargandoCategorias}
-                  onElegir={() => setMenuCategoriasAbierto(false)}
+                  onElegir={() => setPanel(null)}
                 />
               )}
             </div>
@@ -364,27 +368,52 @@ const NavBar = ({ reducido = false }) => {
               Ofertas
             </Link>
 
-            <span className="nav-barra__separador" aria-hidden="true" />
-
-            {CATEGORIAS_DESTACADAS.map((c) => (
-              <Link
-                key={c.valor}
-                to={linkCategoria(c.valor)}
-                className={`nav-barra__link ${c.secundaria ? "nav-barra__link--secundaria" : ""}`}
-                aria-current={categoriaActual === c.valor ? "page" : undefined}
+            <div className="nav-barra__productos" ref={menuMarcasRef}>
+              <button
+                type="button"
+                className={`nav-barra__todos nav-barra__marcas ${menuMarcasAbierto ? "abierto" : ""}`}
+                aria-expanded={menuMarcasAbierto}
+                aria-controls="menu-marcas"
+                onClick={() => setPanel((v) => (v === "marcas" ? null : "marcas"))}
               >
-                {c.texto}
-              </Link>
-            ))}
+                Marcas
+                <svg className="nav-barra__flecha" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </button>
+              {menuMarcasAbierto && (
+                <NavbarMarcas
+                  id="menu-marcas"
+                  marcas={marcas}
+                  cargando={cargandoCategorias}
+                  onElegir={() => setPanel(null)}
+                />
+              )}
+            </div>
 
             <span className="nav-barra__espacio" />
 
-            <NavLink to="/contacto" className="nav-barra__link nav-barra__link--info">
-              Contacto
-            </NavLink>
             <NavLink to="/nosotros" className="nav-barra__link nav-barra__link--info">
               Nosotros
             </NavLink>
+            <NavLink to="/contacto" className="nav-barra__link nav-barra__link--info">
+              Contacto
+            </NavLink>
+            <NavLink to="/faq" className="nav-barra__link nav-barra__link--info">
+              Preguntas frecuentes
+            </NavLink>
+
+            <span className="nav-barra__separador" aria-hidden="true" />
+
+            <a
+              href={urlWhatsapp(MENSAJE_COTIZACION)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-barra__cotizar"
+            >
+              <IconoWhatsapp />
+              Cotizá por WhatsApp
+            </a>
           </nav>
         </div>
       </header>
@@ -394,6 +423,15 @@ const NavBar = ({ reducido = false }) => {
         <Link to="/productos?ofertas=true" className="nav-rapido__ofertas">
           Ofertas
         </Link>
+        <a
+          href={urlWhatsapp(MENSAJE_COTIZACION)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="nav-rapido__cotizar"
+        >
+          <IconoWhatsapp tam={16} />
+          Cotizar
+        </a>
         {CATEGORIAS_DESTACADAS.map((c) => (
           <Link key={c.valor} to={linkCategoria(c.valor)}>
             {c.corto}

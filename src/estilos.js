@@ -4,8 +4,6 @@
 // regla que viene después).
 // Si se agrega un archivo CSS nuevo, sumalo acá (si no, igual se incluye, pero al final).
 import "./css/Home.css";
-import "./css/BrandSlider.css";
-import "./css/MosaicBanner.css";
 import "./css/OfertasDestacadas.css";
 import "./css/TarjetaProducto.css";
 import "swiper/css";

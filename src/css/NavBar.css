@@ -431,13 +431,44 @@
   color: var(--texto-secundario);
 }
 
+/* "Marcas": mismo botón que "Todos los productos", con peso normal */
+.nav-barra__marcas {
+  margin-left: 6px;
+  font-weight: 500;
+}
+
+/* Cotizá por WhatsApp (Fase 5E) */
+.nav-barra__cotizar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 18px;
+  border: 1px solid var(--marca-suave-borde);
+  background: var(--marca-suave);
+  color: var(--text-color);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-barra__cotizar svg {
+  color: var(--texto-marca);
+}
+
+.nav-barra__cotizar:hover {
+  border-color: var(--texto-marca);
+}
+
 .nav-barra__espacio {
   flex: 1;
 }
 
 .nav-barra__todos:focus-visible,
 .nav-barra__ofertas:focus-visible,
-.nav-barra__link:focus-visible {
+.nav-barra__link:focus-visible,
+.nav-barra__cotizar:focus-visible {
   outline: 2px solid var(--texto-marca);
   outline-offset: 2px;
 }
@@ -652,10 +683,12 @@
 }
 
 /* ── Pantallas medianas: la barra se aprieta ── */
-/* Automotor y Jardín (siguen en "Todos los productos") */
-@media (max-width: 1220px) {
-  .nav-barra__link--secundaria {
-    display: none;
+@media (max-width: 1180px) {
+  .nav-barra__link {
+    padding: 8px 7px;
+  }
+  .nav-barra__separador {
+    margin: 0 6px;
   }
 }
 
@@ -758,6 +791,20 @@
     background: var(--color-oferta);
     color: #ffffff;
     font-weight: 600;
+  }
+
+  .nav-rapido .nav-rapido__cotizar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: var(--marca-suave);
+    border: 1px solid var(--marca-suave-borde);
+    font-weight: 600;
+  }
+
+  .nav-rapido__cotizar svg {
+    color: var(--texto-marca);
   }
 }
 
