@@ -10,13 +10,37 @@ import {
   usarPlaceholder,
 } from "../utils/imageUtils";
 import "../css/ItemDetail.css";
-import { BsTruck } from "react-icons/bs";
-import { MdOutlineVerified, MdOutlineVerifiedUser } from "react-icons/md";
-import { PiHeadsetDuotone } from "react-icons/pi";
 import Breadcrumb from "../components/Breadcrumb.jsx";
 import ImageZoomViewer from "../components/ImageZoomViewer.jsx";
 import ProductosRelacionados from "../destacadas/ProductosRelacionados.jsx";
 import { getPrecioUnitario, formatearPrecio } from "../utils/precio.js";
+import { urlWhatsapp } from "../utils/contacto.js";
+
+const Icono = ({ children, size = 20 }) => (
+  <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    {children}
+  </svg>
+);
+
+const formatearNumero = (n) => Number(n).toLocaleString("es-AR");
+
+// Filas de especificaciones: solo las que el producto tiene cargadas
+const armarEspecificaciones = (producto) => {
+  const filas = [
+    ["Marca", producto.marca],
+    ["Categoría", producto.categoria],
+    ["Subcategoría", producto.subcategoria],
+    ["SKU", producto.sku],
+  ];
+  if (producto.peso != null) filas.push(["Peso", `${formatearNumero(producto.peso)} kg`]);
+  if (producto.alto != null && producto.ancho != null && producto.largo != null) {
+    filas.push([
+      "Medidas",
+      `${formatearNumero(producto.alto)} × ${formatearNumero(producto.ancho)} × ${formatearNumero(producto.largo)} cm (alto × ancho × largo)`,
+    ]);
+  }
+  return filas.filter(([, valor]) => valor !== undefined && valor !== null && valor !== "");
+};
 
 const ItemDetail = () => {
   const { prodId } = useParams();
@@ -128,18 +152,24 @@ const ItemDetail = () => {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="detalle-mensaje">Error: {error}</div>;
   }
 
   if (!producto) {
-    return <div>Producto no encontrado</div>;
+    return <div className="detalle-mensaje">Producto no encontrado</div>;
   }
 
+  const hayStock = producto.stock > 0;
+  const variasImagenes = (producto.imagenes || []).length > 1;
+  const especificaciones = armarEspecificaciones(producto);
+  const mensajeWhatsapp = `Hola! Quiero consultar por ${producto.item} (SKU ${producto.sku})`;
+
   return (
-    <div className="item-page">
-      <div className="item-detail-container">
+    <div className={`detalle ${hayStock ? "detalle--con-barra" : ""}`}>
+      <div className="detalle__interior">
         <Breadcrumb
           items={[
+            { label: "Inicio", path: "/" },
             {
               label: producto.categoria,
               path: `/productos?categoria=${encodeURIComponent(producto.categoria)}`,
@@ -148,159 +178,183 @@ const ItemDetail = () => {
               label: producto.subcategoria,
               path: `/productos?categoria=${encodeURIComponent(producto.categoria)}&subcategoria=${encodeURIComponent(producto.subcategoria)}`,
             },
-          ]}
+          ].filter((item) => item.label)}
         />
-        <div className="item-detail-grid">
-          <div className="item-grid-1">
-            <ImageZoomViewer
-              src={imagenPrincipalValida}
-              images={imagenesUrls}
-              initialIndex={indiceSeleccionado}
-              onIndexChange={(i) => {
-                setIndiceSeleccionado(i);
-                setImagenSeleccionada(imagenesUrls[i]);
-              }}
-              alt={producto.item}
-              className="img-item-detail"
-            />
-            <div className="thumbnails-container">
-              {(producto.imagenes || []).map((imagen, index) => {
-                const imagenUrl = getImageUrl(imagen, ANCHO_DETALLE);
-                return (
-                  <img
-                    key={index}
-                    className={`thumbnail ${imagenSeleccionada === imagenUrl ? "thumbnail-active" : ""}`}
-                    src={imagenUrl}
-                    alt={`${producto.item} - Imagen ${index + 1}`}
-                    onClick={() => {
-                      setImagenSeleccionada(imagenUrl);
-                      setIndiceSeleccionado(index);
-                    }}
-                    onError={usarPlaceholder}
-                  />
-                );
-              })}
+
+        <div className="detalle__principal">
+          <div className={`detalle-galeria ${variasImagenes ? "" : "detalle-galeria--una"}`}>
+            {variasImagenes && (
+              <div className="detalle-galeria__miniaturas">
+                {producto.imagenes.map((imagen, index) => {
+                  const imagenUrl = getImageUrl(imagen, ANCHO_DETALLE);
+                  const activa = indiceSeleccionado === index;
+                  return (
+                    <button
+                      key={index}
+                      type="button"
+                      className={`detalle-miniatura ${activa ? "detalle-miniatura--activa" : ""}`}
+                      aria-label={`Ver imagen ${index + 1} de ${producto.imagenes.length}`}
+                      aria-pressed={activa}
+                      onClick={() => {
+                        setImagenSeleccionada(imagenUrl);
+                        setIndiceSeleccionado(index);
+                      }}
+                    >
+                      <img src={imagenUrl} alt="" onError={usarPlaceholder} />
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+            <div className="detalle-galeria__foto">
+              <ImageZoomViewer
+                src={imagenPrincipalValida}
+                images={imagenesUrls}
+                initialIndex={indiceSeleccionado}
+                onIndexChange={(i) => {
+                  setIndiceSeleccionado(i);
+                  setImagenSeleccionada(imagenesUrls[i]);
+                }}
+                alt={producto.item}
+                className="img-item-detail"
+              />
+              {producto.ofertaVigente && (
+                <span className="detalle-galeria__descuento">-{producto.oferta.descuento}%</span>
+              )}
+              {imagenPrincipalValida && imagenPrincipalValida !== PLACEHOLDER_PRODUCTO && (
+                <span className="detalle-galeria__ayuda" aria-hidden="true">
+                  Pasá el mouse para ampliar
+                </span>
+              )}
             </div>
           </div>
-          <div className="item-grid-2">
-            <div className="item-grid-2-content">
-              <p className="titulo-categoria">{producto.categoria}</p>
-              <p className="titulo-detail">{producto.item}</p>
-              <div className="item-grid-2-content-sku">
-                <p className="precio-siniva">SKU: {producto.sku}</p>
-              </div>
-              <div className="item-grid-2-content-precio">
-                {producto.ofertaVigente && (
-                  <div className="item-precio-oferta">
-                    <span className="item-precio-anterior">
-                      {formatearPrecio(producto.precioConIva)}
-                    </span>
-                    <span className="item-precio-badge">
-                      -{producto.oferta.descuento}%
-                    </span>
-                  </div>
-                )}
-                <p className="item-grid-2-content-precio-value">
-                  {formatearPrecio(getPrecioUnitario(producto))}
-                </p>
-                <p className="precio-siniva">
-                  Precio sin IVA:{" "}
-                  {producto.precio.toLocaleString("es-AR", {
-                    style: "currency",
-                    currency: "ARS",
-                  })}
-                </p>
-                <div className="item-grid-2-content-stats">
-                  <div className="probando1">
-                    <BsTruck size={25} />
-                    <div>
-                      <p>Envío a todo el país</p>
-                      <p className="precio-siniva">Calcula tu envío</p>
-                    </div>
-                  </div>
-                  <div className="probando1">
-                    <p>{producto.stock > 0 ? "🟢" : "🔴"}</p>
-                    <div>
-                      <p>
-                        {producto.stock > 0 ? "Stock disponible" : "Sin stock"}
-                      </p>
-                      <p className="precio-siniva">
-                        {producto.stock > 0
-                          ? "Entrega Inmediata"
-                          : "No disponible por el momento"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <p className="precio-siniva">Cantidad</p>
-                  <div className="item-grid-2-content-stats">
-                    <div>
-                      {" "}
-                      <div className="cantidad-container">
-                        <button
-                          className="cantidad-btn"
-                          type="button"
-                          aria-label="Restar una unidad"
-                          onClick={() => fijarCantidad(cantidad - 1)}
-                          disabled={cantidad <= 1}
-                        >
-                          −
-                        </button>
-                        <div className="cantidad-divider" />
-                        <input
-                          className="cantidad-input"
-                          type="number"
-                          inputMode="numeric"
-                          aria-label="Cantidad"
-                          value={cantidadTexto}
-                          min={1}
-                          max={producto.stock}
-                          onChange={(e) => {
-                            const texto = e.target.value.replace(/\D/g, "");
-                            setCantidadTexto(texto);
-                            const val = parseInt(texto, 10);
-                            if (!isNaN(val) && val >= 1) {
-                              setCantidad(Math.min(val, Math.max(1, producto.stock)));
-                            }
-                          }}
-                          onBlur={() => fijarCantidad(parseInt(cantidadTexto, 10) || 1)}
-                        />
-                        <div className="cantidad-divider" />
-                        <button
-                          className="cantidad-btn"
-                          type="button"
-                          aria-label="Sumar una unidad"
-                          onClick={() => fijarCantidad(cantidad + 1)}
-                          disabled={cantidad >= producto.stock}
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                    <div>
-                      <button
-                        className="btn-item"
-                        onClick={() => handleAddToCart(producto._id)}
-                        disabled={producto.stock === 0 || agregando}
-                      >
-                        {agregando
-                          ? "Agregando..."
-                          : producto.stock === 0
-                            ? "Sin stock"
-                            : "Agregar al carrito"}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
+          <div className="detalle-compra">
+            <p className="detalle-compra__meta">
+              {producto.marca}
+              {producto.marca && producto.sku && " · "}
+              {producto.sku && `SKU ${producto.sku}`}
+            </p>
+            <h1 className="detalle-compra__titulo">{producto.item}</h1>
+
+            <div className="detalle-precio">
+              {producto.ofertaVigente && (
+                <span className="detalle-precio__anterior">
+                  <span className="solo-lectores">Antes: </span>
+                  {formatearPrecio(producto.precioConIva)}
+                </span>
+              )}
+              <span
+                className={`detalle-precio__actual ${producto.ofertaVigente ? "detalle-precio__actual--oferta" : ""}`}
+              >
+                {formatearPrecio(getPrecioUnitario(producto))}
+              </span>
+              <span className="detalle-precio__sin-iva">
+                Precio sin IVA: {formatearPrecio(producto.precio)}
+              </span>
             </div>
+
+            <p className={`detalle-stock ${hayStock ? "detalle-stock--si" : "detalle-stock--no"}`}>
+              <span className="detalle-stock__punto" aria-hidden="true" />
+              {hayStock ? "En stock · listo para despachar" : "Sin stock · no disponible por el momento"}
+            </p>
+
+            <div className="detalle-compra__acciones">
+              <div className="selector-cantidad" role="group" aria-label="Cantidad">
+                <button
+                  type="button"
+                  aria-label="Restar una unidad"
+                  onClick={() => fijarCantidad(cantidad - 1)}
+                  disabled={!hayStock || cantidad <= 1}
+                >
+                  −
+                </button>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  aria-label="Cantidad"
+                  value={cantidadTexto}
+                  min={1}
+                  max={producto.stock}
+                  disabled={!hayStock}
+                  onChange={(e) => {
+                    const texto = e.target.value.replace(/\D/g, "");
+                    setCantidadTexto(texto);
+                    const val = parseInt(texto, 10);
+                    if (!isNaN(val) && val >= 1) {
+                      setCantidad(Math.min(val, Math.max(1, producto.stock)));
+                    }
+                  }}
+                  onBlur={() => fijarCantidad(parseInt(cantidadTexto, 10) || 1)}
+                />
+                <button
+                  type="button"
+                  aria-label="Sumar una unidad"
+                  onClick={() => fijarCantidad(cantidad + 1)}
+                  disabled={!hayStock || cantidad >= producto.stock}
+                >
+                  +
+                </button>
+              </div>
+              <button
+                type="button"
+                className="detalle-compra__agregar"
+                onClick={() => handleAddToCart(producto._id)}
+                disabled={!hayStock || agregando}
+              >
+                {agregando ? "Agregando..." : hayStock ? "Agregar al carrito" : "Sin stock"}
+              </button>
+            </div>
+
+            <a
+              className="detalle-compra__whatsapp"
+              href={urlWhatsapp(mensajeWhatsapp)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icono size={18}>
+                <path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.4z" />
+              </Icono>
+              Consultar por WhatsApp
+            </a>
+
+            <ul className="detalle-beneficios">
+              <li>
+                <Icono>
+                  <path d="M2 7h11v9H2zM13 10h4l3 3v3h-7z" />
+                  <circle cx="6" cy="18" r="1.8" />
+                  <circle cx="17" cy="18" r="1.8" />
+                </Icono>
+                <span>
+                  <strong>Envío a todo el país.</strong> Calculás el costo al finalizar la compra.
+                </span>
+              </li>
+              <li>
+                <Icono>
+                  <path d="M3 10l9-6 9 6v10H3z" />
+                  <path d="M9 20v-6h6v6" />
+                </Icono>
+                <span>
+                  <strong>Retiro sin cargo</strong> en Gutiérrez.
+                </span>
+              </li>
+              <li>
+                <Icono>
+                  <path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z" />
+                  <path d="M8.5 12l2.5 2.5 4.5-5" />
+                </Icono>
+                <span>
+                  <strong>Garantía oficial</strong> y pago seguro con Mercado Pago.
+                </span>
+              </li>
+            </ul>
           </div>
         </div>
-        <p className="titulo-descripcion">Descripción</p>
-        <div className="item-grid-3">
-          <div>
-            <p className="descripcion-detail">
+
+        <div className="detalle__info">
+          <section className="detalle-bloque" aria-labelledby="detalle-descripcion">
+            <h2 id="detalle-descripcion">Descripción</h2>
+            <p className="detalle-bloque__descripcion">
               {(descripcionFormateada || "").split("\n").map((linea, index) => (
                 <React.Fragment key={index}>
                   {linea}
@@ -308,30 +362,20 @@ const ItemDetail = () => {
                 </React.Fragment>
               ))}
             </p>
-          </div>
-          <div className="descripcion-detail">
-            <div className="item-stats">
-              <MdOutlineVerified size={25} />
-              <div>
-                <p>Garantía Oficial</p>
-              </div>
-            </div>
-            <div className="item-stats">
-              <PiHeadsetDuotone size={25} />
-              <div>
-                <p>Soporte Técnico</p>
-                <p className="precio-siniva">Asesoramiento post venta</p>
-              </div>
-            </div>
-            <div className="item-stats">
-              <MdOutlineVerifiedUser size={25} />
-              <div>
-                <p>Compra Protegida</p>
-                <p className="precio-siniva">Tus datos y pagos seguros</p>
-              </div>
-            </div>
-          </div>
+          </section>
+          <section className="detalle-bloque" aria-labelledby="detalle-especificaciones">
+            <h2 id="detalle-especificaciones">Especificaciones</h2>
+            <dl className="detalle-especificaciones">
+              {especificaciones.map(([nombre, valor]) => (
+                <React.Fragment key={nombre}>
+                  <dt>{nombre}</dt>
+                  <dd>{valor}</dd>
+                </React.Fragment>
+              ))}
+            </dl>
+          </section>
         </div>
+
         <ProductosRelacionados producto={producto} />
       </div>
     </div>

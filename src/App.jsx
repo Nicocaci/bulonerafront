@@ -38,10 +38,12 @@ const queryClient = new QueryClient({
 
 function AppContent() {
   const location = useLocation();
+  // En el checkout: header reducido y sin footer, para no distraer durante el pago
+  const enCheckout = location.pathname.startsWith("/checkout");
 
   return (
     <div className="app-layout">
-      <NavBar />
+      <NavBar reducido={enCheckout} />
       <main>
         <ScrollToTop />
         {/* Mientras baja el código de la página se reserva el alto de la pantalla
@@ -77,7 +79,7 @@ function AppContent() {
         </ErrorCarga>
         <WpButton />
       </main>
-      <Footer />
+      {!enCheckout && <Footer />}
     </div>
   );
 }

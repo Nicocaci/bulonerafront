@@ -2,6 +2,40 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import axiosInstance from "../utils/axiosConfig.js";
+import { urlWhatsapp } from "../utils/contacto.js";
+import "../css/Checkout.css";
+
+const Svg = ({ children }) => (
+  <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+    {children}
+  </svg>
+);
+
+// Ícono según el resultado del pago
+const ICONOS = {
+  ok: (
+    <Svg>
+      <path d="M5 12l5 5 9-10" />
+    </Svg>
+  ),
+  espera: (
+    <Svg>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </Svg>
+  ),
+  error: (
+    <Svg>
+      <path d="M7 7l10 10M17 7L7 17" />
+    </Svg>
+  ),
+  info: (
+    <Svg>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v5M12 8h.01" />
+    </Svg>
+  ),
+};
 
 // Mercado Pago vuelve a esta página en todos los casos (aprobado, pendiente o rechazado)
 // con ?status=...&external_reference=<id de la orden>&payment_id=...
@@ -123,30 +157,78 @@ const Gracias = () => {
 
   const puedeReintentar = ["rechazado", "sin_pago"].includes(estado);
   const esperando = ["cargando", "confirmando"].includes(estado);
+  const tipoIcono = esperando
+    ? null
+    : estado === "aprobado"
+      ? "ok"
+      : estado === "pendiente"
+        ? "espera"
+        : puedeReintentar
+          ? "error"
+          : "info";
+  const mensajeWhatsapp = `Hola! Tengo una consulta sobre mi pedido${numero}`;
 
   return (
-    <div className="checkout-container">
-      <h1 className="checkout-title">{contenido.titulo}</h1>
-      <div className="checkout-content">
-        <div className="checkout-step-content" role="status" aria-live="polite">
-          {esperando && <div className="checkout-spinner" />}
-          <p>{contenido.texto}</p>
+    <div className="resultado">
+      <section className="resultado__tarjeta" role="status" aria-live="polite">
+        {esperando ? (
+          <div className="checkout-spinner" />
+        ) : (
+          <span className={`resultado__icono resultado__icono--${tipoIcono}`}>
+            {ICONOS[tipoIcono]}
+          </span>
+        )}
+        <h1 className="resultado__titulo">{contenido.titulo}</h1>
+        <p className="resultado__texto">{contenido.texto}</p>
 
-          {!esperando && (
-            <div className="checkout-resultado-acciones">
-              {puedeReintentar ? (
-                <Link to="/carrito/mi-carrito" className="checkout-btn-primary">
-                  Volver al carrito
-                </Link>
-              ) : (
+        {estado === "aprobado" && (
+          <ol className="resultado__pasos">
+            <li>
+              <span className="resultado__numero">1</span>
+              <span>
+                <strong>Revisá tu email.</strong> Ahí está el detalle del pedido.
+              </span>
+            </li>
+            <li>
+              <span className="resultado__numero">2</span>
+              <span>
+                <strong>Preparamos tu pedido.</strong> Si elegiste retiro, te avisamos por email
+                cuando esté listo.
+              </span>
+            </li>
+            <li>
+              <span className="resultado__numero">3</span>
+              <span>
+                <strong>¿Dudas?</strong> Escribinos por WhatsApp con tu número de pedido.
+              </span>
+            </li>
+          </ol>
+        )}
+
+        {!esperando && (
+          <div className="resultado__acciones">
+            {puedeReintentar ? (
+              <Link to="/carrito/mi-carrito" className="checkout-btn-primary">
+                Volver a intentar
+              </Link>
+            ) : (
+              <>
                 <Link to="/productos" className="checkout-btn-primary">
                   Seguir comprando
                 </Link>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
+                <a
+                  href={urlWhatsapp(mensajeWhatsapp)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="resultado__secundario"
+                >
+                  Escribinos por WhatsApp
+                </a>
+              </>
+            )}
+          </div>
+        )}
+      </section>
     </div>
   );
 };

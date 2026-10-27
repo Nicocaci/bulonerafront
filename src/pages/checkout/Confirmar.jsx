@@ -69,6 +69,7 @@ const Confirmar = ({
   confirmAccepted,
   onToggleConfirm,
   errors,
+  onEditar,
 }) => {
   const [pago, setPago] = useState(null); // { preferenceId, total }
   const [loading, setLoading] = useState(false);
@@ -114,35 +115,40 @@ const Confirmar = ({
   const esRetiro = formData.deliveryMethod === "retiro_local";
 
   return (
-    <div className="checkout-step-content">
-      <h2>Confirmación</h2>
+    <div className="checkout-paso">
+      <h1 className="checkout-paso__titulo">Revisá tu pedido</h1>
 
-      <div className="checkout-summary">
+      <div className="checkout-revision">
         {/* DATOS CLIENTE */}
-        <div className="checkout-summary-section">
-          <h3>Datos del Cliente</h3>
+        <section className="checkout-revision__bloque">
+          <div className="checkout-revision__encabezado">
+            <h2>Tus datos</h2>
+            <button type="button" onClick={() => onEditar?.(1)}>
+              Editar <span className="solo-lectores">tus datos</span>
+            </button>
+          </div>
           <p>
-            <strong>Nombre:</strong> {formData.nombre} {formData.apellido}
+            {formData.nombre} {formData.apellido}
           </p>
-          <p>
-            <strong>Email:</strong> {formData.email}
-          </p>
-          <p>
-            <strong>Teléfono:</strong> {formData.telefono}
-          </p>
-        </div>
+          <p>{formData.email}</p>
+          <p>{formData.telefono}</p>
+        </section>
 
         {/* ENTREGA */}
-        <div className="checkout-summary-section">
+        <section className="checkout-revision__bloque">
+          <div className="checkout-revision__encabezado">
+            <h2>Entrega</h2>
+            <button type="button" onClick={() => onEditar?.(2)}>
+              Editar <span className="solo-lectores">la entrega</span>
+            </button>
+          </div>
           {esRetiro ? (
             <>
-              <h3>Entrega</h3>
               <p>Retiro en el local — Bulonera El Triángulo</p>
               <p>Costo: $0</p>
             </>
           ) : (
             <>
-              <h3>Dirección de Envío</h3>
               <p>
                 {formData.calle} {formData.numero}
               </p>
@@ -150,40 +156,23 @@ const Confirmar = ({
                 {formData.ciudad}, {PROVINCIAS_LABEL[formData.provincia] || formData.provincia} — CP{" "}
                 {formData.codigoPostal}
               </p>
-            </>
-          )}
-        </div>
-
-        {/* MÉTODO DE ENVÍO */}
-        {!esRetiro && (
-          <div className="checkout-summary-section">
-            <h3>Envío</h3>
-            {formData.shippingChoice ? (
-              <>
+              {formData.shippingChoice ? (
                 <p>
                   {formData.shippingChoice.tipo === "sucursal" ? "A sucursal" : "A domicilio"}{" "}
-                  — {formData.shippingChoice.correo || "Envío"} ({formData.shippingChoice.servicio})
+                  — {formData.shippingChoice.correo || "Envío"} ({formData.shippingChoice.servicio}) ·{" "}
+                  {formatearPrecio(shippingCost)}
                 </p>
-                <p>
-                  <strong>Costo de envío:</strong> {formatearPrecio(shippingCost)}
-                </p>
-              </>
-            ) : (
-              <p>No se seleccionó método de envío</p>
-            )}
-          </div>
-        )}
-
-        {/* MÉTODO DE PAGO */}
-        <div className="checkout-summary-section">
-          <h3>Método de Pago</h3>
-          <p>Mercado Pago</p>
-        </div>
+              ) : (
+                <p>No se seleccionó método de envío</p>
+              )}
+            </>
+          )}
+        </section>
 
         {/* PRODUCTOS */}
-        <div className="checkout-summary-section">
-          <h3>Productos</h3>
-          <div className="checkout-products-list">
+        <section className="checkout-revision__bloque">
+          <h2>Productos</h2>
+          <div className="checkout-revision__productos">
             {productos.length === 0 ? (
               <div>No hay productos en el carrito</div>
             ) : (
@@ -198,46 +187,51 @@ const Confirmar = ({
                   : product.imagen;
 
                 return (
-                  <div key={productId} className="checkout-product-item">
-                    <img
-                      src={getImageUrl(imagen, ANCHO_MINIATURA)}
-                      alt={name}
-                      className="checkout-product-image"
-                    />
-                    <div className="checkout-product-info">
-                      <span className="checkout-product-name">{name}</span>
-                      <span className="checkout-product-quantity">x{quantity}</span>
-                    </div>
-                    <span className="checkout-product-price">
-                      {formatearPrecio(price * quantity)}
+                  <div key={productId} className="checkout-revision__producto">
+                    <span className="checkout-resumen__foto">
+                      <img src={getImageUrl(imagen, ANCHO_MINIATURA)} alt="" />
                     </span>
+                    <span className="checkout-revision__nombre">
+                      {name} <span className="checkout-resumen__cantidad">× {quantity}</span>
+                    </span>
+                    <span>{formatearPrecio(price * quantity)}</span>
                   </div>
                 );
               })
             )}
           </div>
-        </div>
+        </section>
 
         {/* TOTAL */}
-        <div className="checkout-summary-total">
-          <p>Subtotal productos: {formatearPrecio(productsTotal)}</p>
-          <p>Envío: {formatearPrecio(shippingCost)}</p>
-          <h3>Total: {formatearPrecio(total)}</h3>
+        <div className="checkout-revision__totales">
+          <div>
+            <span>Subtotal productos</span>
+            <span>{formatearPrecio(productsTotal)}</span>
+          </div>
+          <div>
+            <span>Envío</span>
+            <span>{formatearPrecio(shippingCost)}</span>
+          </div>
+          <div className="checkout-revision__total">
+            <span>Total</span>
+            <span>{formatearPrecio(total)}</span>
+          </div>
         </div>
 
         {/* CONFIRMACIÓN */}
-        <div className="checkout-confirm-accept">
+        <div className="checkout-confirmacion">
           <label>
             <input
               type="checkbox"
               checked={confirmAccepted}
               onChange={onToggleConfirm}
-            />{" "}
-            Confirmo que los datos son correctos y deseo realizar la compra
+              aria-describedby={errors?.confirm ? "confirm-error" : undefined}
+            />
+            <span>Confirmo que los datos son correctos y deseo realizar la compra</span>
           </label>
 
           {errors?.confirm && (
-            <div className="checkout-error" style={{ marginTop: "8px" }}>
+            <div className="checkout-error" id="confirm-error">
               {errors.confirm}
             </div>
           )}
@@ -278,6 +272,12 @@ const Confirmar = ({
               </>
             )}
           </div>
+        )}
+        {!confirmAccepted && (
+          <p className="checkout-pago__ayuda">
+            Marcá la confirmación para ver el botón de pago. Vas a pagar en Mercado Pago con
+            tarjeta de crédito, débito o dinero en cuenta.
+          </p>
         )}
       </div>
     </div>

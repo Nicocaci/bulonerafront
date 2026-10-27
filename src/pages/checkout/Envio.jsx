@@ -2,6 +2,21 @@
 import React from "react";
 import { PROVINCIAS } from "../../utils/provincias";
 import ShippingSelector from "./ShippingSelector";
+import { CONTACTO } from "../../utils/contacto.js";
+
+const MensajeError = ({ id, children }) =>
+  children ? (
+    <span className="checkout-error" id={id}>
+      {children}
+    </span>
+  ) : null;
+
+// Props de accesibilidad para un campo con posible error
+const conError = (id, error) => ({
+  className: error ? "error" : "",
+  "aria-invalid": error ? "true" : undefined,
+  "aria-describedby": error ? `${id}-error` : undefined,
+});
 
 const Envio = ({
   formData,
@@ -30,63 +45,72 @@ const Envio = ({
   };
 
   return (
-    <div className="checkout-step-content">
-      <h2>Método de entrega</h2>
+    <div className="checkout-paso">
+      <h1 className="checkout-paso__titulo">¿Cómo querés recibirlo?</h1>
 
-      <div className="checkout-delivery-toggle">
-        <label className={`shipping-option ${isEnvio ? "selected" : ""}`}>
+      <div className="checkout-entrega" role="radiogroup" aria-label="Método de entrega">
+        <label className={`checkout-opcion ${isEnvio ? "checkout-opcion--elegida" : ""}`}>
           <input
             type="radio"
             name="deliveryMethod"
             checked={isEnvio}
             onChange={() => handleMethodChange("envio")}
           />
-          Envío a domicilio / sucursal
+          <span>
+            <strong>Envío a domicilio</strong>
+            <span className="checkout-opcion__detalle">Calculamos el costo con tu código postal</span>
+          </span>
         </label>
-        <label className={`shipping-option ${isRetiro ? "selected" : ""}`}>
+        <label className={`checkout-opcion ${isRetiro ? "checkout-opcion--elegida" : ""}`}>
           <input
             type="radio"
             name="deliveryMethod"
             checked={isRetiro}
             onChange={() => handleMethodChange("retiro_local")}
           />
-          Retiro en el local
+          <span>
+            <strong>Retiro en el local</strong>
+            <span className="checkout-opcion__detalle">Sin cargo · {CONTACTO.direccion}</span>
+          </span>
         </label>
       </div>
 
-      {errors.deliveryMethod && (
-        <span className="checkout-error" style={{ display: "block", marginTop: "0.5rem" }}>
-          {errors.deliveryMethod}
-        </span>
-      )}
+      <MensajeError id="deliveryMethod-error">{errors.deliveryMethod}</MensajeError>
 
       {isRetiro && (
-        <div className="checkout-pickup-info" style={{ marginTop: "1rem" }}>
-          <p><strong>Bulonera El Triángulo</strong></p>
-          <p><strong>Dirección:</strong> Camino General Belgrano 6444</p>
-          <p><strong>Horarios de atención:</strong> lunes a viernes de 8 a 18 hs de corrido, sábados de 8 a 13 hs</p>
+        <div className="checkout-retiro">
+          <p>
+            <strong>Bulonera El Triángulo</strong>
+          </p>
+          <p>
+            <strong>Dirección:</strong> Camino General Belgrano 6444
+          </p>
+          <p>
+            <strong>Horarios de atención:</strong> lunes a viernes de 8 a 18 hs de corrido, sábados de 8 a 13 hs
+          </p>
           <p>Te avisamos por email cuando esté listo para retirar.</p>
         </div>
       )}
 
       {isEnvio && (
         <>
-          <div className="checkout-form-grid">
-            <div className="checkout-form-group">
+          <div className="checkout-campos checkout-campos--direccion">
+            <div className="checkout-campo checkout-campo--calle">
               <label htmlFor="calle">Calle *</label>
               <input
                 type="text"
                 id="calle"
                 name="calle"
+                autoComplete="address-line1"
                 value={formData.calle}
                 onChange={onChange}
-                className={errors.calle ? "error" : ""}
                 placeholder="Ej: Av. Corrientes"
+                {...conError("calle", errors.calle)}
               />
-              {errors.calle && <span className="checkout-error">{errors.calle}</span>}
+              <MensajeError id="calle-error">{errors.calle}</MensajeError>
             </div>
 
-            <div className="checkout-form-group">
+            <div className="checkout-campo checkout-campo--numero">
               <label htmlFor="numero">Número *</label>
               <input
                 type="text"
@@ -94,72 +118,77 @@ const Envio = ({
                 name="numero"
                 value={formData.numero}
                 onChange={onChange}
-                className={errors.numero ? "error" : ""}
                 placeholder="Ej: 1234"
+                {...conError("numero", errors.numero)}
               />
-              {errors.numero && <span className="checkout-error">{errors.numero}</span>}
+              <MensajeError id="numero-error">{errors.numero}</MensajeError>
             </div>
 
-            <div className="checkout-form-group">
+            <div className="checkout-campo checkout-campo--ciudad">
               <label htmlFor="ciudad">Ciudad *</label>
               <input
                 type="text"
                 id="ciudad"
                 name="ciudad"
+                autoComplete="address-level2"
                 value={formData.ciudad}
                 onChange={onChange}
-                className={errors.ciudad ? "error" : ""}
+                {...conError("ciudad", errors.ciudad)}
               />
-              {errors.ciudad && <span className="checkout-error">{errors.ciudad}</span>}
+              <MensajeError id="ciudad-error">{errors.ciudad}</MensajeError>
             </div>
 
-            <div className="checkout-form-group">
+            <div className="checkout-campo checkout-campo--provincia">
               <label htmlFor="provincia">Provincia *</label>
               <select
                 id="provincia"
                 name="provincia"
                 value={formData.provincia}
                 onChange={onChange}
-                className={errors.provincia ? "error" : ""}
+                {...conError("provincia", errors.provincia)}
               >
                 <option value="">Seleccioná una provincia</option>
                 {PROVINCIAS.map((p) => (
-                  <option key={p.id} value={p.id}>{p.nombre}</option>
+                  <option key={p.id} value={p.id}>
+                    {p.nombre}
+                  </option>
                 ))}
               </select>
-              {errors.provincia && <span className="checkout-error">{errors.provincia}</span>}
+              <MensajeError id="provincia-error">{errors.provincia}</MensajeError>
             </div>
 
-            <div className="checkout-form-group">
-              <label htmlFor="codigoPostal">Código Postal *</label>
+            <div className="checkout-campo checkout-campo--cp">
+              <label htmlFor="codigoPostal">Código postal *</label>
               <input
                 type="text"
                 id="codigoPostal"
                 name="codigoPostal"
+                inputMode="numeric"
+                autoComplete="postal-code"
                 value={formData.codigoPostal}
                 onChange={onChange}
-                className={errors.codigoPostal ? "error" : ""}
                 maxLength="10"
+                {...conError("codigoPostal", errors.codigoPostal)}
               />
-              {errors.codigoPostal && <span className="checkout-error">{errors.codigoPostal}</span>}
+              <MensajeError id="codigoPostal-error">{errors.codigoPostal}</MensajeError>
             </div>
 
-            <div className="checkout-form-group checkout-form-group-full">
+            <div className="checkout-campo checkout-campo--notas">
               <label htmlFor="notas">Notas adicionales (opcional)</label>
               <textarea
                 id="notas"
                 name="notas"
                 value={formData.notas}
                 onChange={onChange}
-                rows="4"
+                rows="3"
                 placeholder="Instrucciones especiales para la entrega..."
               />
             </div>
           </div>
 
           {formData.provincia && formData.codigoPostal && (
-            <div className="checkout-form-group-full" style={{ marginTop: "1.5rem" }}>
-              <h3>Opciones de envío</h3>
+            <fieldset className="checkout-envios">
+              <legend>Opciones de envío</legend>
               <ShippingSelector
                 provincia={formData.provincia}
                 codigoPostal={formData.codigoPostal}
@@ -168,8 +197,11 @@ const Envio = ({
                 selected={formData.shippingChoice}
                 onSelect={onSelectShipping}
               />
-              {errors.shippingChoice && <span className="checkout-error">{errors.shippingChoice}</span>}
-            </div>
+              <MensajeError id="shippingChoice-error">{errors.shippingChoice}</MensajeError>
+            </fieldset>
+          )}
+          {!(formData.provincia && formData.codigoPostal) && errors.shippingChoice && (
+            <MensajeError id="shippingChoice-error">{errors.shippingChoice}</MensajeError>
           )}
         </>
       )}

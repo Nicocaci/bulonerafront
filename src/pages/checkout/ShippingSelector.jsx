@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useShippingOptions } from "../../hooks/useShippingOptions";
+import { formatearPrecio } from "../../utils/precio.js";
 
 // Mismo formato que valida el backend
 const CP_VALIDO = /^\d{4,8}$/;
@@ -55,20 +56,23 @@ export default function ShippingSelector({ provincia, codigoPostal, peso, paquet
         const isSelected = esLaMisma(selected, opt);
 
         return (
-          <label key={i} className={`shipping-option ${isSelected ? "selected" : ""}`}>
+          <label key={i} className={`checkout-opcion checkout-opcion--fila ${isSelected ? "checkout-opcion--elegida" : ""}`}>
             <input
               type="radio"
               name="shipping"
               checked={isSelected}
               onChange={() => onSelect(opt)}
             />
-            <div>
-              <span className="shipping-option-tag">
-                {opt.tipo === "sucursal" ? "A sucursal" : "A domicilio"}
+            <span className="checkout-opcion__texto">
+              <strong>
+                {opt.correo || "Envío"} · {opt.tipo === "sucursal" ? "a sucursal" : "a domicilio"}
+              </strong>
+              <span className="checkout-opcion__detalle">
+                {opt.servicio}
+                {opt.horas_entrega ? ` · entrega estimada en ${opt.horas_entrega} h` : ""}
               </span>
-              <strong>{opt.correo || "Envío"} — {opt.servicio}</strong>
-              <p>${opt.valor} · {opt.horas_entrega}hs estimadas</p>
-            </div>
+            </span>
+            <span className="checkout-opcion__precio">{formatearPrecio(opt.valor)}</span>
           </label>
         );
       })}

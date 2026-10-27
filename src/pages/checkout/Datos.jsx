@@ -1,65 +1,73 @@
-import React from 'react';
+import React from "react";
+
+// Campo de texto con su etiqueta y su mensaje de error
+const Campo = ({ id, label, error, ...props }) => (
+  <div className="checkout-campo">
+    <label htmlFor={id}>{label}</label>
+    <input
+      id={id}
+      name={id}
+      className={error ? "error" : ""}
+      aria-invalid={error ? "true" : undefined}
+      aria-describedby={error ? `${id}-error` : undefined}
+      {...props}
+    />
+    {error && (
+      <span className="checkout-error" id={`${id}-error`}>
+        {error}
+      </span>
+    )}
+  </div>
+);
 
 const Datos = ({ formData, errors, onChange }) => {
-    return (
-        <div className="checkout-step-content">
-            <h2>Datos Del comprador</h2>
-            <div className="checkout-form-grid">
-                <div className="checkout-form-group">
-                    <label htmlFor="nombre">Nombre *</label>
-                    <input
-                        type="text"
-                        id="nombre"
-                        name="nombre"
-                        value={formData.nombre}
-                        onChange={onChange}
-                        className={errors.nombre ? 'error' : ''}
-                    />
-                    {errors.nombre && <span className="checkout-error">{errors.nombre}</span>}
-                </div>
-
-                <div className="checkout-form-group">
-                    <label htmlFor="apellido">Apellido *</label>
-                    <input
-                        type="text"
-                        id="apellido"
-                        name="apellido"
-                        value={formData.apellido}
-                        onChange={onChange}
-                        className={errors.apellido ? 'error' : ''}
-                    />
-                    {errors.apellido && <span className="checkout-error">{errors.apellido}</span>}
-                </div>
-
-                <div className="checkout-form-group">
-                    <label htmlFor="email">Email *</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={onChange}
-                        className={errors.email ? 'error' : ''}
-                    />
-                    {errors.email && <span className="checkout-error">{errors.email}</span>}
-                </div>
-
-                <div className="checkout-form-group">
-                    <label htmlFor="telefono">Teléfono *</label>
-                    <input
-                        type="tel"
-                        id="telefono"
-                        name="telefono"
-                        value={formData.telefono}
-                        onChange={onChange}
-                        className={errors.telefono ? 'error' : ''}
-                        placeholder="+54 11 1234-5678"
-                    />
-                    {errors.telefono && <span className="checkout-error">{errors.telefono}</span>}
-                </div>
-            </div>
-        </div>
-    );
+  return (
+    <div className="checkout-paso">
+      <div>
+        <h1 className="checkout-paso__titulo">Tus datos</h1>
+        <p className="checkout-paso__ayuda">Los usamos para enviarte la confirmación y coordinar la entrega.</p>
+      </div>
+      <div className="checkout-campos">
+        <Campo
+          id="nombre"
+          label="Nombre *"
+          type="text"
+          autoComplete="given-name"
+          value={formData.nombre}
+          onChange={onChange}
+          error={errors.nombre}
+        />
+        <Campo
+          id="apellido"
+          label="Apellido *"
+          type="text"
+          autoComplete="family-name"
+          value={formData.apellido}
+          onChange={onChange}
+          error={errors.apellido}
+        />
+        <Campo
+          id="email"
+          label="Email *"
+          type="email"
+          autoComplete="email"
+          value={formData.email}
+          onChange={onChange}
+          error={errors.email}
+        />
+        <Campo
+          id="telefono"
+          label="Teléfono *"
+          type="tel"
+          autoComplete="tel"
+          placeholder="+54 11 1234-5678"
+          value={formData.telefono}
+          onChange={onChange}
+          error={errors.telefono}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default Datos;

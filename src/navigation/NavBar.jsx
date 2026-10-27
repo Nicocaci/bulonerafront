@@ -26,7 +26,7 @@ const CATEGORIAS_DESTACADAS = [
 
 const linkCategoria = (valor) => `/productos?categoria=${encodeURIComponent(valor)}`;
 
-const NavBar = () => {
+const NavBar = ({ reducido = false }) => {
   const { isAuthenticated, user, logOut, getProfile } = useContext(AuthContext);
   const { theme, toggleTheme } = useTheme();
   const { cart } = useCart();
@@ -190,6 +190,30 @@ const NavBar = () => {
   const enOfertas =
     location.pathname === "/productos" &&
     new URLSearchParams(location.search).get("ofertas") === "true";
+
+  // Checkout: header reducido (logo + "Compra segura") para no distraer durante el pago.
+  // El modal de login se mantiene: AuthContext lo abre si la sesión vence en el medio.
+  if (reducido) {
+    return (
+      <>
+        <header className="nav nav--reducido">
+          <div className="nav-reducido">
+            <Link to="/" className="nav-logo" aria-label="Volver a la tienda">
+              <img src="/logo-texto-blanco.svg" width={104} height={52} alt="Bulonera El Triángulo" />
+            </Link>
+            <span className="nav-reducido__seguro">
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+                <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+              </svg>
+              Compra segura
+            </span>
+          </div>
+        </header>
+        {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
+      </>
+    );
+  }
 
   return (
     <>

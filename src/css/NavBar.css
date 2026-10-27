@@ -760,3 +760,53 @@
     font-weight: 600;
   }
 }
+
+/* ── Header reducido del checkout (Fase 5C) ─────────────── */
+.nav--reducido {
+  background: var(--color-oscuro);
+}
+
+.nav-reducido {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.nav--reducido .nav-logo img {
+  width: 104px;
+}
+
+.nav-reducido__seguro {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #d4d4d4;
+  font-size: 14px;
+}
+
+/* El navbar normal en mobile centra el logo: en el reducido va a la izquierda */
+@media (max-width: 1024px) {
+  .nav--reducido .nav-logo {
+    order: 0;
+    flex: 0 0 auto;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-reducido {
+    padding: 10px 16px;
+  }
+
+  .nav--reducido .nav-logo img {
+    width: 88px;
+  }
+
+  .nav-reducido__seguro {
+    font-size: 13px;
+  }
+}
