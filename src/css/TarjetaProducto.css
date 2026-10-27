@@ -105,6 +105,11 @@
   color: var(--color-oferta);
 }
 
+/* En el tema oscuro el rojo de oferta no se lee sobre la tarjeta (2,8 a 1): rojo claro (6 a 1) */
+[data-theme="dark"] .tarjeta-producto__sin-stock {
+  color: #ff8a80;
+}
+
 @media (max-width: 768px) {
   .tarjeta-producto__info {
     padding: 10px 12px 12px;

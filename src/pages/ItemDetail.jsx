@@ -16,6 +16,8 @@ import GaleriaModal from "../components/GaleriaModal.jsx";
 import ProductosRelacionados from "../destacadas/ProductosRelacionados.jsx";
 import { getPrecioUnitario, formatearPrecio } from "../utils/precio.js";
 import { urlWhatsapp } from "../utils/contacto.js";
+import { metaDeProducto, SITIO } from "../utils/seo.js";
+import { aplicarMeta } from "../utils/metaDocumento.js";
 
 const Icono = ({ children, size = 20 }) => (
   <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -108,6 +110,18 @@ const ItemDetail = () => {
       cancelado = true;
     };
   }, [imagenSeleccionada, producto]);
+
+  // Título, descripción e imagen para compartir de este producto
+  useEffect(() => {
+    if (producto) aplicarMeta(metaDeProducto(producto, prodId));
+    else if (errorConsulta) {
+      aplicarMeta({
+        titulo: `Producto no encontrado | ${SITIO.nombre}`,
+        canonical: `${SITIO.url}/producto/${prodId}`,
+        indexar: false,
+      });
+    }
+  }, [producto, errorConsulta, prodId]);
 
   // Al llegar un producto (o cambiar de producto) se muestra su primera imagen
   const productoId = producto?._id;

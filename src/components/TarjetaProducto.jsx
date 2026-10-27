@@ -7,8 +7,9 @@ import {
   usarPlaceholder,
 } from "../utils/imageUtils.js";
 import "../css/TarjetaProducto.css";
+import { formatearPrecio } from "../utils/precio.js";
 
-const pesos = (n) => `$${Number(n || 0).toLocaleString("es-AR")}`;
+const pesos = (n) => formatearPrecio(n);
 
 // Tarjeta de producto del catálogo y de los carruseles (antes cada lugar tenía la suya).
 // La foto se muestra entera sobre fondo blanco (antes se estiraba para llenar el cuadro).

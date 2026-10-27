@@ -6,6 +6,7 @@ import { AuthContext } from "../../context/AuthContext";
 import axiosInstance, { getErrorMessage } from "../../utils/axiosConfig";
 import { ANCHO_MINIATURA, getImageUrl, usarPlaceholder } from "../../utils/imageUtils";
 import { CONTACTO, urlWhatsapp } from "../../utils/contacto.js";
+import { formatearPrecio } from "../../utils/precio.js";
 import "../../css/MiCuenta.css";
 
 // Estados que ve el cliente (el backend ya no manda los intentos de pago pendientes o
@@ -30,7 +31,7 @@ const CAMPOS = [
   { name: "direccion", label: "Dirección", type: "text", autoComplete: "street-address" },
 ];
 
-const pesos = (n) => `$${Number(n || 0).toLocaleString("es-AR", { maximumFractionDigits: 2 })}`;
+const pesos = (n) => formatearPrecio(n);
 
 const fecha = (order) => new Date(order.date || order.createdAt).toLocaleDateString("es-AR");
 

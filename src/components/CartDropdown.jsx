@@ -4,9 +4,9 @@ import { useCart } from "../context/CartContext";
 import "../css/CartDropdown.css";
 import { ANCHO_MINIATURA, getImageUrl, usarPlaceholder } from "../utils/imageUtils";
 import Swal from "../utils/alertas.js";
-import { getPrecioUnitario } from "../utils/precio.js";
+import { getPrecioUnitario, formatearPrecio } from "../utils/precio.js";
 
-const pesos = (n) => `$${Number(n || 0).toLocaleString("es-AR")}`;
+const pesos = (n) => formatearPrecio(n);
 
 const primeraImagen = (product) => {
   if (Array.isArray(product.imagen)) return product.imagen[0];
@@ -146,7 +146,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
 
   return (
     <div className="carrito-lateral__fondo" onMouseDown={onClose}>
-      <aside
+      <div
         ref={panelRef}
         className="carrito-lateral"
         role="dialog"
@@ -155,7 +155,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
         onMouseDown={(e) => e.stopPropagation()}
         onKeyDown={alTab}
       >
-        <header className="carrito-lateral__cabecera">
+        <div className="carrito-lateral__cabecera">
           <h2 id="carrito-lateral-titulo">Tu carrito</h2>
           {unidades > 0 && (
             <span className="carrito-lateral__cantidad">
@@ -182,7 +182,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
               <path d="M6 6l12 12M18 6L6 18" />
             </svg>
           </button>
-        </header>
+        </div>
 
         {products.length === 0 ? (
           <div className="carrito-lateral__vacio">
@@ -282,7 +282,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
               })}
             </ul>
 
-            <footer className="carrito-lateral__pie">
+            <div className="carrito-lateral__pie">
               <div className="carrito-lateral__total">
                 <span>Subtotal</span>
                 <span>{pesos(total)}</span>
@@ -305,10 +305,10 @@ const CartDropdown = ({ onClose, isOpen }) => {
                   Vaciar carrito
                 </button>
               </div>
-            </footer>
+            </div>
           </>
         )}
-      </aside>
+      </div>
     </div>
   );
 };

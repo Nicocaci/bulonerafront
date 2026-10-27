@@ -1,22 +1,18 @@
-import React from "react";
 import { FaWhatsapp } from "react-icons/fa";
+import { urlWhatsapp } from "../utils/contacto.js";
 import "../css/WpButton.css";
 
-const WpButton = () => {
-  const phoneNumber = "+5491151544062";
-  const message = "Hola! Quiero hacer una consulta sobre sus productos";
-
-  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-  return (
-    <a
-      href={url}
-      className="whatsapp-float"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <FaWhatsapp size={28} />
-    </a>
-  );
-};
+// Botón flotante de WhatsApp (mismo número y mensaje de siempre, ahora desde utils/contacto.js)
+const WpButton = () => (
+  <a
+    href={urlWhatsapp()}
+    className="whatsapp-float"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Escribinos por WhatsApp (se abre en otra pestaña)"
+  >
+    <FaWhatsapp size={28} aria-hidden="true" />
+  </a>
+);
 
 export default WpButton;

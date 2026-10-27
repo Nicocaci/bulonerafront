@@ -70,6 +70,7 @@ const NavbarActions = ({
             className="nav-accion"
             aria-haspopup="menu"
             aria-expanded={menuCuenta}
+            aria-label={nombre ? `Mi cuenta (${nombre})` : "Mi cuenta"}
             onClick={() => setMenuCuenta((v) => !v)}
           >
             <IconoUsuario />
@@ -79,7 +80,7 @@ const NavbarActions = ({
             </span>
           </button>
         ) : (
-          <button type="button" className="nav-accion" onClick={onLoginClick}>
+          <button type="button" className="nav-accion" onClick={onLoginClick} aria-label="Ingresar">
             <IconoUsuario />
             <span className="nav-accion__textos">
               <span className="nav-accion__chico">Bienvenido</span>

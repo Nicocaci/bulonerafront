@@ -1,0 +1,10 @@
+# Bulonera El Triángulo
+User-agent: *
+Allow: /
+# Páginas privadas o de un solo uso
+Disallow: /carrito/
+Disallow: /checkout/
+Disallow: /perfil
+Disallow: /gracias
+
+Sitemap: https://buloneraeltriangulo.com/sitemap.xml

@@ -7,8 +7,18 @@ export const getPrecioUnitario = (product) =>
 
 export const tieneOfertaVigente = (product) => Boolean(product?.ofertaVigente);
 
-export const formatearPrecio = (valor) =>
-  Number(valor || 0).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
+// Formato único de precios en todo el sitio (Fase 6): "$6.068" o "$6.068,50".
+// Los centavos se muestran solo si el importe los tiene (y entonces siempre dos dígitos).
+// maxDecimales = 0 redondea a pesos enteros (por ejemplo, el ticket promedio del panel).
+export const formatearPrecio = (valor, maxDecimales = 2) => {
+  const n = Number(valor) || 0;
+  const conCentavos = maxDecimales > 0 && Math.round(Math.abs(n) * 100) % 100 !== 0;
+  const texto = Math.abs(n).toLocaleString("es-AR", {
+    minimumFractionDigits: conCentavos ? 2 : 0,
+    maximumFractionDigits: conCentavos ? 2 : 0,
+  });
+  return `${n < 0 ? "-" : ""}$${texto}`;
+};
 
 // ID del producto de un ítem del carrito (logueado: product poblado; invitado: _id del ítem)
 export const getProductIdDeItem = (item) => {

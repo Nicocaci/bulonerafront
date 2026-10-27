@@ -30,27 +30,9 @@
   --marca-suave-borde: #f3c3ad;
   --bg-color: #ffffff;
   --text-color: #1a1a1a;
-  --card-bg: #f5f5f5;
-  --border-color: #c2c2c2;
   --borderForm-color: #CCC;
-  --navbar-bg: #ffffff;
-  --prodContainer-bg: #ffffff;
-  --menuCat-bg: #e0e0e0;
-  --menuCatHover-bg: #d7d7d7;
-  --sliderContainer-bg: #ffffff;
-  --footer-bg: #ffffff;
-  --filterBox-bg:#E0E0E0;
   --cards-bg: #EBE8E8 ;
-  --itemContent-bg: #ffffff;
-  --buloneraTitle-color:#153174;
-  --statsCard-bg:#00000014;
-  --adminSection-bg: #FFFFFF;
-  --tableHead-bg: #F0F0F0;
-  --itemContainer-bg: #E0E0E0;
-  --totalContainer-bg:#c4c4c44b;
   --auth-bg: #dddddd;
-  --cartDropdown-bg: #ffffff;
-  --cartDropdownHover-bg: #e0e0e0;
 }
 
 /* Tema oscuro */
@@ -66,26 +48,7 @@
   --marca-suave-borde: #6b3a24;
   --bg-color: #202324;
   --text-color: #e8e8e8;
-  --card-bg: #1e1e1e;
-  --border-color: #696969a9;
   --borderForm-color:#5a5a5a;
-  --navbar-bg: #202324;
-  --prodContainer-bg: #202324;
-  --sliderContainer-bg: #532d1b;
-  --footer-bg: #20232493;
-  --menuCat-bg: #202324;
-  --menuCatHover-bg: #333536f5;
-  --filterBox-bg: #333536f5;
   --cards-bg: #333536f5;
-  --itemContent-bg:#333536f5;
-  --buloneraTitle-color:#7ca3ff;
-  --statsCard-bg:#202324;
-  --adminSection-bg: #202324;
-  --adminHover-bg:#373d3f;
-  --tableHead-bg:#333536F5;
-  --itemContainer-bg: #333536f5; 
-  --totalContainer-bg:#333536f5;
   --auth-bg: #202324;
-  --cartDropdown-bg: #202324;
-  --cartDropdownHover-bg: #1d1d1d;
 }

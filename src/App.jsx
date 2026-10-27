@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import Home from "./pages/Home.jsx";
 import NavBar from "./navigation/NavBar.jsx";
 import Footer from "./navigation/Footer.jsx";
@@ -8,6 +8,8 @@ import ErrorCarga from "./components/ErrorCarga.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 
 import ScrollToTop from "./utils/ScrollToTop.jsx";
+import { metaDeRuta } from "./utils/seo.js";
+import { aplicarMeta } from "./utils/metaDocumento.js";
 
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
@@ -40,6 +42,13 @@ function AppContent() {
   const location = useLocation();
   // En el checkout: header reducido y sin footer, para no distraer durante el pago
   const enCheckout = location.pathname.startsWith("/checkout");
+
+  // Título y meta de cada página al navegar (el detalle de producto pone los suyos
+  // cuando llegan los datos del producto)
+  useEffect(() => {
+    if (location.pathname.startsWith("/producto/")) return;
+    aplicarMeta(metaDeRuta(location.pathname, location.search));
+  }, [location.pathname, location.search]);
 
   return (
     <div className="app-layout">

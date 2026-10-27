@@ -520,8 +520,18 @@ a.compra__producto:hover .compra__producto-nombre {
     display: none;
   }
 
+  /* En mobile las pestañas ya dicen "Mis compras": el título queda solo para lectores
+     de pantalla (así el orden de títulos sigue siendo h1 → h2 → h3) */
   .mi-cuenta__compras-encabezado {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .mi-cuenta__datos {

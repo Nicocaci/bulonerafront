@@ -1,6 +1,7 @@
 import React from "react";
 import axiosInstance, { getErrorMessage } from "../../../../utils/axiosConfig.js";
 import { getImageUrl } from "../../../../utils/imageUtils.js";
+import { formatearPrecio } from "../../../../utils/precio.js";
 import Swal from "sweetalert2";
 import { memo } from "react";
 import { FaRegEdit } from "react-icons/fa";
@@ -54,7 +55,7 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
             <td>{p.item}</td>
             <td>{p.categoria}</td>
             <td>{p.subcategoria}</td>
-            <td>${p.precio.toLocaleString('es-AR')}</td>
+            <td>{formatearPrecio(p.precio)}</td>
             <td>{p.stock}</td>
             <td>
               {p.alto ?? "-"}x{p.ancho ?? "-"}x{p.largo ?? "-"} cm
@@ -93,4 +94,4 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
   );
 });
 
-export default ProductTable;
+export default ProductTable;

@@ -1,3 +1,4 @@
+import { formatearPrecio } from "../../../../utils/precio.js";
 // Datos y formatos compartidos por el Resumen y el listado de órdenes del panel.
 
 // Nombre visible de cada estado (los valores son los del backend, en order-model.js)
@@ -46,8 +47,7 @@ export const nombreCliente = (order) => {
 };
 
 // Mismo formato que tenía el panel ("$73.000"); hasta 2 decimales si los hay
-export const pesos = (valor, decimales = 2) =>
-  `$${Number(valor || 0).toLocaleString("es-AR", { maximumFractionDigits: decimales })}`;
+export const pesos = (valor, decimales = 2) => formatearPrecio(valor, decimales);
 
 export const fechaCorta = (order) =>
   new Date(order.date || order.createdAt).toLocaleDateString("es-AR");

@@ -26,4 +26,9 @@ export default defineConfig([
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
   },
+  // server.js corre en Node (Railway), no en el navegador
+  {
+    files: ['server.js'],
+    languageOptions: { globals: globals.node },
+  },
 ])

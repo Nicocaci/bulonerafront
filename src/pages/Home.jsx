@@ -121,6 +121,10 @@ const Home = () => {
   return (
     <div className="home-fondo">
       <div className="home">
+        {/* Título principal de la página (para Google y lectores de pantalla) */}
+        <h1 className="solo-lectores">
+          Bulonera El Triángulo: bulones, herramientas y seguridad industrial en Gutiérrez
+        </h1>
         {/* 1. Banner: imagen promocional + cotización y envíos */}
         <section className="home-destacado" aria-label="Destacado">
           <Link to={BANNER.href} className="home-destacado__imagen">

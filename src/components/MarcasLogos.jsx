@@ -1,34 +1,24 @@
-import React from "react";
 import { useSearchParams } from "react-router-dom";
 
+// Logos de public/marcas. El nombre es el que se usa para filtrar el catálogo
+// (el mismo que antes se sacaba del nombre del archivo).
+const MARCAS = [
+  { nombre: "Ronix", logo: "ronixlogo.png" },
+  { nombre: "Crossmaster", logo: "logo-crossmaster.png" },
+  { nombre: "Bahco", logo: "logo-bahco.svg" },
+  { nombre: "Bremen", logo: "logo-bremen.svg" },
+  { nombre: "Bosch", logo: "logo-bosch.svg" },
+  { nombre: "Skil", logo: "logo-skil.webp" },
+  { nombre: "Fischer", logo: "logo-fischer.webp" },
+  { nombre: "Venturo", logo: "logo-venturo.webp" },
+];
+
+// Portada de /productos sin filtros. Fase 6: cada marca es un botón (se puede usar con
+// teclado) y el logo tiene el nombre real de la marca como texto alternativo.
 export const MarcasLogos = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const logos = [
-    "ronixlogo.png",
-    "logo-crossmaster.png",
-    "logo-bahco.svg",
-    "logo-bremen.svg",
-    "logo-bosch.svg",
-    "logo-skil.webp",
-    "logo-fischer.webp",
-    "logo-venturo.webp",
-  ];
-
-  const getBrandDisplayNameFromFilename = (filename) => {
-    return filename
-      .replace(/\.[^/.]+$/, "")
-      .replace(/^logo[-_]?/i, "")
-      .replace(/[-_]/g, " ")
-      .replace(/logo$/i, "")
-      .trim()
-      .split(" ")
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(" ");
-  };
-
-  const handleSeleccionarMarca = (logoName) => {
-    const marca = getBrandDisplayNameFromFilename(logoName);
+  const handleSeleccionarMarca = (marca) => {
     const nextParams = new URLSearchParams(searchParams);
     nextParams.set("marca", marca);
     setSearchParams(nextParams);
@@ -37,27 +27,28 @@ export const MarcasLogos = () => {
   const handleVerTodos = () => {
     setSearchParams({ todos: "true" });
   };
+
   return (
     <div>
       <div className="marcas-header">
-        <h2>Buscar por marca</h2>
+        <h1>Buscar por marca</h1>
         <p>Seleccione una marca para ver sus productos.</p>
       </div>
 
       <div className="grid-logo-marcas">
-        <div className="marca-container todos-card" onClick={handleVerTodos}>
-          <span className="todos-icon">🛍️</span>
-          <p className="todos-label">Todos los productos</p>
-        </div>
-        {logos.map((logo, i) => (
-          <div key={i} className="marca-container todos-card">
-            <img
-              src={`marcas/${logo}`}
-              alt={logo}
-              className="logo-marca"
-              onClick={() => handleSeleccionarMarca(logo)}
-            />
-          </div>
+        <button type="button" className="marca-container todos-card" onClick={handleVerTodos}>
+          <span className="todos-icon" aria-hidden="true">🛍️</span>
+          <span className="todos-label">Todos los productos</span>
+        </button>
+        {MARCAS.map((m) => (
+          <button
+            key={m.nombre}
+            type="button"
+            className="marca-container todos-card"
+            onClick={() => handleSeleccionarMarca(m.nombre)}
+          >
+            <img src={`/marcas/${m.logo}`} alt={m.nombre} className="logo-marca" loading="lazy" />
+          </button>
         ))}
       </div>
     </div>

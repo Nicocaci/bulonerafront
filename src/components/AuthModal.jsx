@@ -1,9 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import axiosInstance from "../utils/axiosConfig";
 import { AuthContext } from "../context/AuthContext";
 import "../css/AuthModal.css";
 import Swal from "../utils/alertas.js";
 import "sweetalert2/dist/sweetalert2.min.css";
+import { useDialogo } from "../hooks/useDialogo.js";
 
 // Mismos límites que el backend (user-controller.js)
 const MIN_PASSWORD = 8;
@@ -22,6 +23,9 @@ const AuthModal = ({ onClose }) => {
   });
 
   const [mode, setMode] = useState("login");
+  // Diálogo accesible: foco en el primer campo, Tab no sale, Escape cierra
+  const dialogoRef = useRef(null);
+  useDialogo(dialogoRef, onClose);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (event) => {
@@ -167,15 +171,22 @@ const AuthModal = ({ onClose }) => {
 
   return (
     <div className="auth-modal-overlay">
-      <div className="auth-modal">
+      <div
+        className="auth-modal"
+        ref={dialogoRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="auth-modal-titulo"
+      >
         <button
+          type="button"
           className="auth-modal__close"
           onClick={onClose}
           aria-label="Cerrar formulario"
         >
           ×
         </button>
-        <h2 className="auth-modal__title">
+        <h2 className="auth-modal__title" id="auth-modal-titulo">
           {mode === "login" ? "Iniciar sesión" : "Crear cuenta"}
         </h2>
         <p className="auth-modal__subtitle">

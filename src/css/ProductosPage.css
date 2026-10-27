@@ -416,7 +416,7 @@
   margin-bottom: 1.5rem;
 }
 
-.marcas-header h2 {
+.marcas-header h1 {
   font-size: 20px;
   font-weight: 500;
   margin: 0 0 4px;
@@ -424,7 +424,7 @@
 
 .marcas-header p {
   font-size: 14px;
-  color: #6b7280;
+  color: var(--texto-secundario);
   margin: 0;
 }
 
@@ -445,9 +445,18 @@
   gap: 8px;
   cursor: pointer;
   min-height: 100px;
+  width: 100%;
+  padding: 12px;
+  font: inherit;
+  color: inherit;
   transition:
     border-color 0.15s,
     background 0.15s;
+}
+
+.marca-container:focus-visible {
+  outline: 2px solid #1a1a1a;
+  outline-offset: 2px;
 }
 
 .marca-container:hover {

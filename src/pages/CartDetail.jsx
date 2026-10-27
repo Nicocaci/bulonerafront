@@ -5,10 +5,10 @@ import { useCart } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
 import { ANCHO_MINIATURA, getImageUrl, usarPlaceholder } from "../utils/imageUtils";
 import Swal from "sweetalert2";
-import { getPrecioUnitario } from "../utils/precio.js";
+import { getPrecioUnitario, formatearPrecio } from "../utils/precio.js";
 
 // Mismo formato de precio que tenía el carrito (y que usa el carrito lateral): $6.068
-const pesos = (n) => `$${Number(n || 0).toLocaleString("es-AR")}`;
+const pesos = (n) => formatearPrecio(n);
 
 // 🔒 Detecta si el error es por falta de sesión / token inválido o vencido
 const isAuthError = (message) => {
