@@ -206,6 +206,21 @@ app.get(/.*/, async (req, res) => {
   }
 });
 
+// Errores de los archivos estáticos (sobre todo 404 de /assets y /fonts, que casi siempre
+// son bots buscando archivos): una sola línea en el log en lugar del stack completo.
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  const status = err.status || err.statusCode || 500;
+  const ruta = String(req.originalUrl).slice(0, 200);
+  if (status >= 500) {
+    console.error(`${status} ${req.method} ${ruta}:`, err?.message);
+  } else {
+    console.warn(`${status} ${req.method} ${ruta}`);
+  }
+  if (res.headersSent) return;
+  res.status(status).type("text").send(status === 404 ? "Not Found" : "Error");
+});
+
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`✅ Frontend corriendo en puerto ${PORT}`);
     if (!API_URL) console.warn("⚠️ Falta API_URL / VITE_API_URL: las páginas de producto no van a tener sus datos para compartir.");
