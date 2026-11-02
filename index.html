@@ -62,27 +62,6 @@
 
     <!-- Fotos de productos y banners (Cloudinary): la conexión se abre antes de necesitarla -->
     <link rel="preconnect" href="https://res.cloudinary.com" />
-
-    <!-- Home: la imagen principal del banner es lo más grande que se ve al entrar. Se pide
-         apenas llega el HTML, sin esperar a que baje y arranque el JS. Solo en la Home, para
-         que las otras páginas no la descarguen.
-         IMPORTANTE: tiene que ser la misma imagen, srcset y sizes que arma Home.jsx con BANNER.
-         Si se cambia esa imagen, su ancho o "sizes", cambiarlos también acá (si no coinciden,
-         el navegador baja las dos). -->
-    <script>
-      if (location.pathname === "/") {
-        var base = "https://res.cloudinary.com/dn4lt8fhc/image/upload/f_auto,q_auto,c_limit,";
-        var foto = "/v1790002161/promo-1.png";
-        var precarga = document.createElement("link");
-        precarga.rel = "preload";
-        precarga.as = "image";
-        precarga.href = base + "w_600" + foto;
-        precarga.setAttribute("imagesrcset", base + "w_600" + foto + " 600w, " + base + "w_1200" + foto + " 1200w");
-        precarga.setAttribute("imagesizes", "(max-width: 900px) 100vw, 560px");
-        precarga.setAttribute("fetchpriority", "high");
-        document.head.appendChild(precarga);
-      }
-    </script>
   </head>
 
   <body>

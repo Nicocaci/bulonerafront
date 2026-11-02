@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useProducto } from "../hooks/useCatalogo.js";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import Swal from "sweetalert2";
 import {
@@ -52,6 +52,8 @@ const armarEspecificaciones = (producto) => {
 const ItemDetail = () => {
   const { prodId } = useParams();
   const { data: producto, isLoading: loading, error: errorConsulta } = useProducto(prodId);
+  // 404 (no existe o está inactivo) o ID inválido: el producto no está disponible
+  const noDisponible = [400, 404].includes(errorConsulta?.response?.status);
   const error = errorConsulta
     ? errorConsulta.response?.data?.message || "Error al cargar el producto"
     : null;
@@ -175,12 +177,20 @@ const ItemDetail = () => {
     return <div className="item-cargando">Cargando...</div>;
   }
 
-  if (error) {
-    return <div className="detalle-mensaje">Error: {error}</div>;
+  if (noDisponible || (!error && !producto)) {
+    return (
+      <div className="detalle-mensaje detalle-mensaje--no-disponible">
+        <h1>Este producto no está disponible</h1>
+        <p>Puede que ya no lo vendamos o que el link esté mal. Mirá el resto del catálogo.</p>
+        <Link to="/productos" className="checkout-btn-primary">
+          Ver productos
+        </Link>
+      </div>
+    );
   }
 
-  if (!producto) {
-    return <div className="detalle-mensaje">Producto no encontrado</div>;
+  if (error) {
+    return <div className="detalle-mensaje">Error: {error}</div>;
   }
 
   const hayStock = producto.stock > 0;

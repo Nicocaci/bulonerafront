@@ -720,6 +720,25 @@
   box-shadow: 0 0 0 3px rgba(244, 93, 34, 0.15);
 }
 
+/* Usuarios: buscador y cantidad */
+.admin-usuarios__barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.admin-usuarios__total {
+  margin: 0;
+  font-size: 13px;
+  color: var(--texto-secundario);
+}
+
+.admin-usuarios .pagination {
+  margin-top: 16px;
+}
+
 /* ─── Tablet: pestañas arriba ───────────────────────────────── */
 @media (max-width: 1024px) {
   .admin-panel {

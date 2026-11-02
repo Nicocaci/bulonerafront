@@ -3,6 +3,7 @@ import compression from "compression";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { BANNER, bannerSrc, bannerSrcSet } from "./src/utils/banner.js";
 import {
   SITIO,
   jsonLdNegocio,
@@ -105,7 +106,14 @@ const reemplazarMeta = (html, atributo, nombre, valor) =>
     `$1${escapar(valor)}$2`,
   );
 
-function armarHtml(meta, jsonLd = []) {
+// Precarga de la imagen del banner (solo en "/"). Va en el HTML para que el navegador la
+// encuentre apenas lo lee, sin esperar a que baje y arranque el JS. Son los mismos src,
+// srcset y sizes que usa Home.jsx (utils/banner.js): si no coinciden, se bajaría dos veces.
+const PRECARGA_BANNER =
+  `<link rel="preload" as="image" href="${escapar(bannerSrc)}" ` +
+  `imagesrcset="${escapar(bannerSrcSet)}" imagesizes="${escapar(BANNER.sizes)}" fetchpriority="high" />`;
+
+function armarHtml(meta, jsonLd = [], { precargarBanner = false } = {}) {
   let html = leerHtmlBase();
   html = html.replace(/<title>[^<]*<\/title>/, `<title>${escapar(meta.titulo)}</title>`);
   html = html.replace(
@@ -123,6 +131,7 @@ function armarHtml(meta, jsonLd = []) {
   html = reemplazarMeta(html, "property", "og:url", meta.canonical);
 
   const extra = [`<meta name="robots" content="${meta.indexar ? "index, follow" : "noindex, follow"}" />`];
+  if (precargarBanner) extra.push(PRECARGA_BANNER);
   if (meta.tipo === "product" && meta.precio != null) {
     extra.push(`<meta property="product:price:amount" content="${escapar(Number(meta.precio).toFixed(2))}" />`);
     extra.push('<meta property="product:price:currency" content="ARS" />');
@@ -155,7 +164,7 @@ async function htmlDeLaPagina(req) {
   const meta = metaDeRuta(req.path, query);
   // Datos del negocio (dirección, horarios, teléfono) en el inicio y en Contacto
   const conNegocio = req.path === "/" || req.path.replace(/\/+$/, "") === "/contacto";
-  return armarHtml(meta, conNegocio ? [jsonLdNegocio()] : []);
+  return armarHtml(meta, conNegocio ? [jsonLdNegocio()] : [], { precargarBanner: req.path === "/" });
 }
 
 // ─── sitemap.xml: páginas, categorías y productos activos ──────

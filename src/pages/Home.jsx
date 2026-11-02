@@ -13,19 +13,11 @@ import {
   IconoWhatsapp,
 } from "../components/IconosTienda.jsx";
 import { useFacetas, useProductos } from "../hooks/useCatalogo.js";
-import { cldSrcSet, cldUrl } from "../utils/imageUtils.js";
+import { BANNER, bannerSrc, bannerSrcSet } from "../utils/banner.js";
 import { MENSAJE_COTIZACION, urlWhatsapp } from "../utils/contacto.js";
 import { nombreCategoria } from "../utils/categorias.js";
 
-// Imagen promocional del banner. Se precarga desde index.html: si se cambia la imagen
-// (o su ancho o "sizes"), cambiarla también allá; si no coinciden, el navegador baja las dos.
-const BANNER = {
-  src: "https://res.cloudinary.com/dn4lt8fhc/image/upload/v1790002161/promo-1.png",
-  alt: "Combo Ronix: amoladora 115 mm 800 W y taladro 13 mm 750 W, precio final $149.000",
-  href: "/productos?page=1&marca=Ronix&search=kit",
-  ancho: 600,
-  sizes: "(max-width: 900px) 100vw, 560px",
-};
+// La imagen del banner (y su precarga en server.js) se define en utils/banner.js.
 
 // Pestañas de "Destacados por categoría" (valor = nombre exacto de la categoría en la base)
 const PESTANAS = [
@@ -129,12 +121,12 @@ const Home = () => {
         <section className="home-destacado" aria-label="Destacado">
           <Link to={BANNER.href} className="home-destacado__imagen">
             <img
-              src={cldUrl(BANNER.src, BANNER.ancho)}
-              srcSet={cldSrcSet(BANNER.src, BANNER.ancho)}
+              src={bannerSrc}
+              srcSet={bannerSrcSet}
               sizes={BANNER.sizes}
               alt={BANNER.alt}
-              width={429}
-              height={402}
+              width={BANNER.ancho}
+              height={BANNER.alto}
               fetchpriority="high"
             />
           </Link>

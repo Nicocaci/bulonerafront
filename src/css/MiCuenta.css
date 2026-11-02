@@ -430,6 +430,47 @@ a.compra__producto:hover .compra__producto-nombre {
   overflow-wrap: anywhere;
 }
 
+/* Número de seguimiento con el link a Enviopack y el botón para copiarlo */
+.compra__seguimiento {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.compra__seguimiento-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.compra__seguimiento-acciones a {
+  color: var(--texto-marca);
+  font-weight: 600;
+}
+
+.compra__seguimiento-acciones button {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--borde-control);
+  border-radius: 8px;
+  background: var(--superficie);
+  color: var(--text-color);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.compra__seguimiento-acciones button:hover {
+  background: var(--superficie-suave);
+}
+
+.compra__seguimiento-acciones a:focus-visible,
+.compra__seguimiento-acciones button:focus-visible {
+  outline: 3px solid var(--texto-marca);
+  outline-offset: 2px;
+}
+
 .compra__montos {
   margin-top: 6px;
   padding-top: 8px;

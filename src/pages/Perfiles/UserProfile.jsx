@@ -48,6 +48,49 @@ const datosIniciales = (data = {}) => ({
   email: data.email || "",
 });
 
+// Página pública de seguimiento de Enviopack. Es la URL que arma su propio formulario
+// (GET con el campo trackingNumber).
+const urlSeguimiento = (numero) =>
+  `https://tracking.enviopack.com.ar/?trackingNumber=${encodeURIComponent(numero)}`;
+
+// Número de seguimiento con el link a Enviopack y un botón para copiarlo
+function Seguimiento({ numero }) {
+  const [copiado, setCopiado] = useState(false);
+  const puedeCopiar = typeof navigator !== "undefined" && Boolean(navigator.clipboard);
+
+  const copiar = async () => {
+    try {
+      await navigator.clipboard.writeText(numero);
+      setCopiado(true);
+      setTimeout(() => setCopiado(false), 2000);
+    } catch {
+      // Sin permiso para el portapapeles: el número igual queda visible para copiarlo a mano
+    }
+  };
+
+  return (
+    <span className="compra__seguimiento">
+      <span>
+        Seguimiento: <b>{numero}</b>
+      </span>
+      <span className="compra__seguimiento-acciones">
+        <a href={urlSeguimiento(numero)} target="_blank" rel="noopener noreferrer">
+          Seguir mi envío
+          <span className="solo-lectores"> (se abre en otra pestaña)</span>
+        </a>
+        {puedeCopiar && (
+          <button type="button" onClick={copiar}>
+            {copiado ? "Copiado" : "Copiar número"}
+          </button>
+        )}
+        <span className="solo-lectores" aria-live="polite">
+          {copiado ? "Número de seguimiento copiado" : ""}
+        </span>
+      </span>
+    </span>
+  );
+}
+
 // ─── Una compra ────────────────────────────────────────────────
 function Compra({ order }) {
   const [abierta, setAbierta] = useState(ESTADOS_EN_CURSO.includes(order.status));
@@ -147,15 +190,11 @@ function Compra({ order }) {
               <>
                 <strong>Envío a domicilio</strong>
                 {correo && <span>{correo}</span>}
-                <span>
-                  {seguimiento ? (
-                    <>
-                      Seguimiento: <b>{seguimiento}</b>
-                    </>
-                  ) : (
-                    "El número de seguimiento aparece cuando despachamos el pedido."
-                  )}
-                </span>
+                {seguimiento ? (
+                  <Seguimiento numero={seguimiento} />
+                ) : (
+                  <span>El número de seguimiento aparece cuando despachamos el pedido.</span>
+                )}
               </>
             )}
             {order.subtotal > 0 && (

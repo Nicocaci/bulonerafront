@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { AuthContext } from "../context/AuthContext.jsx";
 import axiosInstance from "../utils/axiosConfig.js";
 import { urlWhatsapp } from "../utils/contacto.js";
 import "../css/Checkout.css";
@@ -48,6 +49,7 @@ const ESPERA_MS = 3000;
 const Gracias = () => {
   const [searchParams] = useSearchParams();
   const { clearCartSilently } = useCart();
+  const { isAuthenticated } = useContext(AuthContext);
 
   const orderId = searchParams.get("external_reference");
   const paymentIdParam = searchParams.get("payment_id");
@@ -216,6 +218,13 @@ const Gracias = () => {
                 <Link to="/productos" className="checkout-btn-primary">
                   Seguir comprando
                 </Link>
+                {/* Solo con sesión iniciada (las compras como invitado no aparecen en Mi cuenta)
+                    y con el pago aprobado ("Mis compras" no muestra los pagos pendientes) */}
+                {estado === "aprobado" && isAuthenticated && (
+                  <Link to="/perfil" className="resultado__secundario">
+                    Ver mis compras
+                  </Link>
+                )}
                 <a
                   href={urlWhatsapp(mensajeWhatsapp)}
                   target="_blank"
