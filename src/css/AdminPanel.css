@@ -663,6 +663,28 @@
   background: #a31f1f;
 }
 
+/* Estado de un producto en la tabla del admin */
+.admin-filtros--productos {
+  padding: 12px 0 0;
+}
+
+.estado-producto {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.estado-producto--activo { background: #e3f3e1; color: #0b5c02; }
+.estado-producto--inactivo { background: #e8e8ea; color: #3f3f46; }
+
+/* Fila de un producto inactivo: atenuada para distinguirla de un vistazo */
+.admin-tabla-simple tr.producto-inactivo td:not(:last-child):not(:nth-last-child(2)) {
+  opacity: 0.6;
+}
+
 .role-badge {
   display: inline-block;
   padding: 4px 10px;

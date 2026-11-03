@@ -7,11 +7,18 @@ import ProductTable from "./products/ProductTable.jsx";
 import Pagination from "../../../components/Pagination.jsx";
 import "../../../css/productAdmin.css";
 
+const FILTROS_ESTADO = [
+  { value: "todos", label: "Todos" },
+  { value: "activo", label: "Activos" },
+  { value: "inactivo", label: "Inactivos" },
+];
+
 const ProductsPage = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchNombre, setSearchNombre] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [estado, setEstado] = useState("todos");
 
   const productsPerPage = 7;
 
@@ -27,7 +34,13 @@ const ProductsPage = () => {
     page: currentPage,
     limit: productsPerPage,
     search: debouncedSearch,
+    estado,
   });
+
+  const cambiarEstado = (valor) => {
+    setEstado(valor);
+    setCurrentPage(1);
+  };
 
   const handleEdit = useCallback((product) => {
     setEditingProduct(product);
@@ -66,6 +79,20 @@ const ProductsPage = () => {
           value={searchNombre}
           onChange={(e) => setSearchNombre(e.target.value)}
         />
+
+        <div className="admin-filtros admin-filtros--productos" role="group" aria-label="Filtrar por estado">
+          {FILTROS_ESTADO.map((f) => (
+            <button
+              key={f.value}
+              type="button"
+              className="admin-chip"
+              aria-pressed={estado === f.value}
+              onClick={() => cambiarEstado(f.value)}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
 
         <div className="users-table-container">
           <ProductTable

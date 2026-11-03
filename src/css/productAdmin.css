@@ -33,6 +33,7 @@
   min-width: 0;
 }
 .profile-form input,
+.profile-form select,
 .profile-form textarea {
   padding: 10px 12px;
   border-radius: 8px;
@@ -43,6 +44,7 @@
 }
 
 .profile-form input:focus,
+.profile-form select:focus,
 .profile-form textarea:focus {
   outline: none;
   border-color: var(--color-acento);

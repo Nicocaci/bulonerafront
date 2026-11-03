@@ -43,12 +43,13 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
           <th>Stock</th>
           <th>Medidas</th>
           <th>Oferta Destacada</th>
+          <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
         {productos.map((p) => (
-          <tr key={p._id}>
+          <tr key={p._id} className={p.estado === "inactivo" ? "producto-inactivo" : undefined}>
             <td>
               <img src={getImageUrl(p.imagen?.[0])} width={50} height={50} alt="" />
             </td>
@@ -66,6 +67,14 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
               {p.oferta?.activa
                 ? `${p.oferta.descuento}% ${p.oferta.vence ? `(vence: ${new Date(p.oferta.vence).toLocaleDateString("es-AR")})` : "(sin vencimiento)"}`
                 : "No"}
+            </td>
+            <td>
+              <span
+                className={`estado-producto estado-producto--${p.estado === "inactivo" ? "inactivo" : "activo"}`}
+                title={p.estado === "inactivo" ? "No se muestra en la tienda" : "Visible en la tienda"}
+              >
+                {p.estado === "inactivo" ? "Inactivo" : "Activo"}
+              </span>
             </td>
             <td >
               <button
@@ -94,4 +103,4 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
   );
 });
 
-export default ProductTable;
+export default ProductTable;

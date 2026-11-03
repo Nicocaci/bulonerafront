@@ -224,6 +224,13 @@ const ProductForm = ({ editingProduct, setEditingProduct, refetch }) => {
             placeholder="Stock"
           />
         </div>
+        <div className="column-form">
+          <label htmlFor="estado">Estado:</label>
+          <select id="estado" name="estado" value={form.estado} onChange={handleChange}>
+            <option value="activo">Activo (visible en la tienda)</option>
+            <option value="inactivo">Inactivo (oculto en la tienda)</option>
+          </select>
+        </div>
       </div>
 
       {/* ── Sección Medidas y peso (Enviopack) ── */}
