@@ -101,6 +101,8 @@ function Compra({ order }) {
     .filter(Boolean)
     .join(" · ");
   const seguimiento = order.enviopack?.trackingNumber;
+  // Órdenes anteriores a la baja de Enviopack (las nuevas se coordinan por WhatsApp)
+  const viaEnviopack = Boolean(order.enviopack?.envioId);
   const unidades = cantidadProductos(order);
 
   return (
@@ -190,11 +192,13 @@ function Compra({ order }) {
             ) : (
               <>
                 <strong>Envío a domicilio</strong>
-                {correo && <span>{correo}</span>}
+                {viaEnviopack && correo && <span>{correo}</span>}
                 {seguimiento ? (
                   <Seguimiento numero={seguimiento} />
-                ) : (
+                ) : viaEnviopack ? (
                   <span>El número de seguimiento aparece cuando despachamos el pedido.</span>
+                ) : (
+                  <span>El costo y la entrega los coordinamos por WhatsApp.</span>
                 )}
               </>
             )}
@@ -207,7 +211,7 @@ function Compra({ order }) {
                 {!retiro && (
                   <span>
                     <span>Envío</span>
-                    <span>{pesos(order.shippingCost)}</span>
+                    <span>{order.shippingCost > 0 ? pesos(order.shippingCost) : "A coordinar"}</span>
                   </span>
                 )}
               </span>

@@ -1,4 +1,4 @@
-import PrintLabelButton from "./PrintLabelButton.jsx";
+import { urlWhatsappCliente } from "./ordenes.js";
 import {
   etiquetaEstado,
   fechaCorta,
@@ -18,11 +18,34 @@ const opcionesPara = (estadoActual) =>
     ? ESTADOS_EDITABLES
     : [estadoActual, ...ESTADOS_EDITABLES];
 
+// Envío a domicilio: se coordina por WhatsApp con el cliente (costo y link de pago aparte).
+// Las órdenes viejas de Enviopack muestran el correo con el que salieron.
 const Envio = ({ order }) => {
-  if (order.enviopack?.envioId) return <PrintLabelButton envioId={order.enviopack.envioId} />;
+  if (order.envio?.metodo === "retiro_local") {
+    return <span className="admin-texto-suave">Retiro en el local</span>;
+  }
+  if (order.envio?.metodo !== "envio") {
+    return <span className="admin-texto-suave">Sin envío</span>;
+  }
+
+  const d = order.shippingAddress || {};
+  const whatsapp = urlWhatsappCliente(order);
+  const viaEnviopack = Boolean(order.enviopack?.envioId);
+
   return (
-    <span className="admin-texto-suave">
-      {order.envio?.metodo === "retiro_local" ? "Retiro en el local" : "Sin envío"}
+    <span className="orden-envio">
+      <strong>{viaEnviopack ? `Enviopack (${order.shippingMethod?.correo || "correo"})` : "A domicilio · a coordinar"}</strong>
+      <span className="admin-texto-suave">
+        {`${d.calle || ""} ${d.numero || ""}`.trim()}
+        {d.pisoDepto ? `, ${d.pisoDepto}` : ""}
+        {d.ciudad ? ` — ${d.ciudad}` : ""}
+        {d.codigoPostal ? ` (CP ${d.codigoPostal})` : ""}
+      </span>
+      {whatsapp && !viaEnviopack && (
+        <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="orden-envio__whatsapp">
+          Escribirle por WhatsApp
+        </a>
+      )}
     </span>
   );
 };

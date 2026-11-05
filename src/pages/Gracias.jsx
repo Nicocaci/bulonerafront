@@ -59,6 +59,7 @@ const Gracias = () => {
 
   const [estado, setEstado] = useState(orderId ? "cargando" : "sin_orden");
   const [orderNumber, setOrderNumber] = useState(null);
+  const [entrega, setEntrega] = useState(null); // "envio" | "retiro_local"
   const carritoLimpio = useRef(false);
 
   useEffect(() => {
@@ -75,6 +76,7 @@ const Gracias = () => {
         if (cancelado) return;
 
         setOrderNumber(data.orderNumber);
+        setEntrega(data.entrega || null);
 
         if (ESTADOS_PAGADOS.includes(data.status)) {
           setEstado("aprobado");
@@ -118,6 +120,7 @@ const Gracias = () => {
   }, [estado, clearCartSilently]);
 
   const numero = orderNumber ? ` #${orderNumber}` : "";
+  const esEnvio = entrega === "envio";
 
   const contenido = {
     cargando: {
@@ -130,7 +133,9 @@ const Gracias = () => {
     },
     aprobado: {
       titulo: "¡Gracias por tu compra!",
-      texto: `Tu pedido${numero} se realizó con éxito. Te enviamos un email con el detalle de tu compra.`,
+      texto: esEnvio
+        ? `Tu pedido${numero} se realizó con éxito. Escribinos por WhatsApp para coordinar el envío: te pasamos el costo y el link de pago.`
+        : `Tu pedido${numero} se realizó con éxito. Te enviamos un email con el detalle de tu compra.`,
     },
     pendiente: {
       titulo: "Tu pago está en proceso",
@@ -169,7 +174,17 @@ const Gracias = () => {
         : puedeReintentar
           ? "error"
           : "info";
-  const mensajeWhatsapp = `Hola! Tengo una consulta sobre mi pedido${numero}`;
+  const aprobado = estado === "aprobado";
+  const mensajeWhatsapp = !aprobado
+    ? `Hola! Tengo una consulta sobre mi pedido${numero}`
+    : esEnvio
+      ? `Hola! Mi pedido${numero} fue confirmado. Quiero coordinar el envío.`
+      : `Hola! Mi pedido${numero} fue confirmado.`;
+  const textoWhatsapp = !aprobado
+    ? "Escribinos por WhatsApp"
+    : esEnvio
+      ? "Coordinar envío por WhatsApp"
+      : "Consultar pedido por WhatsApp";
 
   return (
     <div className="resultado">
@@ -192,19 +207,39 @@ const Gracias = () => {
                 <strong>Revisá tu email.</strong> Ahí está el detalle del pedido.
               </span>
             </li>
-            <li>
-              <span className="resultado__numero">2</span>
-              <span>
-                <strong>Preparamos tu pedido.</strong> Si elegiste retiro, te avisamos por email
-                cuando esté listo.
-              </span>
-            </li>
-            <li>
-              <span className="resultado__numero">3</span>
-              <span>
-                <strong>¿Dudas?</strong> Escribinos por WhatsApp con tu número de pedido.
-              </span>
-            </li>
+            {esEnvio ? (
+              <>
+                <li>
+                  <span className="resultado__numero">2</span>
+                  <span>
+                    <strong>Coordinamos el envío.</strong> Te pasamos el costo y el link de pago
+                    por WhatsApp.
+                  </span>
+                </li>
+                <li>
+                  <span className="resultado__numero">3</span>
+                  <span>
+                    <strong>Te lo enviamos.</strong> Con el envío pago, despachamos tu pedido.
+                  </span>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <span className="resultado__numero">2</span>
+                  <span>
+                    <strong>Preparamos tu pedido.</strong> Te avisamos por email cuando esté
+                    listo para retirar.
+                  </span>
+                </li>
+                <li>
+                  <span className="resultado__numero">3</span>
+                  <span>
+                    <strong>¿Dudas?</strong> Escribinos por WhatsApp con tu número de pedido.
+                  </span>
+                </li>
+              </>
+            )}
           </ol>
         )}
 
@@ -216,24 +251,41 @@ const Gracias = () => {
               </Link>
             ) : (
               <>
-                <Link to="/productos" className="checkout-btn-primary">
+                {/* Con el pago aprobado, WhatsApp pasa a ser la acción principal:
+                    coordinar el envío o consultar el pedido */}
+                {aprobado && (
+                  <a
+                    href={urlWhatsapp(mensajeWhatsapp)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="checkout-btn-primary"
+                  >
+                    {textoWhatsapp}
+                  </a>
+                )}
+                <Link
+                  to="/productos"
+                  className={aprobado ? "resultado__secundario" : "checkout-btn-primary"}
+                >
                   Seguir comprando
                 </Link>
                 {/* Solo con sesión iniciada (las compras como invitado no aparecen en Mi cuenta)
                     y con el pago aprobado ("Mis compras" no muestra los pagos pendientes) */}
-                {estado === "aprobado" && isAuthenticated && (
+                {aprobado && isAuthenticated && (
                   <Link to="/perfil" className="resultado__secundario">
                     Ver mis compras
                   </Link>
                 )}
-                <a
-                  href={urlWhatsapp(mensajeWhatsapp)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="resultado__secundario"
-                >
-                  Escribinos por WhatsApp
-                </a>
+                {!aprobado && (
+                  <a
+                    href={urlWhatsapp(mensajeWhatsapp)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="resultado__secundario"
+                  >
+                    {textoWhatsapp}
+                  </a>
+                )}
               </>
             )}
           </div>

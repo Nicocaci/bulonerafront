@@ -70,3 +70,24 @@ export const motivosAtencion = (order) => {
 
 // Singular o plural según la cantidad
 export const plural = (n, singular, pluralTexto) => (n === 1 ? singular : pluralTexto);
+
+// Teléfono argentino escrito a mano → formato de WhatsApp (549 + área + número).
+// Mismo criterio que el mail de aviso a la tienda (backend, order-email-service.js).
+// Si no se puede interpretar con seguridad, devuelve null.
+export const telefonoParaWhatsapp = (telefono = "") => {
+  let d = String(telefono).replace(/\D/g, "");
+  if (d.startsWith("549") && d.length === 13) return d;
+  if (d.startsWith("54") && d.length === 12) return `549${d.slice(2)}`;
+  if (d.startsWith("0")) d = d.slice(1);
+  if (d.length === 10 && !d.startsWith("15")) return `549${d}`;
+  return null;
+};
+
+// Link para escribirle al cliente por WhatsApp y pasarle el costo del envío
+export const urlWhatsappCliente = (order) => {
+  const numero = telefonoParaWhatsapp(order.comprador?.telefono);
+  if (!numero) return null;
+  const nombre = order.comprador?.nombre ? ` ${order.comprador.nombre}` : "";
+  const mensaje = `Hola${nombre}! Te escribimos de Bulonera El Triángulo por tu pedido ${numeroOrden(order)}. Te pasamos el costo del envío:`;
+  return `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+};

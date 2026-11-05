@@ -24,11 +24,11 @@ const PROVINCIAS_LABEL = {
   V: "Tierra del Fuego", T: "Tucumán",
 };
 
-// Lo que se manda al backend: solo IDs, cantidades, datos del comprador y la opción de envío.
-// Los precios y el costo de envío los vuelve a calcular el servidor.
+// Lo que se manda al backend: solo IDs, cantidades, datos del comprador y la dirección.
+// Los precios los vuelve a calcular el servidor. El envío a domicilio no se cobra acá:
+// se coordina por WhatsApp después de la compra.
 const armarPedido = (formData, cart) => {
   const esRetiro = formData.deliveryMethod === "retiro_local";
-  const opcion = formData.shippingChoice;
 
   return {
     items: (cart?.products || [])
@@ -46,18 +46,11 @@ const armarPedido = (formData, cart) => {
           metodo: "envio",
           calle: formData.calle,
           numero: formData.numero,
+          pisoDepto: formData.pisoDepto,
           ciudad: formData.ciudad,
           provincia: formData.provincia,
           codigoPostal: formData.codigoPostal,
           notas: formData.notas,
-          opcion: opcion
-            ? {
-                tipo: opcion.tipo,
-                correo: opcion.correo,
-                servicio: opcion.servicio,
-                sucursalId: opcion.sucursal?.id,
-              }
-            : null,
         },
   };
 };
@@ -90,7 +83,6 @@ const Confirmar = ({
     (acc, item) => acc + getPrecioUnitario(item.product) * (item.quantity || 1),
     0,
   );
-  const shippingCost = Number(formData.shippingChoice?.valor) || 0;
 
   const generarPago = async () => {
     setLoading(true);
@@ -149,22 +141,16 @@ const Confirmar = ({
             </>
           ) : (
             <>
+              <p>Envío a domicilio</p>
               <p>
                 {formData.calle} {formData.numero}
+                {formData.pisoDepto ? `, ${formData.pisoDepto}` : ""}
               </p>
               <p>
                 {formData.ciudad}, {PROVINCIAS_LABEL[formData.provincia] || formData.provincia} — CP{" "}
                 {formData.codigoPostal}
               </p>
-              {formData.shippingChoice ? (
-                <p>
-                  {formData.shippingChoice.tipo === "sucursal" ? "A sucursal" : "A domicilio"}{" "}
-                  — {formData.shippingChoice.correo || "Envío"} ({formData.shippingChoice.servicio}) ·{" "}
-                  {formatearPrecio(shippingCost)}
-                </p>
-              ) : (
-                <p>No se seleccionó método de envío</p>
-              )}
+              {formData.notas && <p>Notas: {formData.notas}</p>}
             </>
           )}
         </section>
@@ -210,13 +196,23 @@ const Confirmar = ({
           </div>
           <div>
             <span>Envío</span>
-            <span>{formatearPrecio(shippingCost)}</span>
+            <span>{esRetiro ? "Sin cargo (retiro)" : "A coordinar"}</span>
           </div>
           <div className="checkout-revision__total">
-            <span>Total</span>
+            <span>Total a pagar ahora</span>
             <span>{formatearPrecio(total)}</span>
           </div>
         </div>
+
+        {!esRetiro && (
+          <div className="checkout-nota-envio" role="note">
+            <strong>El total no incluye el envío</strong>
+            <p>
+              Cuando se confirme el pago, te pasamos el costo del envío y el link de pago por
+              WhatsApp.
+            </p>
+          </div>
+        )}
 
         {/* CONFIRMACIÓN */}
         <div className="checkout-confirmacion">
@@ -262,7 +258,7 @@ const Confirmar = ({
                 {totalCambio && (
                   <div className="checkout-alerta" role="status">
                     El total se actualizó a <strong>{formatearPrecio(pago.total)}</strong> según
-                    los precios y el costo de envío vigentes.
+                    los precios vigentes.
                   </div>
                 )}
                 <Wallet

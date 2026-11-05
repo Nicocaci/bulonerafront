@@ -1,7 +1,6 @@
 // src/components/checkout/Envio.jsx
 import React from "react";
 import { PROVINCIAS } from "../../utils/provincias";
-import ShippingSelector from "./ShippingSelector";
 import { CONTACTO } from "../../utils/contacto.js";
 
 const MensajeError = ({ id, children }) =>
@@ -18,30 +17,14 @@ const conError = (id, error) => ({
   "aria-describedby": error ? `${id}-error` : undefined,
 });
 
-const Envio = ({
-  formData,
-  errors,
-  onChange,
-  cartWeight,
-  cartPaquetes,
-  onSelectShipping,
-}) => {
+// Envío a domicilio: el costo no se cobra en el checkout. Después de la compra la tienda
+// le pasa al cliente el costo y el link de pago por WhatsApp.
+const Envio = ({ formData, errors, onChange }) => {
   const isEnvio = formData.deliveryMethod === "envio";
   const isRetiro = formData.deliveryMethod === "retiro_local";
 
   const handleMethodChange = (method) => {
     onChange({ target: { name: "deliveryMethod", value: method } });
-    if (method === "retiro_local") {
-      onSelectShipping({
-        tipo: "retiro_local",
-        correo: null,
-        servicio: "Retiro en local",
-        valor: 0,
-        horas_entrega: null,
-      });
-    } else {
-      onSelectShipping(null); // que vuelva a elegir en ShippingSelector
-    }
   };
 
   return (
@@ -58,7 +41,7 @@ const Envio = ({
           />
           <span>
             <strong>Envío a domicilio</strong>
-            <span className="checkout-opcion__detalle">Calculamos el costo con tu código postal</span>
+            <span className="checkout-opcion__detalle">A todo el país · Costo a coordinar por WhatsApp</span>
           </span>
         </label>
         <label className={`checkout-opcion ${isRetiro ? "checkout-opcion--elegida" : ""}`}>
@@ -124,6 +107,20 @@ const Envio = ({
               <MensajeError id="numero-error">{errors.numero}</MensajeError>
             </div>
 
+            <div className="checkout-campo checkout-campo--piso">
+              <label htmlFor="pisoDepto">Piso / Depto (opcional)</label>
+              <input
+                type="text"
+                id="pisoDepto"
+                name="pisoDepto"
+                autoComplete="address-line2"
+                value={formData.pisoDepto}
+                onChange={onChange}
+                maxLength="40"
+                placeholder="Ej: 3° B"
+              />
+            </div>
+
             <div className="checkout-campo checkout-campo--ciudad">
               <label htmlFor="ciudad">Ciudad *</label>
               <input
@@ -181,28 +178,18 @@ const Envio = ({
                 value={formData.notas}
                 onChange={onChange}
                 rows="3"
-                placeholder="Instrucciones especiales para la entrega..."
+                placeholder="Entre calles, horario para recibir, referencias..."
               />
             </div>
           </div>
 
-          {formData.provincia && formData.codigoPostal && (
-            <fieldset className="checkout-envios">
-              <legend>Opciones de envío</legend>
-              <ShippingSelector
-                provincia={formData.provincia}
-                codigoPostal={formData.codigoPostal}
-                peso={cartWeight}
-                paquetes={cartPaquetes}
-                selected={formData.shippingChoice}
-                onSelect={onSelectShipping}
-              />
-              <MensajeError id="shippingChoice-error">{errors.shippingChoice}</MensajeError>
-            </fieldset>
-          )}
-          {!(formData.provincia && formData.codigoPostal) && errors.shippingChoice && (
-            <MensajeError id="shippingChoice-error">{errors.shippingChoice}</MensajeError>
-          )}
+          <div className="checkout-nota-envio" role="note">
+            <strong>¿Cómo sigue el envío?</strong>
+            <p>
+              Ahora pagás solo los productos. Cuando se confirme el pago, te pasamos el costo del
+              envío y el link de pago por WhatsApp.
+            </p>
+          </div>
         </>
       )}
     </div>

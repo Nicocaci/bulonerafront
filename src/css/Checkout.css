@@ -129,8 +129,9 @@
   grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
-.checkout-campo--calle { grid-column: span 4; }
-.checkout-campo--numero { grid-column: span 2; }
+.checkout-campo--calle { grid-column: span 3; }
+.checkout-campo--numero { grid-column: span 1; }
+.checkout-campo--piso { grid-column: span 2; }
 .checkout-campo--ciudad,
 .checkout-campo--provincia,
 .checkout-campo--cp { grid-column: span 2; }
@@ -199,7 +200,7 @@
   color: #ff8a80;
 }
 
-/* Opciones elegibles (método de entrega y opciones de envío) */
+/* Opciones elegibles (método de entrega) */
 .checkout-entrega {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -248,25 +249,6 @@
   outline-offset: 2px;
 }
 
-.checkout-opcion--fila {
-  align-items: center;
-  padding: 14px 16px;
-}
-
-.checkout-opcion--fila.checkout-opcion--elegida {
-  padding: 13px 15px;
-}
-
-.checkout-opcion__texto {
-  flex: 1;
-  min-width: 0;
-}
-
-.checkout-opcion__precio {
-  font-weight: 700;
-  white-space: nowrap;
-}
-
 .checkout-retiro {
   padding: 16px 18px;
   border-radius: 12px;
@@ -283,61 +265,24 @@
   margin: 8px 0 0;
 }
 
-.checkout-envios {
-  border: 0;
-  margin: 0;
-  padding: 0;
-  min-width: 0;
-}
-
-.checkout-envios legend {
-  padding: 0 0 10px;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-/* Cotizador de envíos */
-.shipping-selector {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.shipping-selector-loading,
-.shipping-selector-error,
-.shipping-selector-empty {
-  margin: 0;
+/* Aviso del envío a coordinar (paso Entrega y Revisar) */
+.checkout-nota-envio {
   padding: 14px 16px;
+  border-left: 4px solid var(--texto-marca);
   border-radius: 10px;
+  background: var(--marca-suave);
   font-size: 14px;
+  line-height: 1.5;
 }
 
-.shipping-selector-loading {
-  background: var(--superficie-suave);
-  color: var(--texto-secundario);
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.checkout-nota-envio strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 2px;
 }
 
-.shipping-selector-loading::before {
-  content: "";
-  width: 14px;
-  height: 14px;
-  border: 2px solid var(--borde-control);
-  border-top-color: var(--color-exito);
-  border-radius: 50%;
-  animation: shipping-spin 0.6s linear infinite;
-}
-
-.shipping-selector-error {
-  background: #fdecec;
-  color: #8a1c1c;
-}
-
-.shipping-selector-empty {
-  background: var(--superficie-suave);
-  color: var(--texto-secundario);
+.checkout-nota-envio p {
+  margin: 0;
 }
 
 /* ── Revisar y pagar ──────────────────────────────────── */
@@ -726,18 +671,6 @@
   width: 48px;
 }
 
-@keyframes shipping-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .shipping-selector-loading::before {
-    animation-duration: 3s;
-  }
-}
-
 /* ── Resultado del pago (/gracias) ────────────────────── */
 .resultado {
   background: var(--fondo-pagina);
@@ -990,26 +923,22 @@
     gap: 12px;
   }
 
-  /* Dirección: calle / número + CP / ciudad / provincia / notas */
+  /* Dirección: calle / número + piso / ciudad / provincia + CP / notas */
   .checkout-campos--direccion {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .checkout-campo--calle,
   .checkout-campo--ciudad,
-  .checkout-campo--provincia,
   .checkout-campo--notas {
     grid-column: 1 / -1;
   }
 
   .checkout-campo--numero,
+  .checkout-campo--piso,
+  .checkout-campo--provincia,
   .checkout-campo--cp {
     grid-column: span 1;
-  }
-
-  .checkout-campo--numero,
-  .checkout-campo--cp {
-    grid-row: 2;
   }
 
   .checkout-campo input,
@@ -1027,15 +956,6 @@
 
   .checkout-opcion--elegida {
     padding: 13px;
-  }
-
-  .checkout-opcion--fila {
-    padding: 12px 14px;
-    font-size: 13px;
-  }
-
-  .checkout-opcion--fila.checkout-opcion--elegida {
-    padding: 11px 13px;
   }
 
   /* Volver / Continuar en una barra fija abajo (pasos 1 y 2) */

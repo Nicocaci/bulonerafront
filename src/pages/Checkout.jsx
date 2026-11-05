@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect, useContext, useCallback } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext.jsx";
@@ -8,7 +8,6 @@ import "../css/Checkout.css";
 import Datos from "./checkout/Datos.jsx";
 import Envio from "./checkout/Envio.jsx";
 import Confirmar from "./checkout/Confirmar.jsx";
-import { getCartWeight, getCartPaquetes } from "../utils/cartShipping.js";
 import { getPrecioUnitario, getProductIdDeItem, formatearPrecio } from "../utils/precio.js";
 import { ANCHO_MINIATURA, getImageUrl, usarPlaceholder } from "../utils/imageUtils";
 import Cargador from "../components/Cargador.jsx";
@@ -70,7 +69,7 @@ const Pasos = ({ actual }) => (
 );
 
 // Resumen del pedido (columna derecha en desktop, desplegable arriba en mobile)
-const ResumenPedido = ({ productos, subtotal, envio, total }) => (
+const ResumenPedido = ({ productos, subtotal, envio, total, envioACoordinar }) => (
   <>
     <ul className="checkout-resumen__lista">
       {productos.map((item) => {
@@ -105,7 +104,11 @@ const ResumenPedido = ({ productos, subtotal, envio, total }) => (
       <span>Total</span>
       <span className="checkout-resumen__importe">{formatearPrecio(total)}</span>
     </div>
-    <p className="checkout-resumen__nota">El pago se hace en Mercado Pago, en el último paso.</p>
+    <p className="checkout-resumen__nota">
+      {envioACoordinar
+        ? "El total no incluye el envío: te pasamos el costo y el link de pago por WhatsApp."
+        : "El pago se hace en Mercado Pago, en el último paso."}
+    </p>
   </>
 );
 
@@ -125,13 +128,13 @@ const Checkout = () => {
     telefono: "",
     calle: "",
     numero: "",
+    pisoDepto: "",
     ciudad: "",
     provincia: "",
     codigoPostal: "",
     metodoPago: "mercadopago",
     notas: "",
     deliveryMethod: null, // "retiro_local" o "envio"
-    shippingChoice: null,
   });
 
   const [errors, setErrors] = useState({});
@@ -206,11 +209,7 @@ const Checkout = () => {
     if (step === 2) {
       if (!formData.deliveryMethod) {
         newErrors.deliveryMethod = "Seleccioná un método de entrega";
-      } else if (formData.deliveryMethod === "retiro_local") {
-        if (!formData.shippingChoice) {
-          newErrors.shippingChoice = "Seleccioná el retiro en el local";
-        }
-      } else {
+      } else if (formData.deliveryMethod === "envio") {
         if (!formData.calle.trim()) newErrors.calle = "La calle es requerida";
         if (!formData.numero.trim()) newErrors.numero = "El número es requerido";
         if (!formData.ciudad.trim()) newErrors.ciudad = "La ciudad es requerida";
@@ -220,7 +219,6 @@ const Checkout = () => {
         } else if (!/^[0-9]+$/.test(formData.codigoPostal)) {
           newErrors.codigoPostal = "El código postal debe contener solo números";
         }
-        if (!formData.shippingChoice) newErrors.shippingChoice = "Elegí una opción de envío";
       }
     }
 
@@ -258,11 +256,6 @@ const Checkout = () => {
     setCurrentStep(paso);
   };
 
-  const handleSelectShipping = useCallback((option) => {
-    setFormData((prev) => ({ ...prev, shippingChoice: option }));
-    setErrors((prev) => (prev.shippingChoice ? { ...prev, shippingChoice: "" } : prev));
-  }, []);
-
   if (loading) {
     return (
       <Cargador className="checkout-loading" texto="Cargando información del carrito…" />
@@ -287,19 +280,26 @@ const Checkout = () => {
     const quantity = item.quantity || item.cantidad || 1;
     return acc + price * quantity;
   }, 0);
-  const shippingCost = Number(formData.shippingChoice?.valor) || 0;
-  const total = subtotal + shippingCost;
+  // El envío a domicilio se coordina aparte: el total es solo de productos
+  const total = subtotal;
   const cantidadProductos = productos.reduce((acc, item) => acc + (item.quantity || 0), 0);
 
+  const envioACoordinar = formData.deliveryMethod === "envio";
   const textoEnvio =
     formData.deliveryMethod === "retiro_local"
       ? "Sin cargo (retiro)"
-      : formData.shippingChoice
-        ? formatearPrecio(shippingCost)
-        : "A calcular";
+      : envioACoordinar
+        ? "A coordinar"
+        : "A elegir";
 
   const resumen = (
-    <ResumenPedido productos={productos} subtotal={subtotal} envio={textoEnvio} total={total} />
+    <ResumenPedido
+      productos={productos}
+      subtotal={subtotal}
+      envio={textoEnvio}
+      total={total}
+      envioACoordinar={envioACoordinar}
+    />
   );
 
   return (
@@ -323,14 +323,7 @@ const Checkout = () => {
               <Datos formData={formData} errors={errors} onChange={handleInputChange} />
             )}
             {currentStep === 2 && (
-              <Envio
-                formData={formData}
-                errors={errors}
-                onChange={handleInputChange}
-                cartWeight={getCartWeight(cart)}
-                cartPaquetes={getCartPaquetes(cart)}
-                onSelectShipping={handleSelectShipping}
-              />
+              <Envio formData={formData} errors={errors} onChange={handleInputChange} />
             )}
             {currentStep === 3 && (
               <Confirmar

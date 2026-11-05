@@ -157,6 +157,27 @@
   font-size: 13px;
 }
 
+/* Celda "Envío" de la tabla de órdenes: método, dirección y WhatsApp del cliente */
+.orden-envio {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  max-width: 260px;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.orden-envio strong {
+  font-weight: 600;
+}
+
+.orden-envio__whatsapp {
+  color: var(--texto-marca);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
 .admin-link {
   color: var(--texto-marca);
   font-size: 14px;
