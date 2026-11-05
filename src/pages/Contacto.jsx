@@ -3,7 +3,7 @@ import "../css/Contacto.css";
 import MapaBulonera from "../utils/MapaBulonera.jsx";
 import { FaFilePdf, FaFileWord, FaFileExcel, FaFileImage, FaFile } from "react-icons/fa";
 import axiosInstance from "../utils/axiosConfig.js";
-import Swal from "sweetalert2";
+import { avisar } from "../utils/avisos.js";
 import { CONTACTO, urlWhatsapp } from "../utils/contacto.js";
 
 // Mismos límites que el backend (config/multerConfig.js)
@@ -15,9 +15,6 @@ const extensionDe = (nombre = "") => nombre.split(".").pop().toLowerCase();
 
 const esArchivoPermitido = (file) =>
   file.type.startsWith("image/") || EXTENSIONES_DOC.includes(extensionDe(file.name));
-
-const escaparHtml = (texto) =>
-  String(texto).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
 const FORM_VACIO = {
   nombre: "",
@@ -101,12 +98,7 @@ const Contacto = () => {
     if (aAgregar.length) setArchivos([...archivos, ...aAgregar]);
 
     if (rechazados.length) {
-      Swal.fire({
-        icon: "warning",
-        title: "Algunos archivos no se agregaron",
-        html: rechazados.map((r) => `<div>${escaparHtml(r)}</div>`).join(""),
-        confirmButtonColor: "#000",
-      });
+      avisar.advertencia("Algunos archivos no se agregaron", rechazados, { duracion: 8000 });
     }
   };
 
@@ -150,12 +142,7 @@ const Contacto = () => {
 
       const response = await axiosInstance.post("/api/email/send", data);
 
-      Swal.fire({
-        icon: "success",
-        title: "Mensaje enviado",
-        text: response.data.message,
-        confirmButtonColor: "#000",
-      });
+      avisar.exito("Mensaje enviado", response.data.message);
 
       setFormData(FORM_VACIO);
       setArchivos([]);
@@ -166,12 +153,7 @@ const Contacto = () => {
           ? "No pudimos enviar tu consulta. Probá de nuevo o escribinos por WhatsApp."
           : "No pudimos conectarnos con el servidor. Revisá tu conexión o escribinos por WhatsApp.";
       }
-      Swal.fire({
-        icon: "error",
-        title: "No se pudo enviar",
-        text: texto,
-        confirmButtonColor: "#000",
-      });
+      avisar.error("No se pudo enviar", texto);
     } finally {
       setEnviando(false);
     }

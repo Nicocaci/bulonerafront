@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useProducto } from "../hooks/useCatalogo.js";
 import { Link, useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import Swal from "sweetalert2";
+import { avisar } from "../utils/avisos.js";
+import { abrirCarritoLateral, esPantallaChica } from "../utils/carritoLateral.js";
 import {
   ANCHO_DETALLE,
   getImageUrl,
@@ -84,6 +85,10 @@ const ItemDetail = () => {
     setCantidadTexto(String(normalizada));
   };
   const [agregando, setAgregando] = useState(false);
+  // Después de agregar, el botón muestra "Agregado al carrito" unos segundos
+  const [agregado, setAgregado] = useState(false);
+  const temporizadorAgregado = useRef(null);
+  useEffect(() => () => clearTimeout(temporizadorAgregado.current), []);
 
   // Valida que la imagen principal cargue correctamente antes de pasarla
   // al visor de zoom (Magnify/pinch-zoom no reenvían onError de forma confiable).
@@ -141,33 +146,29 @@ const ItemDetail = () => {
   const handleAddToCart = async (productId) => {
     if (agregando) return; // 🔒 bloquea clicks repetidos mientras hay una request en curso
     if (!cantidadTexto || !cantidad || cantidad < 1) {
-      Swal.fire({
-        icon: "warning",
-        title: "Elegí una cantidad",
-        text: "La cantidad debe ser al menos 1",
-        confirmButtonColor: "#d33",
-      });
+      avisar.advertencia("Elegí una cantidad", "La cantidad debe ser al menos 1");
       return;
     }
 
     setAgregando(true);
     try {
       await addProductToCart(productId, cantidad, producto);
-      Swal.fire({
-        icon: "success",
-        title: "Producto agregado al carrito",
-        text: "El producto ha sido agregado al carrito correctamente",
-        confirmButtonColor: "#28a745",
-        timer: 2500,
-        showConfirmButton: true,
-      });
+
+      setAgregado(true);
+      clearTimeout(temporizadorAgregado.current);
+      temporizadorAgregado.current = setTimeout(() => setAgregado(false), 2500);
+
+      // Desktop y tablet: se abre el carrito lateral con el producto resaltado.
+      // Mobile: el carrito taparía toda la pantalla, así que se avisa con un toast.
+      if (esPantallaChica()) {
+        avisar.exito("Agregado al carrito", producto?.item, {
+          accion: { texto: "Ver carrito", onClick: () => abrirCarritoLateral() },
+        });
+      } else {
+        abrirCarritoLateral(productId);
+      }
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "No se pudo agregar",
-        text: error.message || "Ocurrió un error al agregar el producto",
-        confirmButtonColor: "#d33",
-      });
+      avisar.error("No se pudo agregar", error.message || "Ocurrió un error al agregar el producto");
     } finally {
       setAgregando(false);
     }
@@ -360,11 +361,24 @@ const ItemDetail = () => {
               </div>
               <button
                 type="button"
-                className="detalle-compra__agregar"
+                className={`detalle-compra__agregar ${agregado ? "detalle-compra__agregar--hecho" : ""}`}
                 onClick={() => handleAddToCart(producto._id)}
                 disabled={!hayStock || agregando}
               >
-                {agregando ? "Agregando..." : hayStock ? "Agregar al carrito" : "Sin stock"}
+                {agregando ? (
+                  "Agregando..."
+                ) : agregado ? (
+                  <>
+                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12.5l4.5 4.5L19 7.5" />
+                    </svg>
+                    Agregado al carrito
+                  </>
+                ) : hayStock ? (
+                  "Agregar al carrito"
+                ) : (
+                  "Sin stock"
+                )}
               </button>
             </div>
 

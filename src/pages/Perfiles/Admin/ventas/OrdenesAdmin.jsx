@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
-import Swal from "sweetalert2";
+import { avisar } from "../../../../utils/avisos.js";
+import { confirmar } from "../../../../utils/confirmar.js";
 import axiosInstance, { getErrorMessage } from "../../../../utils/axiosConfig.js";
 import Pagination from "../../../../components/Pagination.jsx";
 import TablaOrdenes from "./TablaOrdenes.jsx";
@@ -57,16 +58,14 @@ function OrdenesAdmin({ filtro, onFiltroChange }) {
     if (nuevoEstado === order.status) return;
 
     if (nuevoEstado === "cancelado") {
-      const { isConfirmed } = await Swal.fire({
-        icon: "warning",
-        title: `¿Cancelar la orden ${numeroOrden(order)}?`,
-        text: "Cambiar el estado no devuelve el dinero en Mercado Pago ni repone el stock. Eso se hace aparte.",
-        showCancelButton: true,
-        confirmButtonText: "Sí, cancelar",
-        cancelButtonText: "Volver",
-        confirmButtonColor: "#d33",
+      const ok = await confirmar({
+        titulo: `¿Cancelar la orden ${numeroOrden(order)}?`,
+        texto: "Cambiar el estado no devuelve el dinero en Mercado Pago ni repone el stock. Eso se hace aparte.",
+        confirmar: "Cancelar orden",
+        cancelar: "Volver",
+        peligro: true,
       });
-      if (!isConfirmed) return;
+      if (!ok) return;
     }
 
     // Actualización optimista: se ve el cambio enseguida y se deshace si falla
@@ -87,26 +86,19 @@ function OrdenesAdmin({ filtro, onFiltroChange }) {
       actualizarPanel();
     } catch (err) {
       queryClient.setQueryData(queryKey, anterior);
-      Swal.fire({
-        icon: "error",
-        title: "No se pudo actualizar el estado",
-        text: getErrorMessage(err, "Probá de nuevo en unos segundos."),
-      });
+      avisar.error("No se pudo actualizar el estado", getErrorMessage(err, "Probá de nuevo en unos segundos."));
     }
   };
 
   // Saca la marca de atención. El motivo queda guardado en la orden.
   const marcarRevisada = async (order) => {
-    const { isConfirmed } = await Swal.fire({
-      icon: "question",
-      title: `¿Marcar la orden ${numeroOrden(order)} como revisada?`,
-      text: "Deja de aparecer en \"Necesitan atención\". Hacelo cuando ya hayas resuelto el problema.",
-      showCancelButton: true,
-      confirmButtonText: "Sí, marcar",
-      cancelButtonText: "Volver",
-      confirmButtonColor: "#c2410c",
+    const ok = await confirmar({
+      titulo: `¿Marcar la orden ${numeroOrden(order)} como revisada?`,
+      texto: "Deja de aparecer en \"Necesitan atención\". Hacelo cuando ya hayas resuelto el problema.",
+      confirmar: "Marcar como revisada",
+      cancelar: "Volver",
     });
-    if (!isConfirmed) return;
+    if (!ok) return;
 
     const cambios = { necesitaAtencion: false };
     if (order.enviopack?.necesitaAtencion) cambios["enviopack.necesitaAtencion"] = false;
@@ -116,11 +108,7 @@ function OrdenesAdmin({ filtro, onFiltroChange }) {
       await axiosInstance.put(`/api/orders/${order._id}`, cambios);
       await actualizarPanel();
     } catch (err) {
-      Swal.fire({
-        icon: "error",
-        title: "No se pudo marcar como revisada",
-        text: getErrorMessage(err, "Probá de nuevo en unos segundos."),
-      });
+      avisar.error("No se pudo marcar como revisada", getErrorMessage(err, "Probá de nuevo en unos segundos."));
     } finally {
       setRevisando(null);
     }

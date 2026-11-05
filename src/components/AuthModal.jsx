@@ -2,13 +2,38 @@ import React, { useState, useContext, useRef } from "react";
 import axiosInstance from "../utils/axiosConfig";
 import { AuthContext } from "../context/AuthContext";
 import "../css/AuthModal.css";
-import Swal from "../utils/alertas.js";
-import "sweetalert2/dist/sweetalert2.min.css";
+import { avisar } from "../utils/avisos.js";
 import { useDialogo } from "../hooks/useDialogo.js";
 
 // Mismos límites que el backend (user-controller.js)
 const MIN_PASSWORD = 8;
 const MAX_PASSWORD = 128;
+
+const CAMPOS_REGISTRO = ["name", "lastName", "dni", "address", "email", "password", "confirmPassword"];
+const CAMPOS_LOGIN = ["email", "password"];
+
+// Errores de cada campo (se muestran debajo del campo, no en una ventana aparte)
+const validar = (valores, esRegistro) => {
+  const errores = {};
+  const requeridos = esRegistro ? CAMPOS_REGISTRO : CAMPOS_LOGIN;
+  requeridos.forEach((campo) => {
+    if (!valores[campo]) errores[campo] = "Completá este campo.";
+  });
+  if (!errores.email && !/^\S+@\S+\.\S+$/.test(valores.email)) {
+    errores.email = "Ingresá un email válido.";
+  }
+  if (esRegistro && !errores.password) {
+    if (valores.password.length < MIN_PASSWORD) {
+      errores.password = `La contraseña debe tener al menos ${MIN_PASSWORD} caracteres.`;
+    } else if (valores.password.length > MAX_PASSWORD) {
+      errores.password = `La contraseña puede tener hasta ${MAX_PASSWORD} caracteres.`;
+    }
+  }
+  if (esRegistro && !errores.confirmPassword && valores.password !== valores.confirmPassword) {
+    errores.confirmPassword = "Las contraseñas no coinciden.";
+  }
+  return errores;
+};
 
 const AuthModal = ({ onClose }) => {
   const { login, register } = useContext(AuthContext);
@@ -21,6 +46,8 @@ const AuthModal = ({ onClose }) => {
     password: "",
     confirmPassword: "",
   });
+  const [errores, setErrores] = useState({});
+  const [errorGeneral, setErrorGeneral] = useState("");
 
   const [mode, setMode] = useState("login");
   // Diálogo accesible: foco en el primer campo, Tab no sale, Escape cierra
@@ -34,60 +61,27 @@ const AuthModal = ({ onClose }) => {
       ...prev,
       [name]: value,
     }));
+    // Al corregir un campo, su error se va
+    if (errores[name]) setErrores((prev) => ({ ...prev, [name]: undefined }));
   };
 
   const handleModeToggle = () => {
     setMode((prev) => (prev === "login" ? "register" : "login"));
+    setErrores({});
+    setErrorGeneral("");
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     const isRegisterMode = mode === "register";
-    const requiredFields = isRegisterMode
-      ? [
-          "name",
-          "lastName",
-          "dni",
-          "address",
-          "email",
-          "password",
-          "confirmPassword",
-        ]
-      : ["email", "password"];
+    const nuevosErrores = validar(formValues, isRegisterMode);
+    setErrores(nuevosErrores);
+    setErrorGeneral("");
 
-    const hasEmptyRequired = requiredFields.some((field) => !formValues[field]);
-    if (hasEmptyRequired) {
-      Swal.fire({
-        icon: "warning",
-        title: "Campos incompletos",
-        text: "Completá todos los campos obligatorios.",
-        confirmButtonColor: "#3085d6",
-      });
-      return;
-    }
-
-    if (
-      isRegisterMode &&
-      (formValues.password.length < MIN_PASSWORD ||
-        formValues.password.length > MAX_PASSWORD)
-    ) {
-      Swal.fire({
-        icon: "warning",
-        title: "Contraseña muy corta",
-        text: `La contraseña debe tener al menos ${MIN_PASSWORD} caracteres.`,
-        confirmButtonColor: "#3085d6",
-      });
-      return;
-    }
-
-    if (isRegisterMode && formValues.password !== formValues.confirmPassword) {
-      Swal.fire({
-        icon: "error",
-        title: "Error de validación",
-        text: "Las contraseñas no coinciden.",
-        confirmButtonColor: "#d33",
-      });
+    const primeroConError = Object.keys(nuevosErrores)[0];
+    if (primeroConError) {
+      dialogoRef.current?.querySelector(`[name="${primeroConError}"]`)?.focus();
       return;
     }
 
@@ -106,14 +100,7 @@ const AuthModal = ({ onClose }) => {
         });
 
         onClose();
-
-        await Swal.fire({
-          icon: "success",
-          title: "¡Registro exitoso!",
-          text: "Tu cuenta fue creada y tu carrito fue guardado.",
-          confirmButtonColor: "#28a745",
-        });
-
+        avisar.exito("¡Registro exitoso!", "Tu cuenta fue creada y tu carrito fue guardado.");
         return; // 🔥 IMPORTANTE: corta acá
       }
 
@@ -137,37 +124,33 @@ const AuthModal = ({ onClose }) => {
       // Usar el contexto de autenticación para hacer login
       login(userData);
 
-      // Cerrar el modal primero para que el Swal se vea bien
       onClose();
-
-      await Swal.fire({
-        icon: "success",
-        title: "¡Bienvenido!",
-        text:
-          mode === "register"
-            ? "Tu sesión ha sido iniciada."
-            : "Sesión iniciada correctamente.",
-        confirmButtonColor: "#28a745",
-        timer: 3000,
-        showConfirmButton: true,
-      });
+      avisar.exito("¡Bienvenido!", "Sesión iniciada correctamente.");
     } catch (requestError) {
       const message =
         requestError.response?.data?.mensaje ||
         requestError.response?.data?.message ||
         `No se pudo completar el ${mode === "login" ? "inicio de sesión" : "registro"}. Intenta nuevamente.`;
 
-      await Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: message,
-        confirmButtonColor: "#d33",
-        confirmButtonText: "Entendido",
-      });
+      // El error del servidor se muestra arriba del formulario
+      setErrorGeneral(message);
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  // Atributos de accesibilidad de un campo con su error
+  const conError = (campo) =>
+    errores[campo]
+      ? { "aria-invalid": true, "aria-describedby": `error-${campo}` }
+      : {};
+
+  const mensajeError = (campo) =>
+    errores[campo] && (
+      <small id={`error-${campo}`} className="auth-modal__error">
+        {errores[campo]}
+      </small>
+    );
 
   return (
     <div className="auth-modal-overlay">
@@ -195,7 +178,18 @@ const AuthModal = ({ onClose }) => {
             : "Registrate para continuar con tu compra."}
         </p>
 
-        <form onSubmit={handleSubmit} className="auth-modal__form">
+        <form onSubmit={handleSubmit} className="auth-modal__form" noValidate>
+          {errorGeneral && (
+            <div className="auth-modal__error-general" role="alert">
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7.5v5" />
+                <path d="M12 16v.01" />
+              </svg>
+              <span>{errorGeneral}</span>
+            </div>
+          )}
+
           {mode === "register" && (
             <>
               <label>
@@ -206,7 +200,9 @@ const AuthModal = ({ onClose }) => {
                   value={formValues.name}
                   onChange={handleChange}
                   placeholder="Ej: Ana López"
+                  {...conError("name")}
                 />
+                {mensajeError("name")}
               </label>
 
               <label>
@@ -217,7 +213,9 @@ const AuthModal = ({ onClose }) => {
                   value={formValues.lastName}
                   onChange={handleChange}
                   placeholder="Ej: González"
+                  {...conError("lastName")}
                 />
+                {mensajeError("lastName")}
               </label>
 
               <label>
@@ -228,7 +226,9 @@ const AuthModal = ({ onClose }) => {
                   value={formValues.dni}
                   onChange={handleChange}
                   placeholder="Ej: 12345678"
+                  {...conError("dni")}
                 />
+                {mensajeError("dni")}
               </label>
 
               <label>
@@ -239,7 +239,9 @@ const AuthModal = ({ onClose }) => {
                   value={formValues.address}
                   onChange={handleChange}
                   placeholder="Ej: Av. Siempre Viva 123"
+                  {...conError("address")}
                 />
+                {mensajeError("address")}
               </label>
             </>
           )}
@@ -252,7 +254,9 @@ const AuthModal = ({ onClose }) => {
               value={formValues.email}
               onChange={handleChange}
               placeholder="correo@ejemplo.com"
+              {...conError("email")}
             />
+            {mensajeError("email")}
           </label>
 
           <label>
@@ -264,9 +268,15 @@ const AuthModal = ({ onClose }) => {
               onChange={handleChange}
               placeholder="*******"
               autoComplete={mode === "login" ? "current-password" : "new-password"}
-              aria-describedby={mode === "register" ? "password-hint" : undefined}
+              aria-invalid={errores.password ? true : undefined}
+              aria-describedby={
+                [errores.password && "error-password", mode === "register" && "password-hint"]
+                  .filter(Boolean)
+                  .join(" ") || undefined
+              }
             />
-            {mode === "register" && (
+            {mensajeError("password")}
+            {mode === "register" && !errores.password && (
               <small id="password-hint" className="auth-modal__hint">
                 Mínimo {MIN_PASSWORD} caracteres.
               </small>
@@ -282,7 +292,9 @@ const AuthModal = ({ onClose }) => {
                 value={formValues.confirmPassword}
                 onChange={handleChange}
                 placeholder="*******"
+                {...conError("confirmPassword")}
               />
+              {mensajeError("confirmPassword")}
             </label>
           )}
 

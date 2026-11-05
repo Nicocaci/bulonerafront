@@ -3,7 +3,7 @@ import { useState, useEffect, useContext, useCallback } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext.jsx";
-import Swal from "sweetalert2";
+import { avisar } from "../utils/avisos.js";
 import "../css/Checkout.css";
 import Datos from "./checkout/Datos.jsx";
 import Envio from "./checkout/Envio.jsx";
@@ -145,11 +145,7 @@ const Checkout = () => {
         const data = await getCart();
         if (!data) throw new Error("No se pudo cargar el carrito");
       } catch {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "No se pudo cargar el carrito",
-        });
+        avisar.error("No se pudo cargar el carrito");
         navigate(`/carrito/${cartId || "mi-carrito"}`);
       } finally {
         setLoading(false);

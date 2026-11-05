@@ -4,7 +4,8 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
 import { ANCHO_MINIATURA, getImageUrl, usarPlaceholder } from "../utils/imageUtils";
-import Swal from "sweetalert2";
+import { avisar } from "../utils/avisos.js";
+import { confirmar } from "../utils/confirmar.js";
 import { getPrecioUnitario, formatearPrecio } from "../utils/precio.js";
 import Cargador from "../components/Cargador.jsx";
 
@@ -163,12 +164,7 @@ const CartDetail = () => {
     if (isNaN(quantity) || quantity < 0) return;
 
     if (maxStock != null && quantity > maxStock) {
-      Swal.fire({
-        icon: "warning",
-        title: "Stock insuficiente",
-        text: `Solo hay ${maxStock} unidades disponibles`,
-        confirmButtonColor: "#d33",
-      });
+      avisar.advertencia("Stock insuficiente", `Solo hay ${maxStock} unidades disponibles`);
       return;
     }
 
@@ -178,12 +174,7 @@ const CartDetail = () => {
       await updateProductQuantity(productId, quantity);
     } catch (err) {
       console.error("Error al actualizar la cantidad:", err);
-      Swal.fire({
-        icon: "error",
-        title: "No se pudo actualizar",
-        text: err.message || "Error al actualizar la cantidad",
-        confirmButtonColor: "#d33",
-      });
+      avisar.error("No se pudo actualizar", err.message || "Error al actualizar la cantidad");
     } finally {
       marcarActualizando(productId, false);
     }
@@ -195,12 +186,7 @@ const CartDetail = () => {
       await removeProductFromCart(productId);
     } catch (err) {
       console.error("Error al quitar el producto:", err);
-      Swal.fire({
-        icon: "error",
-        title: "No se pudo quitar",
-        text: err.message || "Error al quitar el producto",
-        confirmButtonColor: "#d33",
-      });
+      avisar.error("No se pudo quitar", err.message || "Error al quitar el producto");
     } finally {
       marcarActualizando(productId, false);
     }
@@ -208,25 +194,19 @@ const CartDetail = () => {
 
   // Misma confirmación que el carrito lateral
   const handleVaciar = async () => {
-    const result = await Swal.fire({
-      title: "¿Vaciar carrito?",
-      text: "Se eliminarán todos los productos del carrito.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Sí, vaciar",
-      cancelButtonText: "Cancelar",
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
+    const ok = await confirmar({
+      titulo: "¿Vaciar carrito?",
+      texto: "Se eliminarán todos los productos del carrito.",
+      confirmar: "Vaciar carrito",
+      peligro: true,
     });
-    if (!result.isConfirmed) return;
+    if (!ok) return;
     try {
       await clearCartSilently();
     } catch (err) {
       console.error("Error al vaciar el carrito:", err);
-      Swal.fire({
-        title: "Error",
-        text: "No se pudo vaciar el carrito. Intentá de nuevo.",
-        icon: "error",
+      avisar.error("No se pudo vaciar el carrito", "Intentá de nuevo.", {
+        accion: { texto: "Reintentar", onClick: handleVaciar },
       });
     }
   };

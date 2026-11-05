@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import Swal from "sweetalert2";
+import { avisar } from "../../../../utils/avisos.js";
 import axiosInstance from "../../../../utils/axiosConfig.js";
 
 const initialState = {
@@ -122,10 +122,10 @@ const ProductForm = ({ editingProduct, setEditingProduct, refetch }) => {
           `/api/products/${editingProduct._id}`,
           formData,
         );
-        Swal.fire("OK", "Actualizado", "success");
+        avisar.exito("Producto actualizado");
       } else {
         await axiosInstance.post("/api/products", formData);
-        Swal.fire("Nuevo Producto", "Creado", "success");
+        avisar.exito("Producto creado");
       }
 
       setForm(initialState);
@@ -133,7 +133,7 @@ const ProductForm = ({ editingProduct, setEditingProduct, refetch }) => {
       refetch();
     } catch (err) {
       console.error("ERROR BACKEND:", err.response?.data);
-      Swal.fire("Error", err.response?.data?.message || "Algo falló", "error");
+      avisar.error("No se pudo guardar el producto", err.response?.data?.message || "Algo falló");
     } finally {
       setSubmitting(false);
     }

@@ -5,6 +5,8 @@ import Footer from "./navigation/Footer.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import WpButton from "./components/WpButton.jsx";
 import ErrorCarga from "./components/ErrorCarga.jsx";
+import Avisos from "./components/Avisos.jsx";
+import ConfirmarDialogo from "./components/ConfirmarDialogo.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 
 import ScrollToTop from "./utils/ScrollToTop.jsx";
@@ -89,6 +91,9 @@ function AppContent() {
         </ErrorCarga>
         <WpButton />
       </main>
+      {/* Avisos (toasts) y confirmaciones de todo el sitio */}
+      <Avisos />
+      <ConfirmarDialogo />
       {!enCheckout && <Footer />}
     </div>
   );

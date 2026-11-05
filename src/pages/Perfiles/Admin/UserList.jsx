@@ -1,7 +1,8 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 import Pagination from '../../../components/Pagination.jsx';
-import Swal from 'sweetalert2';
+import { avisar } from '../../../utils/avisos.js';
+import { confirmar } from '../../../utils/confirmar.js';
 
 // De a cuántos usuarios se muestra la tabla
 const POR_PAGINA = 20;
@@ -38,35 +39,20 @@ const UserList = ({ users = [], onUsersChange }) => {
     };
 
     const handleDeleteUser = async (userId, userName) => {
-        const result = await Swal.fire({
-            icon: "warning",
-            title: "¿Eliminar usuario?",
-            text: `¿Estás seguro de que deseas eliminar a ${userName}?`,
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Sí, eliminar",
-            cancelButtonText: "Cancelar",
+        const ok = await confirmar({
+            titulo: `¿Eliminar a ${userName}?`,
+            texto: "Esta acción no se puede deshacer.",
+            confirmar: "Eliminar usuario",
+            peligro: true,
         });
+        if (!ok) return;
 
-        if (result.isConfirmed) {
-            try {
-                await deleteUser(userId);
-                Swal.fire({
-                    icon: "success",
-                    title: "Usuario eliminado",
-                    text: "El usuario ha sido eliminado correctamente.",
-                    confirmButtonColor: "#28a745",
-                });
-                onUsersChange?.((prev) => prev.filter((u) => String(u._id ?? u.id) !== String(userId)));
-            } catch (error) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: error.response?.data?.message || "No se pudo eliminar el usuario",
-                    confirmButtonColor: "#d33",
-                });
-            }
+        try {
+            await deleteUser(userId);
+            avisar.exito("Usuario eliminado", "El usuario ha sido eliminado correctamente.");
+            onUsersChange?.((prev) => prev.filter((u) => String(u._id ?? u.id) !== String(userId)));
+        } catch (error) {
+            avisar.error("No se pudo eliminar el usuario", error.response?.data?.message || "Probá de nuevo en unos segundos.");
         }
     };
 

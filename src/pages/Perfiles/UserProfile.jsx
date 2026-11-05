@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import Swal from "sweetalert2";
+import { avisar } from "../../utils/avisos.js";
 import { AuthContext } from "../../context/AuthContext";
 import axiosInstance, { getErrorMessage } from "../../utils/axiosConfig";
 import { ANCHO_MINIATURA, getImageUrl, usarPlaceholder } from "../../utils/imageUtils";
@@ -242,12 +242,7 @@ const UserProfile = () => {
         setProfileData(data);
         setFormData(datosIniciales(data));
       } catch (error) {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: getErrorMessage(error, "No se pudo cargar el perfil"),
-          confirmButtonColor: "#3085d6",
-        });
+        avisar.error("No se pudo cargar el perfil", getErrorMessage(error, "Probá de nuevo en unos segundos."));
       } finally {
         setLoading(false);
       }
@@ -267,21 +262,11 @@ const UserProfile = () => {
       await updateProfile(null, formData);
       await refreshUser();
       setIsEditing(false);
-      Swal.fire({
-        icon: "success",
-        title: "Perfil actualizado",
-        text: "Tus datos se han actualizado correctamente.",
-        confirmButtonColor: "#28a745",
-      });
+      avisar.exito("Perfil actualizado", "Tus datos se han actualizado correctamente.");
       const data = await getProfile();
       setProfileData(data);
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: getErrorMessage(error, "No se pudo actualizar el perfil"),
-        confirmButtonColor: "#d33",
-      });
+      avisar.error("No se pudo actualizar el perfil", getErrorMessage(error, "Probá de nuevo en unos segundos."));
     } finally {
       setGuardando(false);
     }

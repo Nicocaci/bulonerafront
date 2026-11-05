@@ -22,7 +22,6 @@
     "react-dom": "^18.2.0",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.9.6",
-    "sweetalert2": "^11.26.3",
     "swiper": "^14.2.0"
   },
   "devDependencies": {

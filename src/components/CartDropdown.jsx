@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import "../css/CartDropdown.css";
 import { ANCHO_MINIATURA, getImageUrl, usarPlaceholder } from "../utils/imageUtils";
-import Swal from "../utils/alertas.js";
+import { avisar } from "../utils/avisos.js";
+import { confirmar, hayConfirmacionAbierta } from "../utils/confirmar.js";
 import { getPrecioUnitario, formatearPrecio } from "../utils/precio.js";
 
 const pesos = (n) => formatearPrecio(n);
@@ -18,8 +19,10 @@ const primeraImagen = (product) => {
  * Carrito lateral (Fase 5F): panel desde la derecha con la página atenuada atrás.
  * Se cierra con la X, "Seguir comprando", Escape o tocando afuera; al cerrar, el foco
  * vuelve al botón del carrito. En mobile ocupa toda la pantalla.
+ * `recienAgregado`: _id del producto que se acaba de agregar desde el detalle (se muestra
+ * "Agregaste este producto al carrito" y se resalta ese producto).
  */
-const CartDropdown = ({ onClose, isOpen }) => {
+const CartDropdown = ({ onClose, isOpen, recienAgregado = null }) => {
   const { cart, clearCartSilently, updateProductQuantity } = useCart();
   const [updatingQuantities, setUpdatingQuantities] = useState({});
   const products = cart?.products || [];
@@ -35,8 +38,8 @@ const CartDropdown = ({ onClose, isOpen }) => {
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const alEscape = (e) => {
-      // Si hay un aviso abierto (por ejemplo, "¿Vaciar carrito?"), Escape cierra el aviso
-      if (e.key === "Escape" && !Swal.isVisible()) onClose();
+      // Si está abierta la confirmación "¿Vaciar carrito?", Escape cierra la confirmación
+      if (e.key === "Escape" && !hayConfirmacionAbierta()) onClose();
     };
     document.addEventListener("keydown", alEscape);
     return () => {
@@ -61,12 +64,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
     if (isNaN(quantity) || quantity < 0) return;
 
     if (maxStock != null && quantity > maxStock) {
-      Swal.fire({
-        icon: "warning",
-        title: "Stock insuficiente",
-        text: `Solo hay ${maxStock} unidades disponibles`,
-        confirmButtonColor: "#d33",
-      });
+      avisar.advertencia("Stock insuficiente", `Solo hay ${maxStock} unidades disponibles`);
       return; // no llega a pegarle al backend
     }
 
@@ -77,12 +75,7 @@ const CartDropdown = ({ onClose, isOpen }) => {
       await updateProductQuantity(productId, quantity);
     } catch (error) {
       console.error("Error al actualizar la cantidad:", error);
-      Swal.fire({
-        icon: "error",
-        title: "No se pudo actualizar",
-        text: error.message || "Error al actualizar la cantidad",
-        confirmButtonColor: "#d33",
-      });
+      avisar.error("No se pudo actualizar", error.message || "Error al actualizar la cantidad");
     } finally {
       setUpdatingQuantities((prev) => {
         const newState = { ...prev };
@@ -95,34 +88,22 @@ const CartDropdown = ({ onClose, isOpen }) => {
   const handleClearCart = async () => {
     if (products.length === 0) return;
 
-    const result = await Swal.fire({
-      title: "¿Vaciar carrito?",
-      text: "Se eliminarán todos los productos del carrito.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Sí, vaciar",
-      cancelButtonText: "Cancelar",
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
+    const ok = await confirmar({
+      titulo: "¿Vaciar carrito?",
+      texto: "Se eliminarán todos los productos del carrito.",
+      confirmar: "Vaciar carrito",
+      peligro: true,
     });
+    if (!ok) return;
 
-    if (result.isConfirmed) {
-      try {
-        await clearCartSilently();
-        Swal.fire({
-          title: "Carrito vaciado",
-          icon: "success",
-          timer: 1500,
-          showConfirmButton: false,
-        });
-      } catch (error) {
-        console.error("Error al vaciar el carrito:", error);
-        Swal.fire({
-          title: "Error",
-          text: "No se pudo vaciar el carrito. Intentá de nuevo.",
-          icon: "error",
-        });
-      }
+    try {
+      await clearCartSilently();
+      avisar.exito("Carrito vaciado");
+    } catch (error) {
+      console.error("Error al vaciar el carrito:", error);
+      avisar.error("No se pudo vaciar el carrito", "Intentá de nuevo.", {
+        accion: { texto: "Reintentar", onClick: handleClearCart },
+      });
     }
   };
 
@@ -184,6 +165,16 @@ const CartDropdown = ({ onClose, isOpen }) => {
           </button>
         </div>
 
+        {recienAgregado && products.length > 0 && (
+          <div className="carrito-lateral__agregado" role="status">
+            <span className="carrito-lateral__agregado-icono" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12.5l4.5 4.5L19 7.5" />
+              </svg>
+            </span>
+            Agregaste este producto al carrito
+          </div>
+        )}
         {products.length === 0 ? (
           <div className="carrito-lateral__vacio">
             <svg
@@ -219,7 +210,14 @@ const CartDropdown = ({ onClose, isOpen }) => {
                 const ocupado = Boolean(updatingQuantities[id]);
 
                 return (
-                  <li className="carrito-lateral__item" key={id || item._id}>
+                  <li
+                    className={`carrito-lateral__item ${
+                      recienAgregado && String(id) === String(recienAgregado)
+                        ? "carrito-lateral__item--nuevo"
+                        : ""
+                    }`}
+                    key={id || item._id}
+                  >
                     <img
                       src={getImageUrl(primeraImagen(product), ANCHO_MINIATURA)}
                       alt=""

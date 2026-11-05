@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
-import Swal from "../utils/alertas.js";
+import { avisar, avisarDespuesDeRecargar } from "../utils/avisos.js";
 import axiosInstance, { setUnauthorizedHandler } from "../utils/axiosConfig";
 
 const TOKEN_KEY = "access_token";
@@ -65,22 +65,23 @@ export const AuthProvider = ({ children }) => {
       if (avisandoVencimiento.current) return;
       avisandoVencimiento.current = true;
 
-      Swal.fire({
-        icon: "info",
-        title: "Tu sesión venció",
-        text: "Por seguridad cerramos tu sesión. Iniciá sesión de nuevo para continuar.",
-        showCancelButton: true,
-        confirmButtonText: "Iniciar sesión",
-        cancelButtonText: "Seguir como invitado",
-        confirmButtonColor: "#3085d6",
-      })
-        .then(({ isConfirmed }) => {
-          // NavBar escucha este evento y abre el modal de login
-          if (isConfirmed) window.dispatchEvent(new Event("open-login-modal"));
-        })
-        .finally(() => {
-          avisandoVencimiento.current = false;
-        });
+      // Queda fijo hasta que se cierra (o se toca "Iniciar sesión")
+      avisar.info(
+        "Tu sesión venció",
+        "Por seguridad cerramos tu sesión. Iniciá sesión de nuevo para continuar.",
+        {
+          duracion: 0,
+          accion: {
+            texto: "Iniciar sesión",
+            // NavBar escucha este evento y abre el modal de login
+            onClick: () => window.dispatchEvent(new Event("open-login-modal")),
+          },
+        },
+      );
+      // Varios pedidos que fallan juntos dan un solo aviso
+      setTimeout(() => {
+        avisandoVencimiento.current = false;
+      }, 3000);
     });
 
     return () => setUnauthorizedHandler(null);
@@ -159,14 +160,13 @@ export const AuthProvider = ({ children }) => {
       delete axiosInstance.defaults.headers.common.Authorization;
       setUser(null);
 
-      Swal.fire({
-        icon: "success",
-        title: "Sesión cerrada",
-        text: "Has cerrado sesión correctamente.",
-        confirmButtonColor: "#3085d6",
-      }).then(() => {
-        window.location.href = "/";
+      // Se vuelve al inicio recargando la página: el aviso se muestra al llegar
+      avisarDespuesDeRecargar({
+        tipo: "exito",
+        titulo: "Sesión cerrada",
+        texto: "Has cerrado sesión correctamente.",
       });
+      window.location.href = "/";
     }
   };
 

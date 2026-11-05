@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import Swal from "sweetalert2";
+import { avisar } from "../../utils/avisos.js";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import axiosInstance, { getErrorMessage } from "../../utils/axiosConfig.js";
 import UserList from "./Admin/UserList.jsx";
@@ -65,12 +65,7 @@ const AdminProfile = ({ user }) => {
             } catch (error) {
                 console.error("Error al obtener usuarios o perfil:", error);
                 setUsers([]);
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: getErrorMessage(error, "No se pudieron cargar los datos"),
-                    confirmButtonColor: "#d33",
-                });
+                avisar.error("No se pudieron cargar los datos", getErrorMessage(error, "Probá de nuevo en unos segundos."));
             }
         };
 

@@ -7,7 +7,7 @@ const ENFOCABLES =
  * Comportamiento de diálogo accesible para un modal (Fase 6):
  * - al abrir, el foco va al primer campo (o al primer botón);
  * - Tab no sale del diálogo;
- * - Escape lo cierra (salvo que haya un aviso de SweetAlert encima);
+ * - Escape lo cierra (salvo que haya una confirmación encima);
  * - la página de atrás no se desplaza;
  * - al cerrar, el foco vuelve a donde estaba.
  */
@@ -26,7 +26,9 @@ export function useDialogo(ref, onCerrar, { activo = true } = {}) {
 
     const alTeclado = (e) => {
       if (e.key === "Escape") {
-        if (document.querySelector(".swal2-container")) return; // el aviso se cierra primero
+        // Si hay otro diálogo encima (una confirmación), Escape cierra ese primero
+        const encima = document.querySelector("[data-dialogo-encima]");
+        if (encima && encima !== dialogo) return;
         onCerrar?.();
         return;
       }

@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import Swal from "../utils/alertas.js";
+import { avisar } from "../utils/avisos.js";
 import Cargador from "./Cargador.jsx";
 
 const ProtectedRoute = ({ children }) => {
@@ -9,13 +9,12 @@ const ProtectedRoute = ({ children }) => {
 
     useEffect(() => {
         // Mostrar mensaje solo cuando no está autenticado y ya terminó de cargar
-        // Si ya hay un aviso abierto (por ejemplo "Tu sesión venció"), no se tapa con otro.
-        if (!loading && !isAuthenticated && !Swal.isVisible()) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Acceso restringido',
-                text: 'Debes iniciar sesión para acceder a esta página.',
-                confirmButtonColor: '#3085d6',
+        if (!loading && !isAuthenticated) {
+            avisar.advertencia('Acceso restringido', 'Debes iniciar sesión para acceder a esta página.', {
+                accion: {
+                    texto: 'Iniciar sesión',
+                    onClick: () => window.dispatchEvent(new Event('open-login-modal')),
+                },
             });
         }
     }, [isAuthenticated, loading]);

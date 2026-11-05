@@ -105,6 +105,60 @@ body:has(.galeria-modal__fondo) .whatsapp-float {
   border-bottom: none;
 }
 
+/* Aviso "Agregaste este producto al carrito" (al agregar desde el detalle) */
+.carrito-lateral__agregado {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 20px 4px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--carrito-agregado-fondo);
+  color: var(--carrito-agregado-texto);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.carrito-lateral__agregado-icono {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-exito);
+  color: #ffffff;
+}
+
+/* El producto recién agregado se resalta y el resaltado se apaga despacio */
+.carrito-lateral__item--nuevo {
+  margin: 0 -12px;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-radius: 12px;
+  animation: carrito-item-nuevo 2.4s ease-out both;
+}
+
+@keyframes carrito-item-nuevo {
+  from {
+    background: var(--carrito-agregado-fondo);
+  }
+  to {
+    background: transparent;
+  }
+}
+
+:root {
+  --carrito-agregado-fondo: #e9f6e7;
+  --carrito-agregado-texto: #0b5e02;
+}
+
+[data-theme="dark"] {
+  --carrito-agregado-fondo: #1f3520;
+  --carrito-agregado-texto: #9be08f;
+}
+
 /* Fondo blanco también en modo oscuro: las fotos de producto tienen fondo blanco */
 .carrito-lateral__foto {
   width: 72px;

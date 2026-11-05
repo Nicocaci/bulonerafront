@@ -426,6 +426,17 @@
   background: var(--color-marca-hover);
 }
 
+/* Unos segundos después de agregar: "✓ Agregado al carrito" en verde */
+.detalle-compra__agregar--hecho,
+.detalle-compra__agregar--hecho:hover:not(:disabled) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--color-exito);
+  color: #ffffff;
+}
+
 .detalle-compra__agregar:focus-visible,
 .selector-cantidad button:focus-visible {
   outline: 3px solid var(--texto-marca);

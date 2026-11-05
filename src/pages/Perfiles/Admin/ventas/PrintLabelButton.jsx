@@ -1,5 +1,5 @@
 import axiosInstance from "../../../../utils/axiosConfig.js";
-import Swal from "sweetalert2";
+import { avisar } from "../../../../utils/avisos.js";
 import { IconoImprimir } from "../IconosAdmin.jsx";
 
 export default function PrintLabelButton({ envioId }) {
@@ -19,11 +19,7 @@ export default function PrintLabelButton({ envioId }) {
       window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error("Error al descargar etiqueta:", err);
-      Swal.fire({
-        icon: "error",
-        title: "No se pudo generar la etiqueta",
-        text: "El envío puede no estar listo todavía para imprimir.",
-      });
+      avisar.error("No se pudo generar la etiqueta", "El envío puede no estar listo todavía para imprimir.");
     }
   };
 

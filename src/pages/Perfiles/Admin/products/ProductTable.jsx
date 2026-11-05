@@ -2,7 +2,8 @@ import React from "react";
 import axiosInstance, { getErrorMessage } from "../../../../utils/axiosConfig.js";
 import { getImageUrl } from "../../../../utils/imageUtils.js";
 import { formatearPrecio } from "../../../../utils/precio.js";
-import Swal from "sweetalert2";
+import { avisar } from "../../../../utils/avisos.js";
+import { confirmar } from "../../../../utils/confirmar.js";
 import { memo } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -10,24 +11,21 @@ import Cargador from "../../../../components/Cargador.jsx";
 
 
 const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
-  const handleDelete = async (id) => {
-    Swal.fire({
-      title: "¿Estás seguro?",
-      text: "¡No podrás revertir esto!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminarlo",
-    }).then(async (result) => {
-      if (!result.isConfirmed) return;
-      try {
-        await axiosInstance.delete(`/api/products/${id}`);
-        refetch();
-      } catch (err) {
-        Swal.fire("Error", getErrorMessage(err, "No se pudo eliminar el producto"), "error");
-      }
+  const handleDelete = async (id, nombre) => {
+    const ok = await confirmar({
+      titulo: nombre ? `¿Eliminar ${nombre}?` : "¿Eliminar este producto?",
+      texto: "Esta acción no se puede deshacer.",
+      confirmar: "Eliminar producto",
+      peligro: true,
     });
+    if (!ok) return;
+    try {
+      await axiosInstance.delete(`/api/products/${id}`);
+      avisar.exito("Producto eliminado");
+      refetch();
+    } catch (err) {
+      avisar.error("No se pudo eliminar el producto", getErrorMessage(err, "Probá de nuevo en unos segundos."));
+    }
   };
 
   if (isLoading) return <Cargador tamano="bloque" texto="Cargando productos…" />;
@@ -92,7 +90,7 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
                 className="admin-icono-boton admin-icono-boton--borrar"
                 aria-label={`Eliminar ${p.item}`}
                 title="Eliminar"
-                onClick={() => handleDelete(p._id)}
+                onClick={() => handleDelete(p._id, p.item)}
               >
                 <MdDelete aria-hidden="true" />
               </button>

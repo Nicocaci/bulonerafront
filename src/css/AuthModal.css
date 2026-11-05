@@ -15,6 +15,11 @@
   padding: 24px 28px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
   position: relative;
+  /* Con los mensajes de error, el registro puede quedar más alto que la pantalla */
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .auth-modal__close {
@@ -91,6 +96,35 @@
 
 .auth-modal__toggle:hover {
   background-color: #333;
+}
+
+.auth-modal__form input[aria-invalid="true"] {
+  border-color: var(--color-oferta);
+  box-shadow: 0 0 0 1px var(--color-oferta);
+}
+
+.auth-modal__error {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--confirmar-peligro-texto);
+}
+
+.auth-modal__error-general {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--confirmar-peligro-suave);
+  color: var(--confirmar-peligro-texto);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.auth-modal__error-general svg {
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 
 .auth-modal__hint {

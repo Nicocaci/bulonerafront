@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import CartDropdown from "../../components/CartDropdown.jsx";
+import { EVENTO_ABRIR_CARRITO } from "../../utils/carritoLateral.js";
 
 const IconoUsuario = () => (
   <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
@@ -43,6 +44,22 @@ const NavbarActions = ({
   toggleTheme,
 }) => {
   const [showCart, setShowCart] = useState(false);
+  // Producto recién agregado desde el detalle (el carrito lo resalta)
+  const [recienAgregado, setRecienAgregado] = useState(null);
+  const cerrarCarrito = useCallback(() => {
+    setShowCart(false);
+    setRecienAgregado(null);
+  }, []);
+
+  // Otras páginas abren el carrito con abrirCarritoLateral() (utils/carritoLateral.js)
+  useEffect(() => {
+    const alAbrir = (e) => {
+      setRecienAgregado(e.detail?.recienAgregado ?? null);
+      setShowCart(true);
+    };
+    window.addEventListener(EVENTO_ABRIR_CARRITO, alAbrir);
+    return () => window.removeEventListener(EVENTO_ABRIR_CARRITO, alAbrir);
+  }, []);
   const [menuCuenta, setMenuCuenta] = useState(false);
   const cuentaRef = useRef(null);
 
@@ -114,7 +131,10 @@ const NavbarActions = ({
           className="nav-accion"
           aria-label={`Carrito, ${cartItemsCount} ${cartItemsCount === 1 ? "producto" : "productos"}`}
           aria-expanded={showCart}
-          onClick={() => setShowCart((prev) => !prev)}
+          onClick={() => {
+            setRecienAgregado(null);
+            setShowCart((prev) => !prev);
+          }}
         >
           <span className="nav-carrito__icono">
             <IconoCarrito />
@@ -123,7 +143,7 @@ const NavbarActions = ({
           <span className="nav-accion__texto nav-solo-desktop">Carrito</span>
         </button>
 
-        <CartDropdown isOpen={showCart} onClose={() => setShowCart(false)} />
+        <CartDropdown isOpen={showCart} onClose={cerrarCarrito} recienAgregado={recienAgregado} />
       </div>
 
       <button

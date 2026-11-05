@@ -8,13 +8,10 @@ import {
 } from "react";
 import { AuthContext } from "./AuthContext.jsx";
 import axiosInstance from "../utils/axiosConfig.js";
-import swal from "../utils/alertas.js";
+import { avisar } from "../utils/avisos.js";
 
 
 const LOCAL_CART_KEY = "guest_cart";
-
-const escaparHtml = (texto) =>
-  String(texto).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
 export const CartContext = createContext();
 
@@ -292,22 +289,6 @@ const clearCartSilently = useCallback(async () => {
   }
 }, [user?.token, clearLocalCart, request]);
 
-// Tu clearCart existente, para el botón "Vaciar carrito" manual del usuario
-const clearCart = useCallback(async () => {
-  swal.fire({
-    title: "¿Vaciar carrito?",
-    text: "Esta acción no se puede deshacer",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Sí, vaciar",
-    cancelButtonText: "No, cancelar",
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      return clearCartSilently();
-    }
-  });
-}, [clearCartSilently]);
-
   // =============================
   // 🔥 SYNC GUEST → BACKEND
   // =============================
@@ -350,14 +331,14 @@ const clearCart = useCallback(async () => {
     }
 
     if (noAgregados.length) {
-      swal.fire({
-        icon: "info",
-        title: "Revisá tu carrito",
-        html:
-          "Pasamos tu carrito a tu cuenta, pero algunos productos no se pudieron agregar:<br>" +
-          noAgregados.map((t) => `• ${escaparHtml(t)}`).join("<br>"),
-        confirmButtonColor: "#3085d6",
-      });
+      avisar.info(
+        "Revisá tu carrito",
+        [
+          "Pasamos tu carrito a tu cuenta, pero algunos productos no se pudieron agregar:",
+          ...noAgregados.map((t) => `• ${t}`),
+        ],
+        { duracion: 0 },
+      );
     }
   }, [user?.token, getLocalCart, request]);
 
@@ -396,12 +377,11 @@ const value = useMemo(
     addProductToCart,
     removeProductFromCart,
     updateProductQuantity,
-    clearCart,
     clearCartSilently, // 👈 nuevo
   }),
   [
     cart, error, getCart, getCartById, addProductToCart,
-    removeProductFromCart, updateProductQuantity, clearCart, clearCartSilently,
+    removeProductFromCart, updateProductQuantity, clearCartSilently,
   ],
 );
 
