@@ -5,25 +5,27 @@
 //   para que el navegador la empiece a bajar apenas llega el HTML.
 // Sin dependencias del navegador ni de Vite: tiene que poder correr en Node.
 // Para cambiar el banner alcanza con cambiar este archivo.
-
-const CLOUDINARY = "https://res.cloudinary.com/dn4lt8fhc/image/upload";
+//
+// Promo actual: Set destornillador con criquet Ronix RH-2715 ($22.000).
+// Las imágenes están en public/banner/ en WebP, una por ancho: <nombre>-<ancho>.webp.
+// Para una promo nueva: subir los archivos con otro nombre (así ningún navegador muestra
+// la vieja guardada en caché) y cambiar "nombre", "alt" y "href".
 
 export const BANNER = {
-  archivo: "v1790002161/promo-1.png",
-  alt: "Combo Ronix: amoladora 115 mm 800 W y taladro 13 mm 750 W, precio final $149.000",
-  href: "/productos?page=1&marca=Ronix&search=kit",
-  // Tamaño original de la imagen (para width/height del <img> y evitar saltos de layout)
-  ancho: 429,
-  alto: 402,
+  nombre: "promo-set-criquet",
+  alt: "Set destornillador con criquet Ronix RH-2715, 24 puntas intercambiables, precio oferta $22.000",
+  href: "/producto/6aea346caacd50db3d66d795",
+  // Proporción de la imagen (para width/height del <img> y evitar saltos de layout)
+  ancho: 1120,
+  alto: 1050,
   // Anchos que se le ofrecen al navegador: elige el más chico que alcance para la pantalla
-  // (un celular común toma 800 en lugar de 1200; la columna de desktop, 600)
-  anchos: [400, 600, 800, 1200],
+  // (la columna de desktop toma 600 u 1200 según la pantalla; un celular, 800 o 1200)
+  anchos: [400, 600, 800, 1200, 1680],
   anchoPorDefecto: 600,
-  sizes: "(max-width: 900px) 100vw, 560px",
+  sizes: "(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 560px",
 };
 
-// Formato más liviano que acepte el navegador, calidad automática y sin agrandar
-const urlBanner = (ancho) => `${CLOUDINARY}/f_auto,q_auto,c_limit,w_${ancho}/${BANNER.archivo}`;
+const urlBanner = (ancho) => `/banner/${BANNER.nombre}-${ancho}.webp`;
 
 export const bannerSrc = urlBanner(BANNER.anchoPorDefecto);
 export const bannerSrcSet = BANNER.anchos.map((a) => `${urlBanner(a)} ${a}w`).join(", ");
