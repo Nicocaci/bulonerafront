@@ -12,7 +12,7 @@
 // la vieja guardada en caché) y cambiar "nombre", "alt" y "href".
 
 export const BANNER = {
-  nombre: "promo-set-criquet-v3",
+  nombre: "promo-set-criquet-v4",
   alt: "Set destornillador con criquet Ronix RH-2715 de 24 piezas, precio oferta $22.000, envío a todo el país",
   href: "/producto/6aea346caacd50db3d66d795",
   // Proporción de la imagen (para width/height del <img> y evitar saltos de layout)
