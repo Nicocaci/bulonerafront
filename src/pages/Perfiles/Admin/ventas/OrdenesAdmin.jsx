@@ -5,6 +5,7 @@ import axiosInstance, { getErrorMessage } from "../../../../utils/axiosConfig.js
 import Pagination from "../../../../components/Pagination.jsx";
 import TablaOrdenes from "./TablaOrdenes.jsx";
 import { FILTROS_ORDENES, numeroOrden, paramsDeFiltro } from "./ordenes.js";
+import Cargador from "../../../../components/Cargador.jsx";
 
 const POR_PAGINA = 10;
 
@@ -127,7 +128,7 @@ function OrdenesAdmin({ filtro, onFiltroChange }) {
 
   let contenido;
   if (isLoading) {
-    contenido = <p className="admin-mensaje">Cargando órdenes...</p>;
+    contenido = <Cargador tamano="bloque" texto="Cargando órdenes…" />;
   } else if (isError) {
     contenido = (
       <p className="admin-mensaje admin-mensaje--error">

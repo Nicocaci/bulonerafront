@@ -3,6 +3,7 @@
 // dependa de qué página se visitó primero (con el mismo nivel de especificidad, gana la
 // regla que viene después).
 // Si se agrega un archivo CSS nuevo, sumalo acá (si no, igual se incluye, pero al final).
+import "./css/Cargador.css";
 import "./css/Home.css";
 import "./css/OfertasDestacadas.css";
 import "./css/TarjetaProducto.css";

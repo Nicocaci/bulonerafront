@@ -5,6 +5,7 @@ import { AuthContext } from "../context/AuthContext.jsx";
 import axiosInstance from "../utils/axiosConfig.js";
 import { urlWhatsapp } from "../utils/contacto.js";
 import "../css/Checkout.css";
+import Cargador from "../components/Cargador.jsx";
 
 const Svg = ({ children }) => (
   <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
@@ -174,7 +175,7 @@ const Gracias = () => {
     <div className="resultado">
       <section className="resultado__tarjeta" role="status" aria-live="polite">
         {esperando ? (
-          <div className="checkout-spinner" />
+          <Cargador tamano="bloque" anunciar={false} demora={0} className="resultado__cargador" />
         ) : (
           <span className={`resultado__icono resultado__icono--${tipoIcono}`}>
             {ICONOS[tipoIcono]}

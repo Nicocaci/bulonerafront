@@ -11,6 +11,7 @@ import Confirmar from "./checkout/Confirmar.jsx";
 import { getCartWeight, getCartPaquetes } from "../utils/cartShipping.js";
 import { getPrecioUnitario, getProductIdDeItem, formatearPrecio } from "../utils/precio.js";
 import { ANCHO_MINIATURA, getImageUrl, usarPlaceholder } from "../utils/imageUtils";
+import Cargador from "../components/Cargador.jsx";
 
 // Pasos del checkout (antes eran 4: el paso "Pago" no tenía nada para elegir,
 // el pago se hace siempre en Mercado Pago desde el último paso)
@@ -268,10 +269,7 @@ const Checkout = () => {
 
   if (loading) {
     return (
-      <div className="checkout-loading">
-        <div className="checkout-spinner"></div>
-        <p>Cargando información del carrito...</p>
-      </div>
+      <Cargador className="checkout-loading" texto="Cargando información del carrito…" />
     );
   }
 

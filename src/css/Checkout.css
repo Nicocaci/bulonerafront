@@ -715,22 +715,15 @@
   font-size: 24px;
 }
 
-.checkout-spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid var(--borde-suave);
-  border-top: 4px solid var(--color-marca);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+/* Cargador de la marca en /gracias, del mismo tamaño que los íconos de resultado */
+.resultado__cargador {
+  width: 64px;
+  height: 64px;
+  padding: 0;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+.resultado__cargador .cargador__icono {
+  width: 48px;
 }
 
 @keyframes shipping-spin {
@@ -740,7 +733,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .checkout-spinner,
   .shipping-selector-loading::before {
     animation-duration: 3s;
   }

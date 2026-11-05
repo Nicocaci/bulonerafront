@@ -4,6 +4,7 @@ import axiosInstance, { getErrorMessage } from "../../../utils/axiosConfig.js";
 import TablaOrdenes from "./ventas/TablaOrdenes.jsx";
 import { IconoFlecha } from "./IconosAdmin.jsx";
 import { pesos, plural } from "./ventas/ordenes.js";
+import Cargador from "../../../components/Cargador.jsx";
 
 // Estados que se muestran en "Órdenes por estado" (el color es el del punto)
 const ESTADOS_RESUMEN = [
@@ -51,7 +52,7 @@ function ResumenAdmin({ stats, cargandoStats, errorStats, usuarios }) {
         .then((res) => res.data.orders || []),
   });
 
-  if (cargandoStats) return <p className="admin-mensaje">Cargando el resumen...</p>;
+  if (cargandoStats) return <Cargador tamano="bloque" texto="Cargando el resumen…" />;
   if (errorStats) {
     return (
       <p className="admin-mensaje admin-mensaje--error">
@@ -169,7 +170,7 @@ function ResumenAdmin({ stats, cargandoStats, errorStats, usuarios }) {
             Ver todas
           </Link>
         </div>
-        {ultimas.isLoading && <p className="admin-mensaje">Cargando órdenes...</p>}
+        {ultimas.isLoading && <Cargador tamano="bloque" texto="Cargando órdenes…" />}
         {ultimas.isError && (
           <p className="admin-mensaje admin-mensaje--error">
             {getErrorMessage(ultimas.error, "No se pudieron cargar las órdenes")}

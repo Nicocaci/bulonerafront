@@ -27,6 +27,10 @@
   color: var(--texto-secundario);
 }
 
+.mi-cuenta-cargando {
+  min-height: 50vh;
+}
+
 .mi-cuenta__mensaje {
   margin: 0;
   padding: 24px;

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Cargador from "../../components/Cargador.jsx";
 
 // Panel "Marcas" del navbar de desktop: las marcas con la cantidad de productos de cada
 // una (vienen de /api/products/facetas, la misma consulta que el panel de categorías).
@@ -6,7 +7,7 @@ const NavbarMarcas = ({ id, marcas, cargando, onElegir }) => (
   <div id={id} className="menu-categorias menu-marcas" role="region" aria-label="Marcas">
     <div className="menu-categorias__lista">
       <p className="menu-categorias__titulo">Marcas</p>
-      {cargando && <p className="menu-categorias__estado">Cargando marcas…</p>}
+      {cargando && <Cargador tamano="chico" texto="Cargando marcas…" />}
       {!cargando && marcas.length === 0 && (
         <p className="menu-categorias__estado">No hay marcas disponibles.</p>
       )}

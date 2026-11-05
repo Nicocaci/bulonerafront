@@ -1,0 +1,103 @@
+/* ─────────────────────────────────────────────────────────────
+   Cargador de la marca (components/Cargador.jsx)
+   El triángulo del logo en gris se llena de rojo con el borde
+   ondulado, se sostiene un instante y se desvanece. Ciclo: 2,4 s.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  --cargador-base: #e4e4e4;   /* triángulo vacío */
+  --cargador-tinta: #1a1a1a;  /* triángulo interior y barra */
+  --cargador-rojo: #ff0405;   /* rojo del logo */
+}
+
+[data-theme="dark"] {
+  --cargador-base: #44484a;
+  --cargador-tinta: #f7f5f2;
+}
+
+.cargador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cargador--pantalla { padding: 48px 16px; }
+.cargador--bloque { padding: 24px 16px; }
+.cargador--chico { padding: 12px; }
+
+.cargador__icono {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+  aspect-ratio: 540 / 522;
+  /* Aparece recién después de la demora: si carga antes, no parpadea */
+  animation: cargador-aparecer 0.2s ease-out var(--cargador-demora, 300ms) both;
+}
+
+.cargador--pantalla .cargador__icono { width: 72px; }
+.cargador--bloque .cargador__icono { width: 32px; }
+.cargador--chico .cargador__icono { width: 24px; }
+
+.cargador__icono svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.cargador__base,
+.cargador__rojo {
+  fill-rule: evenodd; /* el hexágono queda calado */
+}
+
+.cargador__base { fill: var(--cargador-base); }
+.cargador__tinta { fill: var(--cargador-tinta); }
+.cargador__rojo { fill: var(--cargador-rojo); }
+
+.cargador__relleno {
+  position: absolute;
+  inset: 0;
+  animation: cargador-nivel 2.4s linear infinite;
+}
+
+@keyframes cargador-aparecer {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Nivel del rojo: sube con el borde ondulado (la aceleración ya está en los valores),
+   se sostiene y se desvanece. */
+@keyframes cargador-nivel {
+  0%{clip-path:polygon(0% 92.00%,10% 94.47%,20% 93.53%,30% 90.47%,40% 89.53%,50% 92.00%,60% 94.47%,70% 93.53%,80% 90.47%,90% 89.53%,100% 92.00%,100% 100%,0% 100%);opacity:1}
+  4.5%{clip-path:polygon(0% 93.08%,10% 92.96%,20% 90.02%,30% 88.32%,40% 90.22%,50% 93.08%,60% 92.96%,70% 90.02%,80% 88.32%,90% 90.22%,100% 93.08%,100% 100%,0% 100%);opacity:1}
+  9.0%{clip-path:polygon(0% 90.28%,10% 87.67%,20% 85.35%,30% 86.52%,40% 89.56%,50% 90.28%,60% 87.67%,70% 85.35%,80% 86.52%,90% 89.56%,100% 90.28%,100% 100%,0% 100%);opacity:1}
+  13.5%{clip-path:polygon(0% 83.65%,10% 80.87%,20% 81.23%,30% 84.23%,40% 85.72%,50% 83.65%,60% 80.87%,70% 81.23%,80% 84.23%,90% 85.72%,100% 83.65%,100% 100%,0% 100%);opacity:1}
+  18.0%{clip-path:polygon(0% 75.16%,10% 74.68%,20% 77.41%,30% 79.57%,40% 78.18%,50% 75.16%,60% 74.68%,70% 77.41%,80% 79.57%,90% 78.18%,100% 75.16%,100% 100%,0% 100%);opacity:1}
+  22.5%{clip-path:polygon(0% 67.18%,10% 69.43%,20% 72.10%,30% 71.50%,40% 68.46%,50% 67.18%,60% 69.43%,70% 72.10%,80% 71.50%,90% 68.46%,100% 67.18%,100% 100%,0% 100%);opacity:1}
+  27.0%{clip-path:polygon(0% 60.63%,10% 63.60%,20% 63.84%,30% 61.02%,40% 59.03%,50% 60.63%,60% 63.60%,70% 63.84%,80% 61.02%,90% 59.03%,100% 60.63%,100% 100%,0% 100%);opacity:1}
+  31.5%{clip-path:polygon(0% 54.40%,10% 55.46%,20% 53.06%,30% 50.51%,40% 51.34%,50% 54.40%,60% 55.46%,70% 53.06%,80% 50.51%,90% 51.34%,100% 54.40%,100% 100%,0% 100%);opacity:1}
+  36.0%{clip-path:polygon(0% 46.60%,10% 44.80%,20% 41.90%,30% 41.90%,40% 44.80%,50% 46.60%,60% 44.80%,70% 41.90%,80% 41.90%,90% 44.80%,100% 46.60%,100% 100%,0% 100%);opacity:1}
+  40.5%{clip-path:polygon(0% 36.49%,10% 33.44%,20% 32.61%,30% 35.15%,40% 37.55%,50% 36.49%,60% 33.44%,70% 32.61%,80% 35.15%,90% 37.55%,100% 36.49%,100% 100%,0% 100%);opacity:1}
+  45.0%{clip-path:polygon(0% 25.38%,10% 23.78%,20% 25.77%,30% 28.59%,40% 28.35%,50% 25.38%,60% 23.78%,70% 25.77%,80% 28.59%,90% 28.35%,100% 25.38%,100% 100%,0% 100%);opacity:1}
+  49.5%{clip-path:polygon(0% 15.72%,10% 17.00%,20% 20.03%,30% 20.63%,40% 17.96%,50% 15.72%,60% 17.00%,70% 20.03%,80% 20.63%,90% 17.96%,100% 15.72%,100% 100%,0% 100%);opacity:1}
+  54.0%{clip-path:polygon(0% 9.16%,10% 12.18%,20% 13.57%,30% 11.41%,40% 8.68%,50% 9.16%,60% 12.18%,70% 13.57%,80% 11.41%,90% 8.68%,100% 9.16%,100% 100%,0% 100%);opacity:1}
+  58.5%{clip-path:polygon(0% 5.37%,10% 7.44%,20% 5.95%,30% 2.95%,40% 2.59%,50% 5.37%,60% 7.44%,70% 5.95%,80% 2.95%,90% 2.59%,100% 5.37%,100% 100%,0% 100%);opacity:1}
+  63.0%{clip-path:polygon(0% 2.53%,10% 1.81%,20% -1.23%,30% -2.40%,40% -0.08%,50% 2.53%,60% 1.81%,70% -1.23%,80% -2.40%,90% -0.08%,100% 2.53%,100% 100%,0% 100%);opacity:1}
+  67.5%{clip-path:polygon(0% -0.76%,10% -3.63%,20% -5.52%,30% -3.82%,40% -0.88%,50% -0.76%,60% -3.63%,70% -5.52%,80% -3.82%,90% -0.88%,100% -0.76%,100% 100%,0% 100%);opacity:1}
+  72.0%{clip-path:polygon(0% -4.00%,10% -6.47%,20% -5.53%,30% -2.47%,40% -1.53%,50% -4.00%,60% -6.47%,70% -5.53%,80% -2.47%,90% -1.53%,100% -4.00%,100% 100%,0% 100%);opacity:1}
+  86%{clip-path:polygon(0% -4.00%,10% -6.47%,20% -5.53%,30% -2.47%,40% -1.53%,50% -4.00%,60% -6.47%,70% -5.53%,80% -2.47%,90% -1.53%,100% -4.00%,100% 100%,0% 100%);opacity:1}
+  100%{clip-path:polygon(0% -4.00%,10% -6.47%,20% -5.53%,30% -2.47%,40% -1.53%,50% -4.00%,60% -6.47%,70% -5.53%,80% -2.47%,90% -1.53%,100% -4.00%,100% 100%,0% 100%);opacity:0}}
+
+@keyframes cargador-pulso {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+
+/* Con "reducir movimiento": triángulo lleno que pulsa suave */
+@media (prefers-reduced-motion: reduce) {
+  .cargador__relleno {
+    clip-path: none;
+    animation: cargador-pulso 1.2s ease-in-out infinite alternate;
+  }
+}

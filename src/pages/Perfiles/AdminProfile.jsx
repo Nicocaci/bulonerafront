@@ -17,6 +17,7 @@ import {
     IconoVolver,
 } from "./Admin/IconosAdmin.jsx";
 import "../../css/AdminPanel.css";
+import Cargador from "../../components/Cargador.jsx";
 
 // La sección elegida va en la URL (/perfil?seccion=ordenes&estado=pagado): se puede volver
 // con el botón "atrás" y los accesos del Resumen abren el listado ya filtrado.
@@ -105,7 +106,7 @@ const AdminProfile = ({ user }) => {
     } else {
         contenido =
             users === null ? (
-                <p className="admin-mensaje">Cargando usuarios...</p>
+                <Cargador tamano="bloque" texto="Cargando usuarios…" />
             ) : (
                 <UserList users={users} onUsersChange={setUsers} />
             );

@@ -9,6 +9,7 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import Cargador from "../components/Cargador.jsx";
 
 const BREAKPOINTS_DEFAULT = {
   320: {
@@ -66,7 +67,7 @@ const ProductosDestacados = ({
   const productos = productosIniciales ?? productosApi;
 
   if (isLoading) {
-    return <div className="ofertas-loading">Cargando productos...</div>;
+    return <Cargador className="ofertas-loading" texto="Cargando productos…" />;
   }
 
   if (isError) {

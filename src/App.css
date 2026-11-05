@@ -66,6 +66,11 @@ body {
   min-height: 100vh;
 }
 
+/* Mientras se verifica la sesión en una ruta protegida */
+.ruta-protegida-cargando {
+  min-height: 50vh;
+}
+
 /* Aviso cuando una página no se pudo cargar */
 .error-carga {
   display: flex;

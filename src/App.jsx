@@ -18,6 +18,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import "./css/tokens.css";
 import "./App.css";
+import Cargador from "./components/Cargador.jsx";
 
 // Cada página se descarga recién cuando se visita (antes todo el sitio venía en un solo
 // archivo de 724 KB). La Home queda incluida porque es la página de entrada más común.
@@ -58,7 +59,7 @@ function AppContent() {
         {/* Mientras baja el código de la página se reserva el alto de la pantalla
             (si no, el footer aparece arriba y salta) */}
         <ErrorCarga key={location.pathname}>
-          <Suspense fallback={<div className="ruta-cargando" />}>
+          <Suspense fallback={<Cargador className="ruta-cargando" />}>
             <Routes>
               <Route exact path="/" element={<Home />} />
               <Route exact path="/productos" element={<ProductosPage />} />

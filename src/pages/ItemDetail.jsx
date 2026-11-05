@@ -18,6 +18,7 @@ import { getPrecioUnitario, formatearPrecio } from "../utils/precio.js";
 import { urlWhatsapp } from "../utils/contacto.js";
 import { metaDeProducto, SITIO } from "../utils/seo.js";
 import { aplicarMeta } from "../utils/metaDocumento.js";
+import Cargador from "../components/Cargador.jsx";
 
 const Icono = ({ children, size = 20 }) => (
   <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -174,7 +175,7 @@ const ItemDetail = () => {
   const descripcionFormateada = producto?.descripcion?.replace(/\\n/g, "\n");
 
   if (loading) {
-    return <div className="item-cargando">Cargando...</div>;
+    return <Cargador className="item-cargando" texto="Cargando producto…" />;
   }
 
   if (noDisponible || (!error && !producto)) {

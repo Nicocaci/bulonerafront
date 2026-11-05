@@ -5,6 +5,7 @@ import TarjetaProducto from "../components/TarjetaProducto.jsx";
 import Pagination from "../components/Pagination.jsx";
 import { useFacetas, useProductos } from "../hooks/useCatalogo.js";
 import "../css/ProductosPage.css";
+import Cargador from "../components/Cargador.jsx";
 
 // Cuántas opciones se ven por grupo antes de "Ver todas"
 const VISIBLES = 6;
@@ -276,9 +277,7 @@ const ProductosPage = () => {
             </div>
 
             {loading && (
-              <div className="spinner-container">
-                <p>Cargando productos…</p>
-              </div>
+              <Cargador className="spinner-container" texto="Cargando productos…" />
             )}
 
             {!loading && isError && (

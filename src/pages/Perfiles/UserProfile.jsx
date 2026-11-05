@@ -8,6 +8,7 @@ import { ANCHO_MINIATURA, getImageUrl, usarPlaceholder } from "../../utils/image
 import { CONTACTO, urlWhatsapp } from "../../utils/contacto.js";
 import { formatearPrecio } from "../../utils/precio.js";
 import "../../css/MiCuenta.css";
+import Cargador from "../../components/Cargador.jsx";
 
 // Estados que ve el cliente (el backend ya no manda los intentos de pago pendientes o
 // rechazados). Las clases de color son las mismas del panel admin.
@@ -294,7 +295,7 @@ const UserProfile = () => {
   if (loading) {
     return (
       <div className="mi-cuenta">
-        <p className="mi-cuenta__mensaje">Cargando tu cuenta...</p>
+        <Cargador className="mi-cuenta-cargando" texto="Cargando tu cuenta…" />
       </div>
     );
   }
@@ -423,7 +424,7 @@ const UserProfile = () => {
               {lista.length > 0 && <span>{plural(lista.length, "compra", "compras")}</span>}
             </div>
 
-            {compras.isLoading && <p className="mi-cuenta__mensaje">Cargando tus compras...</p>}
+            {compras.isLoading && <Cargador tamano="bloque" texto="Cargando tus compras…" />}
             {compras.isError && (
               <p className="mi-cuenta__mensaje mi-cuenta__mensaje--error">
                 {getErrorMessage(compras.error, "No se pudieron cargar tus compras.")}

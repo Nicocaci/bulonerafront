@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import Swal from "../utils/alertas.js";
+import Cargador from "./Cargador.jsx";
 
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated, loading } = useContext(AuthContext);
@@ -21,16 +22,7 @@ const ProtectedRoute = ({ children }) => {
 
     // Mostrar loading mientras se verifica la autenticación
     if (loading) {
-        return (
-            <div style={{ 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center', 
-                height: '50vh' 
-            }}>
-                <p>Cargando...</p>
-            </div>
-        );
+        return <Cargador className="ruta-protegida-cargando" />;
     }
 
     // Si no está autenticado, redirigir al home

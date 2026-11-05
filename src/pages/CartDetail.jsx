@@ -6,6 +6,7 @@ import { AuthContext } from "../context/AuthContext";
 import { ANCHO_MINIATURA, getImageUrl, usarPlaceholder } from "../utils/imageUtils";
 import Swal from "sweetalert2";
 import { getPrecioUnitario, formatearPrecio } from "../utils/precio.js";
+import Cargador from "../components/Cargador.jsx";
 
 // Mismo formato de precio que tenía el carrito (y que usa el carrito lateral): $6.068
 const pesos = (n) => formatearPrecio(n);
@@ -102,7 +103,7 @@ const CartDetail = () => {
     wasAuthenticated.current = isAuthenticated;
   }, [isAuthenticated]);
 
-  if (loading) return <div className="carrito-cargando" aria-busy="true" />;
+  if (loading) return <Cargador className="carrito-cargando" texto="Cargando carrito…" />;
 
   if (error) {
     if (isAuthError(error)) {

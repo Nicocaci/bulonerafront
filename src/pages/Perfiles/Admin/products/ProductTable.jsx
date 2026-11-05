@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { memo } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import Cargador from "../../../../components/Cargador.jsx";
 
 
 const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
@@ -29,7 +30,7 @@ const ProductTable = memo(({ productos, isLoading, onEdit, refetch }) => {
     });
   };
 
-  if (isLoading) return <p>Cargando...</p>;
+  if (isLoading) return <Cargador tamano="bloque" texto="Cargando productos…" />;
 
   return (
     <table className="admin-tabla-simple">

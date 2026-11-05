@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../../css/NavbarMenu.css";
+import Cargador from "../../components/Cargador.jsx";
 
 // Panel "Todos los productos" del navbar de desktop: las categorías con la cantidad de
 // productos de cada una (vienen de /api/products/facetas) y un acceso a las ofertas.
@@ -8,7 +9,7 @@ const NavbarMenu = ({ id, categorias, cargando, onElegir }) => (
   <div id={id} className="menu-categorias" role="region" aria-label="Categorías">
     <div className="menu-categorias__lista">
       <p className="menu-categorias__titulo">Categorías</p>
-      {cargando && <p className="menu-categorias__estado">Cargando categorías…</p>}
+      {cargando && <Cargador tamano="chico" texto="Cargando categorías…" />}
       {!cargando && categorias.length === 0 && (
         <p className="menu-categorias__estado">No hay categorías disponibles.</p>
       )}
