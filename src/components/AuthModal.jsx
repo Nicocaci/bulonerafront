@@ -54,6 +54,7 @@ const AuthModal = ({ onClose }) => {
   const dialogoRef = useRef(null);
   useDialogo(dialogoRef, onClose);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [verPassword, setVerPassword] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -69,6 +70,7 @@ const AuthModal = ({ onClose }) => {
     setMode((prev) => (prev === "login" ? "register" : "login"));
     setErrores({});
     setErrorGeneral("");
+    setVerPassword(false);
   };
 
   const handleSubmit = async (event) => {
@@ -139,11 +141,20 @@ const AuthModal = ({ onClose }) => {
     }
   };
 
-  // Atributos de accesibilidad de un campo con su error
-  const conError = (campo) =>
-    errores[campo]
-      ? { "aria-invalid": true, "aria-describedby": `error-${campo}` }
-      : {};
+  const esRegistro = mode === "register";
+
+  // Atributos de accesibilidad de un campo con su error (y su ayuda, si tiene)
+  const atributos = (campo, ayuda) => {
+    const describe = [errores[campo] && `error-${campo}`, ayuda].filter(Boolean).join(" ");
+    return {
+      id: `auth-${campo}`,
+      name: campo,
+      value: formValues[campo],
+      onChange: handleChange,
+      "aria-invalid": errores[campo] ? true : undefined,
+      "aria-describedby": describe || undefined,
+    };
+  };
 
   const mensajeError = (campo) =>
     errores[campo] && (
@@ -152,10 +163,19 @@ const AuthModal = ({ onClose }) => {
       </small>
     );
 
+  // Campo con la etiqueta arriba y el error debajo
+  const campo = (nombre, etiqueta, props = {}, clase = "") => (
+    <div className={`auth-modal__campo ${clase}`}>
+      <label htmlFor={`auth-${nombre}`}>{etiqueta}</label>
+      <input type="text" {...props} {...atributos(nombre)} />
+      {mensajeError(nombre)}
+    </div>
+  );
+
   return (
     <div className="auth-modal-overlay">
       <div
-        className="auth-modal"
+        className={`auth-modal ${esRegistro ? "auth-modal--registro" : ""}`}
         ref={dialogoRef}
         role="dialog"
         aria-modal="true"
@@ -167,160 +187,116 @@ const AuthModal = ({ onClose }) => {
           onClick={onClose}
           aria-label="Cerrar formulario"
         >
-          ×
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
         </button>
-        <h2 className="auth-modal__title" id="auth-modal-titulo">
-          {mode === "login" ? "Iniciar sesión" : "Crear cuenta"}
-        </h2>
-        <p className="auth-modal__subtitle">
-          {mode === "login"
-            ? "Accedé a tu cuenta para continuar con tu compra."
-            : "Registrate para continuar con tu compra."}
-        </p>
 
-        <form onSubmit={handleSubmit} className="auth-modal__form" noValidate>
-          {errorGeneral && (
-            <div className="auth-modal__error-general" role="alert">
-              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <circle cx="12" cy="12" r="9" />
-                <path d="M12 7.5v5" />
-                <path d="M12 16v.01" />
-              </svg>
-              <span>{errorGeneral}</span>
-            </div>
-          )}
+        <div className="auth-modal__encabezado">
+          <h2 className="auth-modal__title" id="auth-modal-titulo">
+            {esRegistro ? "Crear cuenta" : "Iniciar sesión"}
+          </h2>
+          <p className="auth-modal__subtitle">
+            {esRegistro
+              ? "Registrate para continuar con tu compra."
+              : "Accedé a tu cuenta para continuar con tu compra."}
+          </p>
+        </div>
 
-          {mode === "register" && (
+        {errorGeneral && (
+          <div className="auth-modal__error-general" role="alert">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7.5v5" />
+              <path d="M12 16v.01" />
+            </svg>
+            <span>{errorGeneral}</span>
+          </div>
+        )}
+
+        <form
+          onSubmit={handleSubmit}
+          className={`auth-modal__form ${esRegistro ? "auth-modal__form--registro" : ""}`}
+          noValidate
+        >
+          {esRegistro && (
             <>
-              <label>
-                Nombre
-                <input
-                  type="text"
-                  name="name"
-                  value={formValues.name}
-                  onChange={handleChange}
-                  placeholder="Ej: Ana López"
-                  {...conError("name")}
-                />
-                {mensajeError("name")}
-              </label>
-
-              <label>
-                Apellido
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formValues.lastName}
-                  onChange={handleChange}
-                  placeholder="Ej: González"
-                  {...conError("lastName")}
-                />
-                {mensajeError("lastName")}
-              </label>
-
-              <label>
-                DNI
-                <input
-                  type="text"
-                  name="dni"
-                  value={formValues.dni}
-                  onChange={handleChange}
-                  placeholder="Ej: 12345678"
-                  {...conError("dni")}
-                />
-                {mensajeError("dni")}
-              </label>
-
-              <label>
-                Dirección
-                <input
-                  type="text"
-                  name="address"
-                  value={formValues.address}
-                  onChange={handleChange}
-                  placeholder="Ej: Av. Siempre Viva 123"
-                  {...conError("address")}
-                />
-                {mensajeError("address")}
-              </label>
+              {campo("name", "Nombre", { placeholder: "Ej: Ana", autoComplete: "given-name" })}
+              {campo("lastName", "Apellido", { placeholder: "Ej: González", autoComplete: "family-name" })}
+              {campo("dni", "DNI", { placeholder: "Ej: 12345678", inputMode: "numeric" }, "auth-modal__campo--ancho-mobile")}
+              {campo("address", "Dirección", { placeholder: "Ej: Av. Siempre Viva 123", autoComplete: "street-address" }, "auth-modal__campo--ancho-mobile")}
             </>
           )}
 
-          <label>
-            Email
-            <input
-              type="email"
-              name="email"
-              value={formValues.email}
-              onChange={handleChange}
-              placeholder="correo@ejemplo.com"
-              {...conError("email")}
-            />
-            {mensajeError("email")}
-          </label>
+          {campo(
+            "email",
+            "Email",
+            { type: "email", placeholder: "correo@ejemplo.com", autoComplete: "email" },
+            "auth-modal__campo--ancho",
+          )}
 
-          <label>
-            Contraseña
-            <input
-              type="password"
-              name="password"
-              value={formValues.password}
-              onChange={handleChange}
-              placeholder="*******"
-              autoComplete={mode === "login" ? "current-password" : "new-password"}
-              aria-invalid={errores.password ? true : undefined}
-              aria-describedby={
-                [errores.password && "error-password", mode === "register" && "password-hint"]
-                  .filter(Boolean)
-                  .join(" ") || undefined
-              }
-            />
+          <div className={`auth-modal__campo ${esRegistro ? "auth-modal__campo--ancho-mobile" : ""}`}>
+            <label htmlFor="auth-password">Contraseña</label>
+            <div className="auth-modal__password">
+              <input
+                type={verPassword ? "text" : "password"}
+                autoComplete={esRegistro ? "new-password" : "current-password"}
+                {...atributos("password", esRegistro && !errores.password ? "password-hint" : undefined)}
+              />
+              <button
+                type="button"
+                className="auth-modal__ver"
+                onClick={() => setVerPassword((v) => !v)}
+                aria-label={verPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                aria-pressed={verPassword}
+              >
+                {verPassword ? (
+                  <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 3l18 18" />
+                    <path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7a9.8 9.8 0 0 0 5.4-1.6" />
+                    <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+                  </svg>
+                ) : (
+                  <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                )}
+              </button>
+            </div>
             {mensajeError("password")}
-            {mode === "register" && !errores.password && (
+            {esRegistro && !errores.password && (
               <small id="password-hint" className="auth-modal__hint">
                 Mínimo {MIN_PASSWORD} caracteres.
               </small>
             )}
-          </label>
+          </div>
 
-          {mode === "register" && (
-            <label>
-              Confirmar contraseña
-              <input
-                type="password"
-                name="confirmPassword"
-                value={formValues.confirmPassword}
-                onChange={handleChange}
-                placeholder="*******"
-                {...conError("confirmPassword")}
-              />
-              {mensajeError("confirmPassword")}
-            </label>
-          )}
+          {esRegistro &&
+            campo(
+              "confirmPassword",
+              "Confirmar contraseña",
+              { type: verPassword ? "text" : "password", autoComplete: "new-password" },
+              "auth-modal__campo--ancho-mobile",
+            )}
 
-          <button
-            type="submit"
-            className="auth-modal__submit"
-            disabled={isSubmitting}
-          >
-            {isSubmitting
-              ? "Procesando..."
-              : mode === "login"
-                ? "Iniciar sesión"
-                : "Registrarme"}
-          </button>
-
-          <button
-            type="button"
-            className="auth-modal__toggle"
-            onClick={handleModeToggle}
-            disabled={isSubmitting}
-          >
-            {mode === "login"
-              ? "¿No tenés cuenta? Registrate"
-              : "¿Ya tenés cuenta? Iniciá sesión"}
+          <button type="submit" className="auth-modal__submit" disabled={isSubmitting}>
+            {isSubmitting ? "Procesando..." : esRegistro ? "Registrarme" : "Iniciar sesión"}
           </button>
         </form>
+
+        <div className="auth-modal__separador">
+          <span>{esRegistro ? "¿Ya tenés cuenta?" : "¿No tenés cuenta?"}</span>
+        </div>
+
+        <button
+          type="button"
+          className="auth-modal__toggle"
+          onClick={handleModeToggle}
+          disabled={isSubmitting}
+        >
+          {esRegistro ? "Iniciar sesión" : "Crear una cuenta"}
+        </button>
       </div>
     </div>
   );
