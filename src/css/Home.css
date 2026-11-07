@@ -583,6 +583,9 @@
   .fila-productos {
     --fila-columnas: 3;
   }
+  .home-destacado__imagen img {
+    object-fit:initial;
+  }
 }
 
 /* Tablet chica: la imagen arriba y los dos bloques abajo, uno al lado del otro */
